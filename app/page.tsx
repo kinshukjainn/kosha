@@ -32,42 +32,16 @@ import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import HeroGrid from "./components/HeroGrid";
 
-/* ══════════════════════════════════════════════════════════════════
-   KOSHA — refined white theme, mono typography.
-   All original routes & clerk auth preserved.
-   ══════════════════════════════════════════════════════════════════ */
+/* ── Design tokens ── */
+const INK = "#111827";
+const INK_2 = "#374151";
+const INK_3 = "#6b7280";
+const BLUE = "#2563eb";
+const BLUE_SOFT = "#eff6ff";
 
-const MONO = "'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace";
-const SERIF = "'Fraunces', 'Iowan Old Style', Georgia, serif";
-
-/* Design tokens */
-const INK = "#0a0a0a";
-const INK_2 = "#0a0a0a";
-const INK_3 = "#78716c";
-const MUTED = "#a8a29e";
-const PAPER = "#faf9f4";
-const PAPER_2 = "#f4f2ea";
-const LINE = "#e4e1d5";
-const LINE_2 = "#d8d4c3";
-const BLUE = "#1d4ed8";
-const BLUE_SOFT = "#eef2ff";
-const AMBER = "#b45309";
-const AMBER_SOFT = "#fef3c7";
-const EMERALD = "#15803d";
-
-/* ═══════════ Types ═══════════ */
-type Tone = "blue" | "amber";
+/* ── Types ── */
 type IconType = ComponentType<SVGProps<SVGSVGElement>>;
 
-interface KProps {
-  children: ReactNode;
-  tone?: Tone;
-}
-interface BarBlockProps {
-  children: ReactNode;
-  tone?: Tone;
-  className?: string;
-}
 interface RevealProps {
   children: ReactNode;
   delay?: number;
@@ -94,42 +68,7 @@ interface QuickActionProps {
   delay: number;
 }
 
-/* ═══════════ Inline highlighted keyword ═══════════ */
-const K = ({ children, tone = "blue" }: KProps) => {
-  const color = tone === "amber" ? AMBER : BLUE;
-  const bg = tone === "amber" ? AMBER_SOFT : BLUE_SOFT;
-  return (
-    <span
-      style={{
-        color,
-        background: `linear-gradient(180deg, transparent 60%, ${bg} 60%)`,
-        padding: "0 2px",
-        fontWeight: 500,
-      }}
-    >
-      {children}
-    </span>
-  );
-};
-
-/* ═══════════ Vertical accent bar ═══════════ */
-const BarBlock = ({
-  children,
-  tone = "blue",
-  className = "",
-}: BarBlockProps) => {
-  const color = tone === "amber" ? AMBER : BLUE;
-  return (
-    <div
-      className={`relative pl-5 sm:pl-6 ${className}`}
-      style={{ borderLeft: `2px solid ${color}` }}
-    >
-      {children}
-    </div>
-  );
-};
-
-/* ═══════════ Fade-in on view ═══════════ */
+/* ── Fade-in on scroll ── */
 const useInView = () => {
   const ref = useRef<HTMLDivElement>(null);
   const [inView, setInView] = useState(false);
@@ -137,8 +76,8 @@ const useInView = () => {
     const el = ref.current;
     if (!el) return;
     const obs = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
+      ([e]) => {
+        if (e.isIntersecting) {
           setInView(true);
           obs.disconnect();
         }
@@ -160,7 +99,7 @@ const Reveal = ({ children, delay = 0, className = "" }: RevealProps) => {
       style={{
         opacity: inView ? 1 : 0,
         transform: inView ? "translateY(0)" : "translateY(8px)",
-        transition: `opacity .6s ease-out ${delay}ms, transform .6s ease-out ${delay}ms`,
+        transition: `opacity .5s ease ${delay}ms, transform .5s ease ${delay}ms`,
       }}
     >
       {children}
@@ -168,7 +107,7 @@ const Reveal = ({ children, delay = 0, className = "" }: RevealProps) => {
   );
 };
 
-/* ═══════════ Greeting helper ═══════════ */
+/* ── Greeting helper ── */
 const getGreeting = () => {
   const h = new Date().getHours();
   if (h >= 5 && h < 12) return "Good morning";
@@ -176,13 +115,13 @@ const getGreeting = () => {
   return "Good evening";
 };
 
-/* ═══════════ New-user flag ═══════════ */
+/* ── New-user flag ── */
 const useIsNewUser = () => {
   const searchParams = useSearchParams();
   return searchParams.get("new") === "true";
 };
 
-/* ═══════════ Primary & secondary link buttons ═══════════ */
+/* ── Buttons ── */
 const PrimaryLink = ({
   children,
   href,
@@ -194,13 +133,8 @@ const PrimaryLink = ({
 }) => (
   <Link
     href={href}
-    className={`inline-flex items-center gap-2 px-5 py-3 rounded-lg text-[13.5px] transition hover:opacity-90 ${className}`}
-    style={{
-      background: INK,
-      color: PAPER,
-      fontFamily: MONO,
-      fontWeight: 500,
-    }}
+    className={`inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-medium text-white transition hover:opacity-90 ${className}`}
+    style={{ background: BLUE }}
   >
     {children}
   </Link>
@@ -217,19 +151,13 @@ const SecondaryLink = ({
 }) => (
   <Link
     href={href}
-    className={`inline-flex items-center gap-2 px-5 py-3 rounded-lg text-[13.5px] transition hover:bg-[#fcfaf3] ${className}`}
-    style={{
-      background: "transparent",
-      color: INK_2,
-      border: `1px solid ${LINE_2}`,
-      fontFamily: MONO,
-    }}
+    className={`inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-gray-200 text-sm border border-gray-400 font-medium transition hover:bg-gray-100 ${className}`}
   >
     {children}
   </Link>
 );
 
-/* ═══════════ Onboarding step (new-user) ═══════════ */
+/* ── Onboarding step ── */
 const OnboardingStep = ({
   icon: Icon,
   step,
@@ -238,40 +166,21 @@ const OnboardingStep = ({
   delay,
 }: OnboardingStepProps) => (
   <Reveal delay={delay}>
-    <div
-      className="group flex items-start gap-4 p-4 sm:p-5 rounded-lg transition-colors hover:bg-[#fcfaf3]"
-      style={{
-        background: "#fff",
-        border: `1px solid ${LINE}`,
-        fontFamily: MONO,
-      }}
-    >
-      <span
-        className="shrink-0 w-8 h-8 rounded-lg flex items-center justify-center text-[12px] transition-colors"
-        style={{
-          background: PAPER_2,
-          border: `1px solid ${LINE}`,
-          color: INK_3,
-          fontFamily: MONO,
-          fontWeight: 500,
-        }}
-      >
+    <div className="flex items-start gap-4 p-5 rounded-xl border border-gray-100 bg-white hover:bg-gray-50 transition-colors">
+      <span className="shrink-0 w-7 h-7 rounded-lg flex items-center justify-center text-xs font-semibold text-gray-400 bg-gray-100">
         {step.toString().padStart(2, "0")}
       </span>
       <div
         className="w-9 h-9 rounded-lg flex items-center justify-center shrink-0"
-        style={{ background: BLUE_SOFT, border: `1px solid #dbe4ff` }}
+        style={{ background: BLUE_SOFT }}
       >
-        <Icon className="w-[18px] h-[18px]" style={{ color: BLUE }} />
+        <Icon className="w-4 h-4" style={{ color: BLUE }} />
       </div>
-      <div className="min-w-0 flex-1 pt-0.5">
-        <h3
-          className="text-[15px] mb-0.5"
-          style={{ color: INK, fontWeight: 600 }}
-        >
+      <div className="min-w-0 flex-1">
+        <h3 className="text-sm font-semibold mb-0.5" style={{ color: INK }}>
           {title}
         </h3>
-        <p className="text-[13px] leading-[1.65]" style={{ color: INK_3 }}>
+        <p className="text-sm leading-relaxed" style={{ color: INK_3 }}>
           {description}
         </p>
       </div>
@@ -279,7 +188,7 @@ const OnboardingStep = ({
   </Reveal>
 );
 
-/* ═══════════ Quick action (returning user) ═══════════ */
+/* ── Quick action ── */
 const QuickAction = ({
   icon: Icon,
   title,
@@ -290,170 +199,105 @@ const QuickAction = ({
   <Reveal delay={delay}>
     <Link
       href={href}
-      className="group flex items-center gap-4 p-4 sm:p-5 rounded-lg transition-all hover:bg-[#fcfaf3]"
-      style={{
-        background: "#fff",
-        border: `1px solid ${LINE}`,
-        fontFamily: MONO,
-      }}
+      className="group flex items-center gap-4 p-5 rounded-xl border border-gray-100 bg-white hover:bg-gray-50 transition-colors"
     >
-      <span
-        className="shrink-0 text-[15px] transition-colors"
-        style={{ color: MUTED, fontFamily: MONO }}
-        aria-hidden
-      >
-        →
-      </span>
       <div
         className="w-10 h-10 rounded-lg flex items-center justify-center shrink-0"
-        style={{ background: BLUE_SOFT, border: `1px solid #dbe4ff` }}
+        style={{ background: BLUE_SOFT }}
       >
-        <Icon className="w-[18px] h-[18px]" style={{ color: BLUE }} />
+        <Icon className="w-4 h-4" style={{ color: BLUE }} />
       </div>
       <div className="min-w-0 flex-1">
         <h3
-          className="text-[15px] transition-colors group-hover:text-[#1d4ed8]"
-          style={{ color: INK, fontWeight: 600 }}
+          className="text-sm font-semibold group-hover:text-blue-600 transition-colors"
+          style={{ color: INK }}
         >
           {title}
         </h3>
-        <p className="text-[13px]" style={{ color: INK_3 }}>
+        <p className="text-sm" style={{ color: INK_3 }}>
           {description}
         </p>
       </div>
-      <ChevronRight
-        className="w-4 h-4 shrink-0 transition-all group-hover:translate-x-0.5"
-        style={{ color: MUTED }}
-      />
+      <ChevronRight className="w-4 h-4 shrink-0 text-gray-400 group-hover:translate-x-0.5 transition-transform" />
     </Link>
   </Reveal>
 );
 
-/* ═══════════ Hero — new user ═══════════ */
+/* ── Hero — new user ── */
 const NewUserHero = ({ firstName }: { firstName: string }) => (
-  <div className="relative max-w-3xl mx-auto px-5 sm:px-8 pt-16 sm:pt-24 pb-16">
-    <Reveal delay={0}>
-      <div
-        className="inline-flex items-center gap-2 text-[12px] mb-6"
-        style={{ fontFamily: MONO, color: INK_3 }}
-      >
-        <span
-          className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full"
-          style={{
-            background: AMBER_SOFT,
-            border: `1px solid #fde68a`,
-            color: AMBER,
-          }}
-        >
-          <PartyPopper className="w-3 h-3" />
-          account provisioned
-        </span>
-      </div>
+  <div className="max-w-2xl mx-auto px-6 pt-20 pb-16">
+    <Reveal>
+      <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-amber-50 text-amber-700 border border-amber-100 mb-6">
+        <PartyPopper className="w-3 h-3" /> Account provisioned
+      </span>
     </Reveal>
 
     <Reveal delay={80}>
       <h1
-        className="text-[38px] sm:text-[52px] md:text-[60px] leading-[1.04] tracking-[-0.03em]"
-        style={{ fontFamily: MONO, color: INK, fontWeight: 500 }}
+        className="text-4xl sm:text-5xl font-bold tracking-tight mb-6"
+        style={{ color: INK }}
       >
-        Welcome,{" "}
-        <span
-          style={{
-            fontFamily: SERIF,
-            fontStyle: "italic",
-            color: BLUE,
-            fontWeight: 400,
-          }}
-        >
-          {firstName}
-        </span>
-        .
+        Welcome, {firstName}.
       </h1>
     </Reveal>
 
     <Reveal delay={160}>
-      <div className="mt-8">
-        <BarBlock>
-          <p
-            className="text-[15px] sm:text-[16px] leading-[1.75] max-w-[58ch]"
-            style={{ fontFamily: MONO, color: INK_2 }}
-          >
-            Your workspace is ready. You have <K>5 GB</K> of encrypted storage
-            on <K>AWS S3</K> — private by default, yours forever. No credit
-            card, no trial.
-          </p>
-        </BarBlock>
-      </div>
+      <p className="text-base leading-relaxed text-gray-600 mb-4 pl-4 border-l-2 border-blue-500">
+        Your workspace is ready. You have{" "}
+        <strong className="text-blue-600">5 GB</strong> of encrypted storage on{" "}
+        <strong className="text-blue-600">AWS S3</strong> — private by default,
+        yours forever. No credit card, no trial.
+      </p>
     </Reveal>
 
     <Reveal delay={240}>
-      <div
-        className="mt-6 inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-[12.5px]"
-        style={{
-          background: "#f4faf5",
-          border: `1px solid #d9ecdd`,
-          color: EMERALD,
-          fontFamily: MONO,
-        }}
-      >
-        <Check className="w-3.5 h-3.5" />
-        All systems go. You&apos;re in.
+      <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-green-50 text-green-700 border border-green-100 mb-10">
+        <Check className="w-3.5 h-3.5" /> All systems go. You&apos;re in.
       </div>
     </Reveal>
 
-    <Reveal delay={320}>
-      <div className="mt-12 mb-5">
-        <h2
-          className="text-[22px] sm:text-[26px] tracking-tight"
-          style={{ fontFamily: MONO, color: INK, fontWeight: 600 }}
-        >
-          Quick start.
-        </h2>
-      </div>
+    <Reveal delay={300}>
+      <h2 className="text-xl font-semibold mb-4" style={{ color: INK }}>
+        Quick start
+      </h2>
     </Reveal>
 
-    <div className="space-y-2.5">
+    <div className="space-y-2.5 mb-10">
       <OnboardingStep
         icon={Upload}
         step={1}
         title="Upload your first file"
         description="Drag and drop any file into your dashboard — we support PDFs, images, documents, videos, and more."
-        delay={380}
+        delay={360}
       />
       <OnboardingStep
         icon={FolderOpen}
         step={2}
         title="Organize with folders"
         description="Create folders to keep everything tidy. Your files, your structure."
-        delay={440}
+        delay={420}
       />
       <OnboardingStep
         icon={ShieldCheck}
         step={3}
         title="Enjoy total privacy"
         description="Your files are encrypted and only accessible by you. No tracking, no ads, no compromises."
-        delay={500}
+        delay={480}
       />
     </div>
 
-    <Reveal delay={580}>
-      <div className="mt-10 flex flex-col sm:flex-row items-start sm:items-center gap-3">
+    <Reveal delay={540}>
+      <div className="flex flex-wrap items-center gap-4">
         <PrimaryLink href="/dashboard">
-          <Rocket className="w-4 h-4" />
-          Go to Dashboard
+          <Rocket className="w-4 h-4" /> Go to Dashboard{" "}
           <ArrowRight className="w-3.5 h-3.5" />
         </PrimaryLink>
-        <div
-          className="flex items-center gap-4 text-[12px]"
-          style={{ fontFamily: MONO, color: INK_3 }}
-        >
-          <span className="flex items-center gap-1.5">
-            <Check className="w-3 h-3" style={{ color: EMERALD }} />
-            5GB Free
+        <div className="flex items-center gap-4 text-xs text-gray-500">
+          <span className="flex items-center gap-1">
+            <Check className="w-3 h-3 text-green-600" /> 5 GB Free
           </span>
-          <span className="flex items-center gap-1.5">
-            <Check className="w-3 h-3" style={{ color: EMERALD }} />
-            Secure
+          <span className="flex items-center gap-1">
+            <Check className="w-3 h-3 text-green-600" /> Secure
           </span>
         </div>
       </div>
@@ -461,49 +305,29 @@ const NewUserHero = ({ firstName }: { firstName: string }) => (
   </div>
 );
 
-/* ═══════════ Hero — returning user ═══════════ */
+/* ── Hero — returning user ── */
 const ReturningUserHero = ({ firstName }: { firstName: string }) => (
-  <div className="relative max-w-3xl mx-auto px-5 sm:px-8 pt-16 sm:pt-24 pb-16">
-    <Reveal delay={0}>
+  <div className="max-w-2xl mx-auto px-6 pt-20 pb-16">
+    <Reveal>
       <h1
-        className="text-[38px] sm:text-[52px] md:text-[60px] leading-[1.04] tracking-[-0.03em]"
-        style={{ fontFamily: MONO, color: INK, fontWeight: 500 }}
+        className="text-4xl sm:text-5xl font-bold tracking-tight mb-6"
+        style={{ color: INK }}
       >
-        {getGreeting()},{" "}
-        <span
-          style={{
-            fontFamily: SERIF,
-            fontStyle: "italic",
-            color: BLUE,
-            fontWeight: 400,
-          }}
-        >
-          {firstName}
-        </span>
-        .
+        {getGreeting()}, {firstName}.
       </h1>
     </Reveal>
 
-    <Reveal delay={120}>
-      <div className="mt-6">
-        <BarBlock>
-          <p
-            className="text-[15px] sm:text-[16px] leading-[1.75]"
-            style={{ fontFamily: MONO, color: INK_2 }}
-          >
-            System <K>operational</K>. Pick up where you left off.
-          </p>
-        </BarBlock>
-      </div>
+    <Reveal delay={100}>
+      <p className="text-base leading-relaxed text-gray-600 mb-10 pl-4 border-l-2 border-blue-500">
+        System <strong className="text-blue-600">operational</strong>. Pick up
+        where you left off.
+      </p>
     </Reveal>
 
-    <Reveal delay={220}>
-      <div
-        className="mt-10 mb-4 text-[12px] uppercase tracking-[0.14em]"
-        style={{ fontFamily: MONO, color: MUTED }}
-      >
+    <Reveal delay={200}>
+      <p className="text-xs font-semibold uppercase tracking-widest text-gray-400 mb-3">
         Jump back in
-      </div>
+      </p>
     </Reveal>
 
     <div className="space-y-2.5">
@@ -512,225 +336,123 @@ const ReturningUserHero = ({ firstName }: { firstName: string }) => (
         title="Open Dashboard"
         description="View and manage all your stored files"
         href="/dashboard"
-        delay={280}
+        delay={260}
       />
       <QuickAction
         icon={Upload}
         title="Upload Files"
         description="Add new documents to your storage"
         href="/dashboard"
-        delay={340}
+        delay={320}
       />
     </div>
   </div>
 );
 
-/* ═══════════ Hero — logged-out ═══════════ */
+/* ── Hero — logged-out ── */
 const LoggedOutHero = () => (
-  <section className="relative overflow-hidden">
-    <div
-      aria-hidden
-      className="absolute inset-0 pointer-events-none opacity-[0.45]"
-      style={{
-        backgroundImage: `linear-gradient(${LINE} 1px, transparent 1px), linear-gradient(90deg, ${LINE} 1px, transparent 1px)`,
-        backgroundSize: "64px 64px",
-        maskImage:
-          "radial-gradient(ellipse at 50% 0%, black 30%, transparent 75%)",
-        WebkitMaskImage:
-          "radial-gradient(ellipse at 50% 0%, black 30%, transparent 75%)",
-      }}
-    />
-    <div className="relative max-w-4xl mx-auto px-5 sm:px-8 pt-20 sm:pt-32 pb-16 sm:pb-20 text-center">
-      <Reveal delay={0}>
-        <div
-          className="inline-flex items-center gap-2 text-[12px] mb-10"
-          style={{ fontFamily: MONO, color: INK_3 }}
-        >
-          <span
-            className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full"
-            style={{
-              background: PAPER_2,
-              border: `1px solid ${LINE}`,
-              color: INK_2,
-            }}
-          >
-            <LockKeyhole className="w-3 h-3" style={{ color: BLUE }} />
-            Secured by AWS Cloud
-          </span>
-        </div>
-      </Reveal>
+  <section className="max-w-3xl mx-auto px-6 pt-24 pb-16 text-center">
+    <Reveal>
+      <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-600 border border-gray-200 mb-8">
+        <LockKeyhole className="w-3 h-3" style={{ color: BLUE }} /> Secured by
+        AWS Cloud
+      </span>
+    </Reveal>
 
-      <Reveal delay={80}>
-        <h1
-          className="text-[44px] sm:text-[60px] md:text-[76px] leading-[1.02] tracking-[-0.03em]"
-          style={{ fontFamily: MONO, color: INK, fontWeight: 500 }}
-        >
-          Your data.
-          <br />
-          <span
-            style={{
-              fontFamily: SERIF,
-              fontWeight: 400,
-              fontStyle: "italic",
-              color: BLUE,
-            }}
-          >
-            Only yours.
-          </span>
-        </h1>
-      </Reveal>
+    <Reveal delay={80}>
+      <h1
+        className="text-5xl sm:text-6xl font-bold tracking-tight leading-tight mb-6"
+        style={{ color: INK }}
+      >
+        Your data.
+        <br />
+        Only yours.
+      </h1>
+    </Reveal>
 
-      <Reveal delay={180}>
-        <div className="mt-12 flex justify-center">
-          <BarBlock className="text-left">
-            <p
-              className="text-[15px] sm:text-[16.5px] leading-[1.75] max-w-[58ch]"
-              style={{ fontFamily: MONO, color: INK_2 }}
-            >
-              A cloud storage platform stripped of the noise. No{" "}
-              <K>bloatware</K>, no complicated settings, and{" "}
-              <K tone="amber">zero</K> compromises on your privacy.
-            </p>
-          </BarBlock>
-        </div>
-      </Reveal>
+    <Reveal delay={160}>
+      <p className="text-base sm:text-lg leading-relaxed text-gray-600 max-w-xl mx-auto mb-10">
+        A cloud storage platform stripped of the noise. No bloatware, no
+        complicated settings, and zero compromises on your privacy.
+      </p>
+    </Reveal>
 
-      <Reveal delay={280}>
-        <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
-          <PrimaryLink href="/verify-regis">
-            Start for free
-            <ArrowRight className="w-3.5 h-3.5" />
-          </PrimaryLink>
-          <SecondaryLink href="/supported-formats">
-            Supported Formats
-          </SecondaryLink>
-        </div>
-      </Reveal>
+    <Reveal delay={240}>
+      <div className="flex flex-wrap items-center justify-center gap-3 mb-8">
+        <PrimaryLink href="/verify-regis">
+          Start for free <ArrowRight className="w-3.5 h-3.5" />
+        </PrimaryLink>
+        <SecondaryLink href="/supported-formats">
+          Supported Formats
+        </SecondaryLink>
+      </div>
+    </Reveal>
 
-      <Reveal delay={360}>
-        <div
-          className="mt-8 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-[12.5px]"
-          style={{ fontFamily: MONO, color: INK_3 }}
-        >
-          <span className="flex items-center gap-1.5">
-            <Check className="w-3 h-3" style={{ color: EMERALD }} />
-            no credit card
-          </span>
-          <span className="flex items-center gap-1.5">
-            <Check className="w-3 h-3" style={{ color: EMERALD }} />
-            encrypted
-          </span>
-          <span className="flex items-center gap-1.5">
-            <Check className="w-3 h-3" style={{ color: EMERALD }} />
-            zero AI training
-          </span>
-        </div>
-      </Reveal>
-    </div>
+    <Reveal delay={300}>
+      <div className="flex flex-wrap items-center justify-center gap-6 font-semibold text-sm text-black">
+        <span className="flex items-center gap-1.5">
+          <p className="p-2 bg-blue-400 rounded-full">
+            <Check className="w-3.5 h-3.5 text-black" />
+          </p>
+          No credit card
+        </span>
+        <span className="flex items-center gap-1.5">
+          <p className="p-2 bg-blue-400 rounded-full">
+            <Check className="w-3.5 h-3.5 text-black" />
+          </p>{" "}
+          Encrypted
+        </span>
+        <span className="flex items-center gap-1.5">
+          <p className="p-2 bg-blue-400 rounded-full">
+            <Check className="w-3.5 h-3.5 text-black" />
+          </p>
+          Zero AI training
+        </span>
+      </div>
+    </Reveal>
   </section>
 );
 
-/* ═══════════ Preview section (video, logged-out only) ═══════════ */
+/* ── Preview section ── */
 const PreviewSection = () => (
-  <section className="relative max-w-5xl mx-auto px-5 sm:px-8 pb-12 sm:pb-20">
-    <Reveal delay={0}>
-      <div className="mb-8 text-center">
-        <div
-          className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] mb-3"
-          style={{
-            background: "#f4faf5",
-            border: `1px solid #d9ecdd`,
-            color: EMERALD,
-            fontFamily: MONO,
-          }}
-        >
-          <span
-            className="w-1.5 h-1.5 rounded-full animate-pulse"
-            style={{ background: EMERALD }}
-          />
+  <section className="max-w-5xl mx-auto px-6 pb-16">
+    <Reveal>
+      <div className="text-center mb-8">
+        <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-50 text-green-700 border border-green-100 mb-3">
+          <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />{" "}
           LIVE PREVIEW
-        </div>
+        </span>
         <h2
-          className="text-[26px] sm:text-[32px] md:text-[36px] leading-[1.1] tracking-[-0.02em]"
-          style={{ fontFamily: MONO, color: INK, fontWeight: 500 }}
+          className="text-3xl font-bold tracking-tight"
+          style={{ color: INK }}
         >
-          See it{" "}
-          <span
-            style={{
-              fontFamily: SERIF,
-              fontStyle: "italic",
-              color: BLUE,
-              fontWeight: 400,
-            }}
-          >
-            in action
-          </span>
-          .
+          See it in action.
         </h2>
-        <p
-          className="mt-2 text-[14px]"
-          style={{ fontFamily: MONO, color: INK_3 }}
-        >
+        <p className="mt-1.5 text-sm text-gray-500">
           A dashboard that respects your time and your data.
         </p>
       </div>
     </Reveal>
 
     <Reveal delay={80}>
-      <div
-        className="relative rounded-xl overflow-hidden"
-        style={{
-          background: "#fff",
-          border: `1px solid ${LINE}`,
-          boxShadow: `0 1px 2px rgba(0,0,0,0.04), 0 24px 60px -30px rgba(29,78,216,0.2)`,
-        }}
-      >
-        <div
-          className="flex items-center gap-2.5 px-4 py-2.5"
-          style={{ background: PAPER_2, borderBottom: `1px solid ${LINE}` }}
-        >
-          <div className="flex gap-1.5 shrink-0">
-            <span
-              className="w-2.5 h-2.5 rounded-full"
-              style={{ background: "#fff", border: `1px solid ${LINE_2}` }}
-            />
-            <span
-              className="w-2.5 h-2.5 rounded-full"
-              style={{ background: "#fff", border: `1px solid ${LINE_2}` }}
-            />
-            <span
-              className="w-2.5 h-2.5 rounded-full"
-              style={{ background: "#fff", border: `1px solid ${LINE_2}` }}
-            />
+      <div className="rounded-2xl overflow-hidden border border-gray-200 shadow-lg">
+        <div className="flex items-center gap-2.5 px-4 py-2.5 bg-gray-50 border-b border-gray-200">
+          <div className="flex gap-1.5">
+            {[0, 1, 2].map((i) => (
+              <span key={i} className="w-2.5 h-2.5 rounded-full bg-gray-200" />
+            ))}
           </div>
-          <div
-            className="flex-1 min-w-0 mx-2 sm:mx-3 px-3 py-1 rounded text-[11.5px] text-center truncate"
-            style={{
-              background: "#fff",
-              border: `1px solid ${LINE}`,
-              color: INK_3,
-              fontFamily: MONO,
-            }}
-          >
+          <div className="flex-1 mx-3 px-3 py-1 rounded bg-white border border-gray-200 text-xs text-center text-gray-400 truncate">
             kosha.cloudkinshuk.in/dashboard
           </div>
         </div>
-
         <video
           autoPlay
           loop
           muted
           playsInline
           preload="metadata"
-          onError={(e) => {
-            const v = e.currentTarget;
-            console.error("Video error:", {
-              code: v.error?.code,
-              message: v.error?.message,
-            });
-          }}
-          className="w-full h-auto block aspect-video object-cover"
-          style={{ background: PAPER_2 }}
+          className="w-full h-auto block aspect-video object-cover bg-gray-50"
         >
           <source src="/videos/brandy.mp4" type="video/mp4" />
         </video>
@@ -739,7 +461,7 @@ const PreviewSection = () => (
   </section>
 );
 
-/* ═══════════ Features grid (all 8 from original) ═══════════ */
+/* ── Features grid ── */
 const FEATURES: Feature[] = [
   {
     id: "01",
@@ -767,13 +489,13 @@ const FEATURES: Feature[] = [
   },
   {
     id: "05",
-    title: "No AI training",
+    title: "No AI Training",
     body: "We do not use your data to train AI models. Your files are yours alone.",
     icon: BrainCircuit,
   },
   {
     id: "06",
-    title: "No bloated AI",
+    title: "No Bloated AI",
     body: "We do not offer any AI features. We focus on secure, private storage without distractions.",
     icon: BrickWallShield,
   },
@@ -794,46 +516,23 @@ const FEATURES: Feature[] = [
 const FeaturesGrid = () => (
   <section
     id="features"
-    className="relative max-w-7xl mx-auto px-5 sm:px-8 py-20 sm:py-24"
-    style={{ borderTop: `1px solid ${LINE}` }}
+    className="max-w-6xl mx-auto px-6 py-20 border-t border-gray-100"
   >
     <Reveal>
-      <div className="max-w-3xl mx-auto text-center mb-14">
+      <div className="text-center mb-12">
         <h2
-          className="text-[32px] sm:text-[44px] leading-[1.05] tracking-[-0.025em]"
-          style={{ fontFamily: MONO, color: INK, fontWeight: 500 }}
+          className="text-3xl sm:text-4xl font-bold tracking-tight mb-3"
+          style={{ color: INK }}
         >
-          Brilliantly{" "}
-          <span
-            style={{
-              fontFamily: SERIF,
-              fontStyle: "italic",
-              color: BLUE,
-              fontWeight: 400,
-            }}
-          >
-            simple
-          </span>
-          .
+          Brilliantly simple.
         </h2>
-        <p
-          className="mt-4 text-[15px] leading-[1.7]"
-          style={{ fontFamily: MONO, color: INK_3 }}
-        >
+        <p className="text-base text-gray-500">
           Everything you need. Nothing you don&apos;t.
         </p>
       </div>
     </Reveal>
 
-    <div
-      className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 max-w-6xl mx-auto"
-      style={{
-        border: `1px solid ${LINE}`,
-        borderRadius: "4px",
-        background: "#fff",
-        overflow: "hidden",
-      }}
-    >
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 rounded-2xl border border-gray-100 overflow-hidden bg-white">
       {FEATURES.map((f, i) => {
         const Icon = f.icon;
         const cols = 4;
@@ -841,38 +540,34 @@ const FeaturesGrid = () => (
         const row = Math.floor(i / cols);
         const lastRow = row === Math.ceil(FEATURES.length / cols) - 1;
         return (
-          <Reveal key={f.id} delay={i * 50}>
+          <Reveal key={f.id} delay={i * 40}>
             <div
-              className="group h-full p-6 sm:p-7 relative transition-colors hover:bg-[#fcfaf3]"
+              className="group h-full p-6 hover:bg-blue-50 transition-colors relative"
               style={{
-                borderRight: col < cols - 1 ? `1px solid ${LINE}` : "none",
-                borderBottom: !lastRow ? `1px solid ${LINE}` : "none",
-                fontFamily: MONO,
+                borderRight: col < cols - 1 ? "1px solid #f3f4f6" : "none",
+                borderBottom: !lastRow ? "1px solid #f3f4f6" : "none",
               }}
             >
-              <div className="flex items-start justify-between mb-5">
-                <Icon
-                  className="w-5 h-5 transition-colors"
-                  style={{ color: INK_2 }}
-                />
-                <span
-                  className="text-[11px]"
-                  style={{ color: MUTED, letterSpacing: "0.1em" }}
+              <div className="flex items-start justify-between mb-4">
+                <div
+                  className="w-9 h-9 rounded-lg flex items-center justify-center"
+                  style={{ background: BLUE_SOFT }}
                 >
-                  {f.id}
-                </span>
+                  <Icon className="w-4 h-4" style={{ color: BLUE }} />
+                </div>
+                <span className="text-xs text-gray-300 font-mono">{f.id}</span>
               </div>
               <h3
-                className="text-[15.5px] mb-2.5 tracking-tight"
-                style={{ color: INK, fontWeight: 600 }}
+                className="text-sm font-semibold mb-1.5"
+                style={{ color: INK }}
               >
                 {f.title}
               </h3>
-              <p className="text-[13px] leading-[1.7]" style={{ color: INK_3 }}>
+              <p className="text-sm leading-relaxed" style={{ color: INK_3 }}>
                 {f.body}
               </p>
               <div
-                className="absolute bottom-0 left-0 h-[2px] transition-all duration-500 group-hover:w-full w-0"
+                className="absolute bottom-0 left-0 h-0.5 w-0 group-hover:w-full transition-all duration-500"
                 style={{ background: BLUE }}
               />
             </div>
@@ -883,192 +578,111 @@ const FeaturesGrid = () => (
   </section>
 );
 
-/* ═══════════ CTA (logged-in vs logged-out) ═══════════ */
+/* ── CTA ── */
 const CTA = ({ isLoggedIn }: { isLoggedIn: boolean }) => (
-  <section
-    id="pricing"
-    className="relative max-w-7xl mx-auto px-5 sm:px-8 py-20 sm:py-24"
-  >
+  <section id="pricing" className="max-w-6xl mx-auto px-6 py-20">
     <Reveal>
-      <div
-        className="relative overflow-hidden rounded-lg p-8 sm:p-14"
-        style={{ background: "#fff", border: `1px solid ${LINE}` }}
-      >
-        <div
-          aria-hidden
-          className="absolute inset-0 pointer-events-none opacity-[0.5]"
-          style={{
-            backgroundImage: `linear-gradient(${LINE} 1px, transparent 1px), linear-gradient(90deg, ${LINE} 1px, transparent 1px)`,
-            backgroundSize: "32px 32px",
-            maskImage:
-              "radial-gradient(ellipse at 80% 30%, black 0%, transparent 60%)",
-            WebkitMaskImage:
-              "radial-gradient(ellipse at 80% 30%, black 0%, transparent 60%)",
-          }}
-        />
-        <div className="relative">
-          {isLoggedIn ? (
-            <div className="max-w-2xl">
+      <div className="rounded-2xl border border-gray-100 bg-white p-8 sm:p-14">
+        {isLoggedIn ? (
+          <div className="max-w-xl">
+            <h2
+              className="text-3xl sm:text-4xl font-bold tracking-tight mb-4"
+              style={{ color: INK }}
+            >
+              Your files are waiting.
+            </h2>
+            <p className="text-base text-gray-600 mb-8">
+              Jump back into your dashboard and keep your workflow going.
+            </p>
+            <PrimaryLink href="/dashboard">
+              View Dashboard <ArrowRight className="w-3.5 h-3.5" />
+            </PrimaryLink>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+            <div className="lg:col-span-7">
               <h2
-                className="text-[32px] sm:text-[44px] leading-[1.05] tracking-[-0.025em]"
-                style={{ fontFamily: MONO, color: INK, fontWeight: 500 }}
+                className="text-3xl sm:text-4xl font-bold tracking-tight mb-4"
+                style={{ color: INK }}
               >
-                Your files are{" "}
-                <span
-                  style={{
-                    fontFamily: SERIF,
-                    fontStyle: "italic",
-                    color: BLUE,
-                    fontWeight: 400,
-                  }}
-                >
-                  waiting
-                </span>
-                .
+                Ready to take back your data?
               </h2>
-              <p
-                className="mt-4 max-w-[54ch] text-[15px] leading-[1.8]"
-                style={{ fontFamily: MONO, color: INK_3 }}
-              >
-                Jump back into your dashboard and keep your workflow going.
+              <p className="text-base text-gray-600 mb-8 max-w-lg">
+                Join thousands who have migrated to a simpler, more secure way
+                to store their digital life.
               </p>
-              <div className="mt-8 flex flex-wrap items-center gap-3">
-                <PrimaryLink href="/dashboard">
-                  View Dashboard
-                  <ArrowRight className="w-3.5 h-3.5" />
+              <div className="flex flex-wrap gap-3">
+                <PrimaryLink href="/verify-regis">
+                  Create Free Account <ArrowRight className="w-3.5 h-3.5" />
                 </PrimaryLink>
+                <SecondaryLink href="/supported-formats">
+                  Learn more
+                </SecondaryLink>
               </div>
             </div>
-          ) : (
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
-              <div className="lg:col-span-7">
-                <h2
-                  className="text-[32px] sm:text-[48px] leading-[1.05] tracking-[-0.025em]"
-                  style={{ fontFamily: MONO, color: INK, fontWeight: 500 }}
-                >
-                  Ready to take back{" "}
-                  <span
-                    style={{
-                      fontFamily: SERIF,
-                      fontStyle: "italic",
-                      color: BLUE,
-                      fontWeight: 400,
-                    }}
-                  >
-                    your data
-                  </span>
-                  ?
-                </h2>
-                <p
-                  className="mt-4 max-w-[54ch] text-[15px] leading-[1.8]"
-                  style={{ fontFamily: MONO, color: INK_3 }}
-                >
-                  Join thousands who have migrated to a simpler, more secure way
-                  to store their digital life.
-                </p>
-                <div className="mt-8 flex flex-wrap items-center gap-3">
-                  <PrimaryLink href="/verify-regis">
-                    Create Free Account
-                    <ArrowRight className="w-3.5 h-3.5" />
-                  </PrimaryLink>
-                  <SecondaryLink href="/supported-formats">
-                    Learn more
-                  </SecondaryLink>
-                </div>
-              </div>
 
-              <div className="lg:col-span-5">
-                <div
-                  className="p-5 rounded-lg"
-                  style={{
-                    background: PAPER,
-                    border: `1px solid ${LINE}`,
-                    fontFamily: MONO,
-                  }}
-                >
-                  <div
-                    className="text-[11px] uppercase tracking-[0.15em]"
-                    style={{ color: MUTED }}
-                  >
-                    free plan
-                  </div>
-                  <div
-                    className="mt-2 flex items-baseline gap-1.5"
-                    style={{ color: INK, fontWeight: 600 }}
-                  >
-                    <span className="text-[38px] tracking-tight">Free</span>
-                    <span
-                      className="text-[13px]"
-                      style={{ color: INK_3, fontWeight: 400 }}
-                    >
-                      / forever
-                    </span>
-                  </div>
-                  <ul
-                    className="mt-4 space-y-2 text-[12.5px]"
-                    style={{ color: INK_2 }}
-                  >
-                    {[
-                      "5 GB encrypted storage",
-                      "Unlimited file types",
-                      "Private by default",
-                      "Fast downloads, anywhere",
-                      "No AI training, ever",
-                    ].map((x) => (
-                      <li key={x} className="flex items-start gap-2">
-                        <Check
-                          className="w-3.5 h-3.5 mt-0.5 shrink-0"
-                          style={{ color: EMERALD }}
-                        />
-                        {x}
-                      </li>
-                    ))}
-                  </ul>
+            <div className="lg:col-span-5">
+              <div className="rounded-xl border border-gray-100 bg-gray-50 p-6">
+                <p className="text-xs font-semibold uppercase tracking-widest text-gray-400 mb-2">
+                  Free plan
+                </p>
+                <div className="flex items-baseline gap-1.5 mb-5">
+                  <span className="text-4xl font-bold" style={{ color: INK }}>
+                    Free
+                  </span>
+                  <span className="text-sm text-gray-400">/ forever</span>
                 </div>
+                <ul className="space-y-2.5 text-sm text-gray-600">
+                  {[
+                    "5 GB encrypted storage",
+                    "Unlimited file types",
+                    "Private by default",
+                    "Fast downloads, anywhere",
+                    "No AI training, ever",
+                  ].map((x) => (
+                    <li key={x} className="flex items-start gap-2">
+                      <Check className="w-4 h-4 mt-0.5 shrink-0 text-green-600" />
+                      {x}
+                    </li>
+                  ))}
+                </ul>
               </div>
             </div>
-          )}
-        </div>
+          </div>
+        )}
       </div>
     </Reveal>
   </section>
 );
 
-/* ═══════════ Footer ═══════════ */
+/* ── Footer ── */
 const Footer = () => (
-  <footer
-    style={{
-      borderTop: `1px solid ${LINE}`,
-      background: PAPER,
-      fontFamily: MONO,
-    }}
-  >
-    <div className="max-w-7xl mx-auto px-5 sm:px-8 py-10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
-      <div
-        className="flex items-center gap-3 text-[13px]"
-        style={{ color: INK_2 }}
-      >
+  <footer className="border-t border-gray-100">
+    <div className="max-w-6xl mx-auto px-6 py-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+      <div className="flex items-center gap-3 text-sm">
         <span
-          className="inline-flex items-center justify-center w-6 h-6 rounded-lg text-white text-[11px] font-bold"
+          className="inline-flex items-center justify-center w-6 h-6 rounded-lg text-white text-xs font-bold"
           style={{ background: INK }}
         >
           K
         </span>
-        <span style={{ fontWeight: 600, color: INK }}>kosha</span>
-        <span style={{ color: MUTED }}>·</span>
-        <span>© 2026 · built with care</span>
+        <span className="font-semibold" style={{ color: INK }}>
+          kosha
+        </span>
+        <span className="text-gray-300">·</span>
+        <span className="text-gray-400">© 2026 · built with care</span>
       </div>
-      <div
-        className="flex flex-wrap items-center gap-5 text-[12.5px]"
-        style={{ color: INK_3 }}
-      >
-        <Link href="/privacy" className="hover:text-black transition">
+      <div className="flex items-center gap-5 text-sm text-gray-400">
+        <Link href="/privacy" className="hover:text-gray-900 transition">
           privacy
         </Link>
-        <Link href="/terms" className="hover:text-black transition">
+        <Link href="/terms" className="hover:text-gray-900 transition">
           terms
         </Link>
-        <Link href="/supported-formats" className="hover:text-black transition">
+        <Link
+          href="/supported-formats"
+          className="hover:text-gray-900 transition"
+        >
           formats
         </Link>
       </div>
@@ -1076,18 +690,16 @@ const Footer = () => (
   </footer>
 );
 
-/* ═══════════ Root — Suspense wrapper (original) ═══════════ */
+/* ── Root ── */
 export default function Home() {
   return (
-    <Suspense
-      fallback={<div className="min-h-screen" style={{ background: PAPER }} />}
-    >
+    <Suspense fallback={<div className="min-h-screen bg-white" />}>
       <HomeContent />
     </Suspense>
   );
 }
 
-/* ═══════════ HomeContent — clerk auth + variant routing (original) ═══════════ */
+/* ── HomeContent — clerk auth + variant routing ── */
 function HomeContent() {
   const { isLoaded, userId } = useAuth();
   const { user } = useUser();
@@ -1097,28 +709,8 @@ function HomeContent() {
   const firstName = user?.firstName || "there";
 
   return (
-    <div
-      className="min-h-screen"
-      style={{ background: PAPER, color: INK, fontFamily: MONO }}
-    >
-      <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&display=swap');
-
-        html { scroll-behavior: smooth; }
-
-        body {
-          background-color: ${PAPER};
-          background-image:
-            url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.035 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
-        }
-
-        ::selection {
-          background: ${BLUE_SOFT};
-          color: ${BLUE};
-        }
-      `}</style>
-
-      <main className="relative">
+    <div className="min-h-screen bg-white" style={{ color: INK }}>
+      <main>
         <HeroGrid />
 
         {isLoggedIn && isNewUser ? (
@@ -1129,7 +721,6 @@ function HomeContent() {
           <LoggedOutHero />
         )}
 
-        {/* Preview video — logged-out only (original behavior) */}
         {isLoaded && !userId && <PreviewSection />}
       </main>
 

@@ -21,246 +21,222 @@ import {
   LogIn,
 } from "lucide-react";
 
+const NAV_LINKS = [
+  { href: "/supported-formats", label: "Supported Formats", icon: FileStack },
+  { href: "/about-us", label: "About Us", icon: Users },
+  { href: "/git-track", label: "Project Logs", icon: GitBranch },
+  { href: "/openned-tickets", label: "Tickets", icon: Ticket },
+  { href: "/pricing", label: "Pricing", icon: CreditCard },
+  {
+    href: "/privacy-policy",
+    label: "Privacy Policy",
+    icon: ShieldCheck,
+    underline: true,
+  },
+  {
+    href: "/terms-of-service",
+    label: "Terms of Service",
+    icon: FileText,
+    underline: true,
+  },
+];
+
 export default function Header() {
   const { isLoaded, userId } = useAuth();
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [open, setOpen] = useState(false);
 
-  const toggleMenu = () => setIsMobileMenuOpen(!isMobileMenuOpen);
-  const closeMenu = () => setIsMobileMenuOpen(false);
-
-  const navLinkClasses =
-    "px-3 py-1.5 text-black hover:bg-blue-200 rounded-xl font-semibold text-[13px] transition-colors cursor-pointer whitespace-nowrap flex items-center gap-1.5";
-
-  const mobileNavLinkClasses =
-    "flex items-center gap-3 w-full text-left px-6 py-3.5 text-gray-900 font-semibold hover:bg-gray-100 hover:text-[#0078D4] border-b border-gray-100 transition-colors text-[14px] cursor-pointer";
-
-  const iconSize = "w-[14px] h-[14px]";
-  const mobileIconSize = "w-[18px] h-[18px] text-gray-600";
+  const toggle = () => setOpen((o) => !o);
+  const close = () => setOpen(false);
 
   return (
-    <header className="sticky top-0 z-50 w-full bg-white text-black border-b border-gray-300">
-      <div className="flex items-center justify-between h-12 px-3 sm:px-4 w-full max-w-[1920px] mx-auto">
-        {/* Left Section: Logo & Desktop Navigation */}
-        <div className="flex items-center h-full">
-          {/* Logo */}
-          <Link
-            href="/"
-            className="flex items-center gap-2 hover:bg-black/5 px-2 py-1.5 rounded-xl transition-colors duration-150 z-50 mr-4"
-            onClick={closeMenu}
-          >
-            <Image
-              src="/anylogo.png"
-              alt="Kosha Logo"
-              width={50}
-              height={50}
-              className="object-contain"
-            />
-            <span className="text-black font-semibold text-[22px] tracking-wide flex items-center gap-2">
-              KOSHA
-            </span>
-          </Link>
+    <header className="sticky top-0 z-50 w-full bg-white border-b border-gray-200">
+      <div className="flex items-center justify-between h-12 px-4 max-w-screen-2xl mx-auto">
+        {/* ── Logo ── */}
+        <Link
+          href="/"
+          onClick={close}
+          className="flex items-center gap-2 px-2 py-1 rounded-lg hover:bg-gray-100 transition-colors shrink-0"
+        >
+          <Image
+            src="/anylogo.png"
+            alt="Kosha"
+            width={28}
+            height={28}
+            className="object-contain"
+          />
+          <span className="font-bold text-[15px] tracking-wide text-gray-900">
+            KOSHA
+          </span>
+        </Link>
 
-          {/* Desktop Navigation */}
-          <nav className="hidden md:flex justify-center items-center gap-1 h-full">
-            {isLoaded && userId && (
-              <Link href="/dashboard" className={navLinkClasses}>
-                <LayoutDashboard className={iconSize} />
-                Dashboard
-              </Link>
-            )}
-            <Link href="/supported-formats" className={navLinkClasses}>
-              <FileStack className={iconSize} />
-              Supported Formats
-            </Link>
-            <Link href="/about-us" className={navLinkClasses}>
-              <Users className={iconSize} />
-              About Us
-            </Link>
-            <Link href="/git-track" className={navLinkClasses}>
-              <GitBranch className={iconSize} />
-              Project Logs
-            </Link>
-            <Link href="/openned-tickets" className={navLinkClasses}>
-              <Ticket className={iconSize} />
-              Tickets
-            </Link>
-            <Link href="/pricing" className={navLinkClasses}>
-              <CreditCard className={iconSize} />
-              Pricing
-            </Link>
-            <Link
-              href="/privacy-policy"
-              className={`underline ${navLinkClasses}`}
-            >
-              <ShieldCheck className={iconSize} />
-              Privacy Policy
-            </Link>
-            <Link
-              href="/terms-of-service"
-              className={`underline ${navLinkClasses}`}
-            >
-              <FileText className={iconSize} />
-              Terms of Service
-            </Link>
-          </nav>
-        </div>
-
-        {/* Right Section: Desktop Actions & Mobile Toggle */}
-        <div className="flex items-center gap-1 sm:gap-2 h-full">
-          {/* Desktop Actions */}
-          <div className="hidden md:flex items-center gap-2">
-            <a
-              href="https://github.com/kinshukjainn/pvtcldstrg"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center justify-center p-2 hover:bg-black/5 rounded-xl transition-colors duration-150"
-              aria-label="GitHub Repository"
-            >
-              <FaGithub className="w-[18px] h-[18px] text-black" />
-            </a>
-
-            {/* Vertical Divider */}
-            <div className="w-px h-5 bg-black/20 mx-1" />
-
-            {isLoaded && !userId && (
-              <Link
-                href="/verify-regis"
-                className="bg-[#0078D4] text-white hover:bg-[#005a9e] px-4 py-2 rounded-full text-[10px] font-semibold transition-colors shadow-sm ml-1 flex items-center gap-1"
-              >
-                <LogIn className="w-[14px] h-[14px]" />
-                Sign In | Up
-              </Link>
-            )}
-            {isLoaded && userId && (
-              <div className="flex items-center hover:bg-black/5 p-1 rounded-xl transition-colors cursor-pointer ml-1">
-                <UserProfileDropdown variant="desktop" />
-              </div>
-            )}
-          </div>
-
-          {/* Mobile Menu Toggle */}
-          <button
-            className="md:hidden flex items-center justify-center p-2 hover:bg-black/5 rounded-xl transition-colors duration-150 cursor-pointer"
-            onClick={toggleMenu}
-            aria-label="Toggle mobile menu"
-          >
-            {isMobileMenuOpen ? (
-              <PanelBottomOpen className="w-5 h-5 text-black" />
-            ) : (
-              <PanelBottomClose className="w-5 h-5 text-black" />
-            )}
-          </button>
-        </div>
-      </div>
-
-      {/* Mobile Navigation Dropdown */}
-      <div
-        className={`md:hidden absolute top-12 left-0 w-full bg-white shadow-xl transition-all duration-200 ease-in-out origin-top overflow-hidden border-b border-gray-300 ${
-          isMobileMenuOpen
-            ? "opacity-100 max-h-[80vh] overflow-y-auto"
-            : "opacity-0 max-h-0"
-        }`}
-      >
-        <nav className="flex flex-col py-2">
+        {/* ── Desktop nav ── */}
+        <nav className="hidden md:flex items-center gap-0.5 flex-1 px-4 overflow-x-auto">
           {isLoaded && userId && (
-            <Link
-              href="/dashboard"
-              className={mobileNavLinkClasses}
-              onClick={closeMenu}
-            >
-              <LayoutDashboard className={mobileIconSize} />
+            <NavLink href="/dashboard" icon={LayoutDashboard}>
               Dashboard
+            </NavLink>
+          )}
+          {NAV_LINKS.map(({ href, label, icon, underline }) => (
+            <NavLink key={href} href={href} icon={icon} underline={underline}>
+              {label}
+            </NavLink>
+          ))}
+        </nav>
+
+        {/* ── Desktop right actions ── */}
+        <div className="hidden md:flex items-center gap-2 shrink-0">
+          <a
+            href="https://github.com/kinshukjainn/pvtcldstrg"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="p-2 rounded-lg hover:bg-gray-100 transition-colors"
+            aria-label="GitHub"
+          >
+            <FaGithub className="w-4 h-4 text-gray-700" />
+          </a>
+
+          <div className="w-px h-4 bg-gray-200" />
+
+          {isLoaded && !userId && (
+            <Link
+              href="/verify-regis"
+              className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold rounded-full transition-colors"
+            >
+              <LogIn className="w-3 h-3" />
+              Sign In / Up
             </Link>
           )}
-          <Link
-            href="/supported-formats"
-            className={mobileNavLinkClasses}
-            onClick={closeMenu}
-          >
-            <FileStack className={mobileIconSize} />
-            Supported Formats
-          </Link>
-          <Link
-            href="/about-us"
-            className={mobileNavLinkClasses}
-            onClick={closeMenu}
-          >
-            <Users className={mobileIconSize} />
-            About Us
-          </Link>
-          <Link
-            href="/git-track"
-            className={mobileNavLinkClasses}
-            onClick={closeMenu}
-          >
-            <GitBranch className={mobileIconSize} />
-            Project Logs
-          </Link>
-          <Link
-            href="/openned-tickets"
-            className={mobileNavLinkClasses}
-            onClick={closeMenu}
-          >
-            <Ticket className={mobileIconSize} />
-            Opened Tickets
-          </Link>
-          <Link
-            href="/pricing"
-            className={mobileNavLinkClasses}
-            onClick={closeMenu}
-          >
-            <CreditCard className={mobileIconSize} />
-            Pricing
-          </Link>
-          <Link
-            href="/privacy-policy"
-            className={`underline ${mobileNavLinkClasses}`}
-            onClick={closeMenu}
-          >
-            <ShieldCheck className={mobileIconSize} />
-            Privacy Policy
-          </Link>
-          <Link
-            href="/terms-of-service"
-            className={`underline ${mobileNavLinkClasses}`}
-            onClick={closeMenu}
-          >
-            <FileText className={mobileIconSize} />
-            Terms of Service
-          </Link>
+          {isLoaded && userId && (
+            <div className="p-1 rounded-lg hover:bg-gray-100 transition-colors">
+              <UserProfileDropdown variant="desktop" />
+            </div>
+          )}
+        </div>
 
-          <div className="w-full h-px bg-gray-200 my-2" />
+        {/* ── Mobile toggle ── */}
+        <button
+          className="md:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors"
+          onClick={toggle}
+          aria-label="Toggle menu"
+        >
+          {open ? (
+            <PanelBottomOpen className="w-5 h-5 text-gray-700" />
+          ) : (
+            <PanelBottomClose className="w-5 h-5 text-gray-700" />
+          )}
+        </button>
+      </div>
+
+      {/* ── Mobile menu ── */}
+      <div
+        className={`md:hidden absolute top-12 left-0 w-full bg-white border-b border-gray-200 shadow-lg transition-all duration-200 origin-top overflow-hidden ${
+          open
+            ? "max-h-[80vh] opacity-100 overflow-y-auto"
+            : "max-h-0 opacity-0"
+        }`}
+      >
+        <nav className="flex flex-col py-1">
+          {isLoaded && userId && (
+            <MobileNavLink
+              href="/dashboard"
+              icon={LayoutDashboard}
+              onClick={close}
+            >
+              Dashboard
+            </MobileNavLink>
+          )}
+          {NAV_LINKS.map(({ href, label, icon, underline }) => (
+            <MobileNavLink
+              key={href}
+              href={href}
+              icon={icon}
+              underline={underline}
+              onClick={close}
+            >
+              {label}
+            </MobileNavLink>
+          ))}
+
+          <div className="h-px bg-gray-100 my-1 mx-4" />
 
           <a
             href="https://github.com/kinshukjainn/pvtcldstrg"
             target="_blank"
             rel="noopener noreferrer"
-            className={mobileNavLinkClasses}
+            className="flex items-center gap-3 px-5 py-3 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
           >
-            <FaGithub className={mobileIconSize} />
-            <span>Open Source</span>
+            <FaGithub className="w-5 h-5 text-gray-500" />
+            Open Source
           </a>
 
           {isLoaded && !userId && (
-            <div className="px-6 py-4">
+            <div className="px-4 py-3">
               <Link
                 href="/verify-regis"
-                className="flex items-center justify-center gap-2 w-full bg-[#0078D4] hover:bg-[#005a9e] text-white px-4 py-2.5 rounded-xl text-[14px] font-semibold transition-colors"
-                onClick={closeMenu}
+                onClick={close}
+                className="flex items-center justify-center gap-2 w-full bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold py-2.5 rounded-xl transition-colors"
               >
-                <LogIn className="w-[16px] h-[16px]" />
+                <LogIn className="w-4 h-4" />
                 Sign In / Up
               </Link>
             </div>
           )}
 
           {isLoaded && userId && (
-            <div className="px-6 py-4 bg-gray-50 border-t border-gray-200">
-              <UserProfileDropdown variant="mobile" onAction={closeMenu} />
+            <div className="px-4 py-3 bg-gray-50 border-t border-gray-100">
+              <UserProfileDropdown variant="mobile" onAction={close} />
             </div>
           )}
         </nav>
       </div>
     </header>
+  );
+}
+
+/* ── Shared sub-components ── */
+function NavLink({
+  href,
+  icon: Icon,
+  children,
+  underline = false,
+}: {
+  href: string;
+  icon: React.ComponentType<{ className?: string }>;
+  children: React.ReactNode;
+  underline?: boolean;
+}) {
+  return (
+    <Link
+      href={href}
+      className={`flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[12.5px] font-medium text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors whitespace-nowrap ${underline ? "underline underline-offset-2" : ""}`}
+    >
+      <Icon className="w-3.5 h-3.5 shrink-0" />
+      {children}
+    </Link>
+  );
+}
+
+function MobileNavLink({
+  href,
+  icon: Icon,
+  children,
+  underline = false,
+  onClick,
+}: {
+  href: string;
+  icon: React.ComponentType<{ className?: string }>;
+  children: React.ReactNode;
+  underline?: boolean;
+  onClick: () => void;
+}) {
+  return (
+    <Link
+      href={href}
+      onClick={onClick}
+      className={`flex items-center gap-3 px-5 py-3 text-sm font-medium text-gray-800 hover:bg-gray-50 hover:text-blue-600 transition-colors border-b border-gray-50 ${underline ? "underline underline-offset-2" : ""}`}
+    >
+      <Icon className="w-5 h-5 text-gray-400 shrink-0" />
+      {children}
+    </Link>
   );
 }

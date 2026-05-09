@@ -14,10 +14,6 @@ import { sql } from "@/lib/db"; // NeonDB
 const FILE_LIST_PAGE_SIZE = 30;
 
 // ── FIX 1: Content type allowlist ──
-// Covers images, documents, spreadsheets, presentations, archives, audio, video.
-// BLOCKED: text/html, application/xhtml+xml, text/javascript, application/javascript,
-//          application/x-httpd-php, .exe, .bat, .sh, .svg+xml — anything that
-//          could execute code in a browser or OS.
 const ALLOWED_CONTENT_TYPES = new Set([
   // ── Images ──
   "image/jpeg",
@@ -30,27 +26,23 @@ const ALLOWED_CONTENT_TYPES = new Set([
   "image/bmp",
   "image/tiff",
   "image/x-icon",
-
   // ── Documents ──
   "application/pdf",
-  "application/msword", // .doc
-  "application/vnd.openxmlformats-officedocument.wordprocessingml.document", // .docx
-  "application/vnd.oasis.opendocument.text", // .odt
-  "application/rtf", // .rtf
-  "text/plain", // .txt
-  "text/csv", // .csv
-  "text/markdown", // .md
-
+  "application/msword",
+  "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+  "application/vnd.oasis.opendocument.text",
+  "application/rtf",
+  "text/plain",
+  "text/csv",
+  "text/markdown",
   // ── Spreadsheets ──
-  "application/vnd.ms-excel", // .xls
-  "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", // .xlsx
-  "application/vnd.oasis.opendocument.spreadsheet", // .ods
-
+  "application/vnd.ms-excel",
+  "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+  "application/vnd.oasis.opendocument.spreadsheet",
   // ── Presentations ──
-  "application/vnd.ms-powerpoint", // .ppt
-  "application/vnd.openxmlformats-officedocument.presentationml.presentation", // .pptx
-  "application/vnd.oasis.opendocument.presentation", // .odp
-
+  "application/vnd.ms-powerpoint",
+  "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+  "application/vnd.oasis.opendocument.presentation",
   // ── Archives ──
   "application/zip",
   "application/x-zip-compressed",
@@ -60,24 +52,21 @@ const ALLOWED_CONTENT_TYPES = new Set([
   "application/gzip",
   "application/x-tar",
   "application/x-bzip2",
-
   // ── Audio ──
-  "audio/mpeg", // .mp3
+  "audio/mpeg",
   "audio/wav",
   "audio/ogg",
   "audio/aac",
   "audio/flac",
   "audio/x-m4a",
   "audio/mp4",
-
   // ── Video ──
   "video/mp4",
-  "video/quicktime", // .mov
-  "video/x-msvideo", // .avi
+  "video/quicktime",
+  "video/x-msvideo",
   "video/webm",
-  "video/x-matroska", // .mkv
+  "video/x-matroska",
   "video/mpeg",
-
   // ── Other common ──
   "application/json",
   "application/xml",
@@ -88,7 +77,6 @@ const ALLOWED_CONTENT_TYPES = new Set([
 const MAX_FILE_SIZE_BYTES = 500 * 1024 * 1024; // 500 MB
 
 // ── FIX 3: In-memory rate limiter ──
-// In production, replace with Redis-backed limiter (e.g. @upstash/ratelimit)
 const rateLimitMap = new Map<string, { count: number; resetAt: number }>();
 
 function checkRateLimit(
@@ -200,17 +188,14 @@ export async function getUploadUrl(
   const { userId } = await auth();
   if (!userId) throw new Error("Unauthorized");
 
-  // FIX: Rate limit uploads — 30 requests per 60 seconds
   checkRateLimit(userId, "upload", 30, 60_000);
 
-  // FIX: Validate content type against allowlist
   if (!ALLOWED_CONTENT_TYPES.has(contentType)) {
     throw new Error(
       "File type not allowed. Supported: images, documents, spreadsheets, presentations, archives, audio, and video.",
     );
   }
 
-  // FIX: Enforce hard server-side max file size
   if (fileSize <= 0 || fileSize > MAX_FILE_SIZE_BYTES) {
     throw new Error(
       `Invalid file size. Maximum allowed is ${MAX_FILE_SIZE_BYTES / (1024 * 1024)} MB.`,
@@ -219,7 +204,6 @@ export async function getUploadUrl(
 
   const user = await getDbUser(userId);
 
-  // 1. Check File Count Limit against the Plan
   const countResult =
     await sql`SELECT COUNT(*)::int AS total FROM files WHERE user_id = ${user.id}`;
   const currentFileCount = countResult[0]?.total ?? 0;
@@ -230,7 +214,6 @@ export async function getUploadUrl(
     );
   }
 
-  // 2. Check Storage Capacity Limit against the Plan
   if (Number(user.storage_used) + fileSize > Number(user.plan_storage_limit)) {
     const limitInGb = Math.round(
       Number(user.plan_storage_limit) / (1024 * 1024 * 1024),
@@ -242,10 +225,6 @@ export async function getUploadUrl(
 
   const sanitized = fileName.replace(/[^a-zA-Z0-9._-]/g, "-");
   const key = `uploads/${userId}/${Date.now()}-${sanitized}`;
-
-  // FIX: Presigned POST conditions now enforce the EXACT content type
-  // and cap upload at server-side max, not just the client-claimed size.
-  // The content-length-range upper bound uses the smaller of: client claim or hard max.
   const maxAllowed = Math.min(fileSize, MAX_FILE_SIZE_BYTES);
 
   const { url, fields } = await createPresignedPost(s3Client, {
@@ -253,7 +232,6 @@ export async function getUploadUrl(
     Key: key,
     Conditions: [
       ["content-length-range", 1, maxAllowed],
-      // FIX: Exact content type match, not prefix
       ["eq", "$Content-Type", contentType],
     ],
     Fields: { "Content-Type": contentType },
@@ -277,15 +255,12 @@ export async function confirmUploadDB(
 
   if (!key.startsWith(`uploads/${userId}/`)) throw new Error("Unauthorized");
 
-  // FIX: Rate limit confirms
   checkRateLimit(userId, "confirm", 30, 60_000);
 
-  // FIX: Validate content type on confirm as well
   if (contentType && !ALLOWED_CONTENT_TYPES.has(contentType)) {
-    // Delete the uploaded file since it shouldn't exist
     await s3Client
       .send(new DeleteObjectCommand({ Bucket: getBucketName(), Key: key }))
-      .catch(() => {}); // best-effort cleanup
+      .catch(() => {});
     throw new Error("File type not allowed.");
   }
 
@@ -303,7 +278,6 @@ export async function confirmUploadDB(
     );
   }
 
-  // FIX: Double-check content type from S3 metadata (defense in depth)
   if (actualContentType && !ALLOWED_CONTENT_TYPES.has(actualContentType)) {
     await s3Client
       .send(new DeleteObjectCommand({ Bucket: getBucketName(), Key: key }))
@@ -311,7 +285,6 @@ export async function confirmUploadDB(
     throw new Error("Uploaded file type not allowed. File removed.");
   }
 
-  // FIX: Enforce hard max even at confirm stage
   if (actualSize > MAX_FILE_SIZE_BYTES) {
     await s3Client.send(
       new DeleteObjectCommand({ Bucket: getBucketName(), Key: key }),
@@ -351,70 +324,71 @@ export async function confirmUploadDB(
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// 3. List Files — paginated
+// 3. List Files — paginated (FIXED: Added Try/Catch so render doesn't crash)
 // ─────────────────────────────────────────────────────────────────────────────
 export async function listPhotos(page = 0) {
-  const { userId } = await auth();
-  if (!userId) throw new Error("Unauthorized");
+  try {
+    const { userId } = await auth();
+    // Return empty payload instead of throwing an error to the UI
+    if (!userId) return { files: [], total: 0, hasMore: false };
 
-  // FIX: Rate limit listing
-  checkRateLimit(userId, "list", 60, 60_000);
+    checkRateLimit(userId, "list", 60, 60_000);
 
-  const user = await getDbUser(userId);
-  const offset = page * FILE_LIST_PAGE_SIZE;
+    const user = await getDbUser(userId);
+    const offset = page * FILE_LIST_PAGE_SIZE;
 
-  const files = await sql`
-    SELECT id, file_key AS key, original_name AS name, file_size AS size, content_type
-    FROM files
-    WHERE user_id = ${user.id}
-    ORDER BY created_at DESC
-    LIMIT ${FILE_LIST_PAGE_SIZE}
-    OFFSET ${offset}
-  `;
+    const files = await sql`
+      SELECT id, file_key AS key, original_name AS name, file_size AS size, content_type
+      FROM files
+      WHERE user_id = ${user.id}
+      ORDER BY created_at DESC
+      LIMIT ${FILE_LIST_PAGE_SIZE}
+      OFFSET ${offset}
+    `;
 
-  const countResult = await sql`
-    SELECT COUNT(*)::int AS total FROM files WHERE user_id = ${user.id}
-  `;
-  const total: number = countResult[0]?.total ?? 0;
+    const countResult = await sql`
+      SELECT COUNT(*)::int AS total FROM files WHERE user_id = ${user.id}
+    `;
+    const total: number = countResult[0]?.total ?? 0;
 
-  const bucketName = getBucketName();
-  const filesWithUrls = await Promise.all(
-    files.map(async (file) => {
-      const getCommand = new GetObjectCommand({
-        Bucket: bucketName,
-        Key: file.key as string,
-      });
-      const url = await getSignedUrl(s3Client, getCommand, {
-        // FIX: Reduced from 3600 (1 hour) to 900 (15 minutes)
-        expiresIn: 900,
-      });
-      return { ...file, url };
-    }),
-  );
+    const bucketName = getBucketName();
+    const filesWithUrls = await Promise.all(
+      files.map(async (file) => {
+        const getCommand = new GetObjectCommand({
+          Bucket: bucketName,
+          Key: file.key as string,
+        });
+        const url = await getSignedUrl(s3Client, getCommand, {
+          expiresIn: 900,
+        });
+        return { ...file, url };
+      }),
+    );
 
-  return {
-    files: filesWithUrls,
-    total,
-    hasMore: offset + files.length < total,
-  };
+    return {
+      files: filesWithUrls,
+      total,
+      hasMore: offset + files.length < total,
+    };
+  } catch (error) {
+    console.error("listPhotos Error:", error);
+    return { files: [], total: 0, hasMore: false }; // Safe fallback
+  }
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
 // 4. Delete File (S3 + DB)
 // ─────────────────────────────────────────────────────────────────────────────
-// FIX: Remove client-provided fileSize entirely — fetch from DB
 export async function deletePhoto(key: string) {
   const { userId } = await auth();
   if (!userId) throw new Error("Unauthorized");
 
   if (!key.startsWith(`uploads/${userId}/`)) throw new Error("Unauthorized");
 
-  // FIX: Rate limit deletes
   checkRateLimit(userId, "delete", 60, 60_000);
 
   const user = await getDbUser(userId);
 
-  // FIX: Fetch actual file size from the database, not from the client
   const fileRows = await sql`
     SELECT file_size FROM files
     WHERE file_key = ${key} AND user_id = ${user.id}
@@ -452,7 +426,6 @@ export async function getDownloadUrl(key: string) {
   if (!userId || !key.startsWith(`uploads/${userId}/`))
     throw new Error("Unauthorized");
 
-  // FIX: Rate limit downloads
   checkRateLimit(userId, "download", 60, 60_000);
 
   const command = new GetObjectCommand({
@@ -465,25 +438,43 @@ export async function getDownloadUrl(key: string) {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// 6. Get user storage info
+// 6. Get user storage info (FIXED: Added Try/Catch so render doesn't crash)
 // ─────────────────────────────────────────────────────────────────────────────
 export async function getStorageInfo() {
-  const { userId } = await auth();
-  if (!userId) throw new Error("Unauthorized");
+  try {
+    const { userId } = await auth();
+    // Return empty fallback instead of throwing an error to the UI
+    if (!userId)
+      return {
+        used: 0,
+        limit: 0,
+        fileCountLimit: 0,
+        currentFileCount: 0,
+        planId: "free",
+      };
 
-  // FIX: Rate limit info endpoint
-  checkRateLimit(userId, "storage-info", 60, 60_000);
+    checkRateLimit(userId, "storage-info", 60, 60_000);
 
-  const user = await getDbUser(userId);
+    const user = await getDbUser(userId);
 
-  const countResult =
-    await sql`SELECT COUNT(*)::int AS total FROM files WHERE user_id = ${user.id}`;
+    const countResult =
+      await sql`SELECT COUNT(*)::int AS total FROM files WHERE user_id = ${user.id}`;
 
-  return {
-    used: Number(user.storage_used) || 0,
-    limit: Number(user.plan_storage_limit),
-    fileCountLimit: Number(user.plan_file_count_limit),
-    currentFileCount: countResult[0]?.total ?? 0,
-    planId: user.plan_id,
-  };
+    return {
+      used: Number(user.storage_used) || 0,
+      limit: Number(user.plan_storage_limit),
+      fileCountLimit: Number(user.plan_file_count_limit),
+      currentFileCount: countResult[0]?.total ?? 0,
+      planId: user.plan_id,
+    };
+  } catch (error) {
+    console.error("getStorageInfo Error:", error);
+    return {
+      used: 0,
+      limit: 0,
+      fileCountLimit: 0,
+      currentFileCount: 0,
+      planId: "free",
+    }; // Safe fallback
+  }
 }
