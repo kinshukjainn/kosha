@@ -1,9 +1,10 @@
 "use client";
 
 import { Check, Sparkles } from "lucide-react";
-import { BsCloudRain } from "react-icons/bs";
+import { IoDiamondOutline } from "react-icons/io5";
 import Link from "next/link";
 import { motion, Variants } from "framer-motion";
+import HeroGrid from "../components/HeroGrid";
 
 const pricingTiers = [
   {
@@ -74,17 +75,20 @@ export default function PricingPage() {
     "w-full flex items-center justify-center gap-2 py-2 px-4 font-semibold text-[13px] bg-white border border-gray-300 hover:bg-gray-50 text-gray-800 rounded-xl transition-colors disabled:opacity-50 disabled:cursor-not-allowed";
 
   return (
-    <div className="min-h-screen bg-[#faf9f8] text-gray-900 flex items-center justify-center p-4 md:p-8 ">
+    <div className="min-h-screen bg-black text-gray-100 flex items-center justify-center p-4 md:p-8 ">
+      <main>
+        <HeroGrid />
+      </main>
       <div className="w-full max-w-6xl mx-auto py-10">
         {/* Header Section */}
         <div className="flex flex-col items-center text-center mb-12">
           <div className="mb-4">
-            <BsCloudRain size={40} className="text-[#0078D4]" />
+            <IoDiamondOutline size={70} className="text-white" />
           </div>
-          <h1 className="text-[24px] md:text-[32px] font-semibold text-gray-900 mb-2 tracking-tight">
+          <h1 className="text-[24px] md:text-[32px] font-semibold text-gray-100 mb-2 tracking-tight">
             Simple, Transparent Pricing
           </h1>
-          <p className="text-[14px] text-gray-600 max-w-xl mx-auto leading-relaxed">
+          <p className="text-[14px] text-gray-200 max-w-xl mx-auto leading-relaxed">
             Secure your digital life with Kosha. Choose the plan that best fits
             your storage and privacy needs.
           </p>
@@ -101,15 +105,15 @@ export default function PricingPage() {
             <motion.div
               key={tier.name}
               variants={cardVariants}
-              className={`relative flex flex-col bg-white p-6 border rounded-xl shadow-sm transition-shadow hover:shadow-md ${
+              className={`relative flex flex-col bg-[#1e1e1e] p-6 border-2  rounded-3xl shadow-sm transition-shadow hover:shadow-md ${
                 tier.isPopular
                   ? "border-[#0078D4] border-t-4"
-                  : "border-gray-200"
+                  : "border-[#444444]"
               }`}
             >
               {/* Popular Badge */}
               {tier.isPopular && (
-                <div className="absolute -top-[14px] right-4 bg-[#f3f9fd] text-[#0078D4] border border-[#0078D4] text-[11px] font-semibold px-2 py-0.5 rounded-xl flex items-center gap-1.5 uppercase tracking-wide">
+                <div className="absolute -top-[18px] right-4 bg-blue-800 text-white border border-[#0078D4] text-[15px] font-semibold px-2 py-2 rounded-full flex items-center gap-1.5  tracking-wide">
                   <Sparkles size={12} />
                   Most Popular
                 </div>
@@ -117,20 +121,20 @@ export default function PricingPage() {
 
               {/* Card Header */}
               <div className="mb-6 border-b border-gray-100 pb-6">
-                <h2 className="text-[16px] font-semibold text-gray-900 mb-2">
+                <h2 className="text-[16px] font-semibold text-gray-100 gold-text  mb-2">
                   {tier.name}
                 </h2>
                 <div className="flex items-end gap-1 mb-3">
-                  <span className="text-[36px] font-semibold text-gray-900 leading-none">
+                  <span className="text-[36px] font-semibold text-gray-100 leading-none">
                     {tier.price}
                   </span>
                   {tier.billingPeriod && (
-                    <span className="text-gray-500 text-[13px] font-medium mb-1">
+                    <span className="text-gray-300 text-[13px] font-medium mb-1">
                       {tier.billingPeriod}
                     </span>
                   )}
                 </div>
-                <p className="text-[13px] text-gray-600 leading-relaxed min-h-[40px]">
+                <p className="text-[15px] text-gray-100 leading-relaxed min-h-[40px]">
                   {tier.description}
                 </p>
               </div>
@@ -140,7 +144,7 @@ export default function PricingPage() {
                 {tier.features.map((feature, i) => (
                   <li
                     key={i}
-                    className="flex items-start gap-2.5 text-[13px] text-gray-700"
+                    className="flex items-start gap-2.5 text-[13px] text-gray-200"
                   >
                     <Check
                       size={16}

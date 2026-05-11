@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useAuth } from "@clerk/nextjs";
@@ -16,8 +16,6 @@ import {
   GitBranch,
   Ticket,
   CreditCard,
-  ShieldCheck,
-  FileText,
   LogIn,
 } from "lucide-react";
 
@@ -27,18 +25,6 @@ const NAV_LINKS = [
   { href: "/git-track", label: "Project Logs", icon: GitBranch },
   { href: "/openned-tickets", label: "Tickets", icon: Ticket },
   { href: "/pricing", label: "Pricing", icon: CreditCard },
-  {
-    href: "/privacy-policy",
-    label: "Privacy Policy",
-    icon: ShieldCheck,
-    underline: true,
-  },
-  {
-    href: "/terms-of-service",
-    label: "Terms of Service",
-    icon: FileText,
-    underline: true,
-  },
 ];
 
 export default function Header() {
@@ -48,94 +34,106 @@ export default function Header() {
   const toggle = () => setOpen((o) => !o);
   const close = () => setOpen(false);
 
+  // Prevent scrolling when mobile menu is open
+  useEffect(() => {
+    if (open) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "unset";
+    }
+    return () => {
+      document.body.style.overflow = "unset";
+    };
+  }, [open]);
+
   return (
-    <header className="sticky top-0 z-50 w-full bg-white border-b border-gray-200">
-      <div className="flex items-center justify-between h-12 px-4 max-w-screen-2xl mx-auto">
+    <header className="sticky top-0 z-50 w-full bg-[#1e1e1e] border-b border-[#444444] shadow-sm">
+      <div className="flex items-center justify-between h-14 px-4 max-w-screen-2xl mx-auto">
         {/* ── Logo ── */}
         <Link
           href="/"
           onClick={close}
-          className="flex items-center gap-2 px-2 py-1 rounded-lg hover:bg-gray-100 transition-colors shrink-0"
+          className="flex items-center gap-2.5 px-2 py-1.5 rounded-lg hover:bg-[#2a2a2a] transition-all shrink-0 group"
         >
           <Image
             src="/anylogo.png"
             alt="Kosha"
             width={28}
             height={28}
-            className="object-contain"
+            className="object-contain group-hover:scale-105 transition-transform"
           />
-          <span className="font-bold text-[15px] tracking-wide text-gray-900">
+          <span className="font-bold text-[15px] tracking-wider text-gray-100">
             KOSHA
           </span>
         </Link>
 
-        {/* ── Desktop nav ── */}
-        <nav className="hidden md:flex items-center gap-0.5 flex-1 px-4 overflow-x-auto">
+        {/* ── Desktop Nav ── */}
+        <nav className="hidden md:flex items-center gap-1 flex-1 px-6 overflow-x-auto no-scrollbar mask-fade-edges">
           {isLoaded && userId && (
             <NavLink href="/dashboard" icon={LayoutDashboard}>
               Dashboard
             </NavLink>
           )}
-          {NAV_LINKS.map(({ href, label, icon, underline }) => (
-            <NavLink key={href} href={href} icon={icon} underline={underline}>
+          {NAV_LINKS.map(({ href, label, icon }) => (
+            <NavLink key={href} href={href} icon={icon}>
               {label}
             </NavLink>
           ))}
         </nav>
 
-        {/* ── Desktop right actions ── */}
-        <div className="hidden md:flex items-center gap-2 shrink-0">
+        {/* ── Desktop Right Actions ── */}
+        <div className="hidden md:flex items-center gap-3 shrink-0">
           <a
             href="https://github.com/kinshukjainn/pvtcldstrg"
             target="_blank"
             rel="noopener noreferrer"
-            className="p-2 rounded-lg hover:bg-gray-100 transition-colors"
+            className="p-2 rounded-lg text-gray-400 hover:text-white hover:bg-[#2a2a2a] transition-all"
             aria-label="GitHub"
           >
-            <FaGithub className="w-4 h-4 text-gray-700" />
+            <FaGithub className="w-4 h-4" />
           </a>
 
-          <div className="w-px h-4 bg-gray-200" />
+          <div className="w-px h-5 bg-[#444444]" />
 
           {isLoaded && !userId && (
             <Link
               href="/verify-regis"
-              className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold rounded-full transition-colors"
+              className="flex items-center gap-2 px-4 py-1.5 bg-white hover:bg-gray-200 text-black text-xs font-bold tracking-wide rounded-full transition-all"
             >
-              <LogIn className="w-3 h-3" />
+              <LogIn className="w-3.5 h-3.5" />
               Sign In / Up
             </Link>
           )}
           {isLoaded && userId && (
-            <div className="p-1 rounded-lg hover:bg-gray-100 transition-colors">
+            <div className="p-1 rounded-lg hover:bg-[#2a2a2a] transition-colors">
               <UserProfileDropdown variant="desktop" />
             </div>
           )}
         </div>
 
-        {/* ── Mobile toggle ── */}
+        {/* ── Mobile Toggle ── */}
         <button
-          className="md:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors"
+          className="md:hidden p-2 rounded-lg text-gray-400 hover:text-white hover:bg-[#2a2a2a] transition-all active:scale-95"
           onClick={toggle}
           aria-label="Toggle menu"
         >
           {open ? (
-            <PanelBottomOpen className="w-5 h-5 text-gray-700" />
+            <PanelBottomOpen className="w-5 h-5" />
           ) : (
-            <PanelBottomClose className="w-5 h-5 text-gray-700" />
+            <PanelBottomClose className="w-5 h-5" />
           )}
         </button>
       </div>
 
-      {/* ── Mobile menu ── */}
+      {/* ── Mobile Menu ── */}
       <div
-        className={`md:hidden absolute top-12 left-0 w-full bg-white border-b border-gray-200 shadow-lg transition-all duration-200 origin-top overflow-hidden ${
+        className={`md:hidden absolute top-full left-0 w-full bg-[#1e1e1e] border-b border-[#444444] shadow-2xl transition-all duration-300 ease-in-out origin-top overflow-hidden ${
           open
-            ? "max-h-[80vh] opacity-100 overflow-y-auto"
+            ? "max-h-[calc(100vh-3.5rem)] opacity-100 overflow-y-auto"
             : "max-h-0 opacity-0"
         }`}
       >
-        <nav className="flex flex-col py-1">
+        <nav className="flex flex-col py-2">
           {isLoaded && userId && (
             <MobileNavLink
               href="/dashboard"
@@ -145,36 +143,30 @@ export default function Header() {
               Dashboard
             </MobileNavLink>
           )}
-          {NAV_LINKS.map(({ href, label, icon, underline }) => (
-            <MobileNavLink
-              key={href}
-              href={href}
-              icon={icon}
-              underline={underline}
-              onClick={close}
-            >
+          {NAV_LINKS.map(({ href, label, icon }) => (
+            <MobileNavLink key={href} href={href} icon={icon} onClick={close}>
               {label}
             </MobileNavLink>
           ))}
 
-          <div className="h-px bg-gray-100 my-1 mx-4" />
+          <div className="h-px bg-[#444444] my-2 mx-5" />
 
           <a
             href="https://github.com/kinshukjainn/pvtcldstrg"
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-3 px-5 py-3 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
+            className="flex items-center gap-3 px-5 py-3.5 text-sm font-medium text-gray-300 hover:bg-[#2a2a2a] hover:text-white transition-all"
           >
-            <FaGithub className="w-5 h-5 text-gray-500" />
+            <FaGithub className="w-5 h-5 text-gray-400" />
             Open Source
           </a>
 
           {isLoaded && !userId && (
-            <div className="px-4 py-3">
+            <div className="px-5 py-4">
               <Link
                 href="/verify-regis"
                 onClick={close}
-                className="flex items-center justify-center gap-2 w-full bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold py-2.5 rounded-xl transition-colors"
+                className="flex items-center justify-center gap-2 w-full bg-white hover:bg-gray-200 text-black text-sm font-bold tracking-wide py-3 rounded-xl transition-all active:scale-[0.98]"
               >
                 <LogIn className="w-4 h-4" />
                 Sign In / Up
@@ -183,7 +175,7 @@ export default function Header() {
           )}
 
           {isLoaded && userId && (
-            <div className="px-4 py-3 bg-gray-50 border-t border-gray-100">
+            <div className="px-5 py-4 bg-[#1a1a1a] border-t border-[#444444]">
               <UserProfileDropdown variant="mobile" onAction={close} />
             </div>
           )}
@@ -193,7 +185,7 @@ export default function Header() {
   );
 }
 
-/* ── Shared sub-components ── */
+/* ── Shared Sub-components ── */
 function NavLink({
   href,
   icon: Icon,
@@ -208,9 +200,13 @@ function NavLink({
   return (
     <Link
       href={href}
-      className={`flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[12.5px] font-medium text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors whitespace-nowrap ${underline ? "underline underline-offset-2" : ""}`}
+      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[13px] font-medium text-gray-400 hover:bg-[#2a2a2a] hover:text-gray-100 transition-all whitespace-nowrap ${
+        underline
+          ? "underline decoration-[#444444] underline-offset-4 hover:decoration-gray-400"
+          : ""
+      }`}
     >
-      <Icon className="w-3.5 h-3.5 shrink-0" />
+      <Icon className="w-3.5 h-3.5 shrink-0 opacity-70" />
       {children}
     </Link>
   );
@@ -233,7 +229,9 @@ function MobileNavLink({
     <Link
       href={href}
       onClick={onClick}
-      className={`flex items-center gap-3 px-5 py-3 text-sm font-medium text-gray-800 hover:bg-gray-50 hover:text-blue-600 transition-colors border-b border-gray-50 ${underline ? "underline underline-offset-2" : ""}`}
+      className={`flex items-center gap-3 px-5 py-3.5 text-sm font-medium text-gray-300 hover:bg-[#2a2a2a] hover:text-white transition-all ${
+        underline ? "underline decoration-[#444444] underline-offset-4" : ""
+      }`}
     >
       <Icon className="w-5 h-5 text-gray-400 shrink-0" />
       {children}

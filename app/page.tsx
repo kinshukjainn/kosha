@@ -31,10 +31,16 @@ import { useAuth, useUser } from "@clerk/nextjs";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import HeroGrid from "./components/HeroGrid";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
+
+/* ── Words that cycle in the headline ── */
+const WORDS = ["simple", "open-source", "private"] as const;
+
+// "A simple" vs "An open-source" — pick the right article for the word.
+const articleFor = (word: string) => (/^[aeiou]/i.test(word) ? "An" : "A");
 
 /* ── Design tokens ── */
 const INK = "#111827";
-const INK_2 = "#374151";
 const INK_3 = "#6b7280";
 const BLUE = "#2563eb";
 const BLUE_SOFT = "#eff6ff";
@@ -133,8 +139,7 @@ const PrimaryLink = ({
 }) => (
   <Link
     href={href}
-    className={`inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-medium text-white transition hover:opacity-90 ${className}`}
-    style={{ background: BLUE }}
+    className={`inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-medium bg-blue-800 text-white transition hover:opacity-90 ${className}`}
   >
     {children}
   </Link>
@@ -151,7 +156,7 @@ const SecondaryLink = ({
 }) => (
   <Link
     href={href}
-    className={`inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-gray-200 text-sm border border-gray-400 font-medium transition hover:bg-gray-100 ${className}`}
+    className={`inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-[#121212] border border-[#444444] text-white text-sm font-medium ${className}`}
   >
     {children}
   </Link>
@@ -199,19 +204,13 @@ const QuickAction = ({
   <Reveal delay={delay}>
     <Link
       href={href}
-      className="group flex items-center gap-4 p-5 rounded-xl border border-gray-100 bg-white hover:bg-gray-50 transition-colors"
+      className="group flex items-center gap-4 p-5 rounded-3xl border border-[#444444] hover:border hover:border-blue-400 hover:shadow-md hover:shadow-blue-200 bg-[#121212] transition-colors"
     >
-      <div
-        className="w-10 h-10 rounded-lg flex items-center justify-center shrink-0"
-        style={{ background: BLUE_SOFT }}
-      >
-        <Icon className="w-4 h-4" style={{ color: BLUE }} />
+      <div className="w-10 h-10 rounded-full bg-blue-800 flex items-center justify-center shrink-0">
+        <Icon className="w-6 h-6 text-white" />
       </div>
       <div className="min-w-0 flex-1">
-        <h3
-          className="text-sm font-semibold group-hover:text-blue-600 transition-colors"
-          style={{ color: INK }}
-        >
+        <h3 className="text-sm font-semibold text-white transition-colors">
           {title}
         </h3>
         <p className="text-sm" style={{ color: INK_3 }}>
@@ -309,23 +308,20 @@ const NewUserHero = ({ firstName }: { firstName: string }) => (
 const ReturningUserHero = ({ firstName }: { firstName: string }) => (
   <div className="max-w-2xl mx-auto px-6 pt-20 pb-16">
     <Reveal>
-      <h1
-        className="text-4xl sm:text-5xl font-bold tracking-tight mb-6"
-        style={{ color: INK }}
-      >
+      <h1 className="text-4xl sm:text-5xl font-bold tracking-tight mb-6 text-white">
         {getGreeting()}, {firstName}.
       </h1>
     </Reveal>
 
     <Reveal delay={100}>
-      <p className="text-base leading-relaxed text-gray-600 mb-10 pl-4 border-l-2 border-blue-500">
-        System <strong className="text-blue-600">operational</strong>. Pick up
+      <p className="text-base leading-relaxed text-gray-200 mb-10 pl-4 border-l-2 border-blue-500">
+        System <strong className="text-blue-200">operational</strong>. Pick up
         where you left off.
       </p>
     </Reveal>
 
     <Reveal delay={200}>
-      <p className="text-xs font-semibold uppercase tracking-widest text-gray-400 mb-3">
+      <p className="text-xs font-semibold uppercase tracking-widest text-gray-200 mb-3">
         Jump back in
       </p>
     </Reveal>
@@ -349,29 +345,101 @@ const ReturningUserHero = ({ firstName }: { firstName: string }) => (
   </div>
 );
 
+/* ── Animated headline ──
+   Cycles "simple" → "open-source" → "private" with a smooth
+   blur + slide + width-morph effect. All hooks live inside here. */
+const AnimatedHeadline = () => {
+  const [index, setIndex] = useState(0);
+  const reduce = useReducedMotion();
+
+  // Swap word every 3s to let the smooth morphing animation breathe.
+  useEffect(() => {
+    if (reduce) return;
+    const id = setInterval(() => {
+      setIndex((i) => (i + 1) % WORDS.length);
+    }, 3000);
+    return () => clearInterval(id);
+  }, [reduce]);
+
+  const current = WORDS[index];
+  const article = articleFor(current);
+
+  // Slower, fluid spring for a professional "morphing" width adjustment.
+  // Lower stiffness + higher damping removes all "bounciness".
+  const layoutSpring = {
+    type: "spring" as const,
+    stiffness: 150,
+    damping: 24,
+    mass: 1,
+  };
+
+  // Custom ease-out curve for a luxurious, slow-tail finish
+  const premiumEase = [0.16, 1, 0.3, 1] as const;
+
+  return (
+    <h1 className="text-3xl sm:text-5xl text-white font-bold tracking-tight leading-tight mb-6">
+      {/* Article (A / An) — animates smoothly so grammar stays correct */}
+      <motion.span
+        layout
+        transition={{ layout: layoutSpring }}
+        className="inline-block"
+      >
+        <AnimatePresence mode="popLayout" initial={false}>
+          <motion.span
+            key={article}
+            initial={{ opacity: 0, filter: "blur(4px)" }}
+            animate={{ opacity: 1, filter: "blur(0px)" }}
+            exit={{ opacity: 0, filter: "blur(4px)" }}
+            transition={{ duration: 0.5, ease: premiumEase }}
+            className="inline-block"
+          >
+            {article}
+          </motion.span>
+        </AnimatePresence>
+      </motion.span>{" "}
+      {/* The cycling word */}
+      <motion.span
+        layout
+        transition={{ layout: layoutSpring }}
+        className="inline-block align-baseline"
+      >
+        <AnimatePresence mode="popLayout" initial={false}>
+          <motion.span
+            key={current}
+            // Subtle scale (depth) and blur create a "focus/defocus" morph
+            // instead of a harsh vertical slide. Minimal Y travel adds direction without bouncing.
+            initial={{ opacity: 0, scale: 0.95, filter: "blur(12px)", y: 4 }}
+            animate={{ opacity: 1, scale: 1, filter: "blur(0px)", y: 0 }}
+            exit={{ opacity: 0, scale: 1.05, filter: "blur(12px)", y: -4 }}
+            transition={{ duration: 0.7, ease: premiumEase }}
+            className="inline-block whitespace-nowrap bg-gradient-to-r from-[#0078D4] via-[#3aa8ff] to-cyan-300 bg-clip-text text-transparent pr-[0.04em]"
+          >
+            {current}
+          </motion.span>
+        </AnimatePresence>
+      </motion.span>{" "}
+      cloud storage
+      <br />
+      solution
+    </h1>
+  );
+};
+
 /* ── Hero — logged-out ── */
 const LoggedOutHero = () => (
   <section className="max-w-3xl mx-auto px-6 pt-24 pb-16 text-center">
     <Reveal>
-      <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-600 border border-gray-200 mb-8">
-        <LockKeyhole className="w-3 h-3" style={{ color: BLUE }} /> Secured by
-        AWS Cloud
+      <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-[#222222] text-gray-100 mb-8">
+        <LockKeyhole className="w-5 h-5 text-white" /> Secured by AWS Cloud
       </span>
     </Reveal>
 
     <Reveal delay={80}>
-      <h1
-        className="text-5xl sm:text-6xl font-bold tracking-tight leading-tight mb-6"
-        style={{ color: INK }}
-      >
-        Your data.
-        <br />
-        Only yours.
-      </h1>
+      <AnimatedHeadline />
     </Reveal>
 
     <Reveal delay={160}>
-      <p className="text-base sm:text-lg leading-relaxed text-gray-600 max-w-xl mx-auto mb-10">
+      <p className="text-base sm:text-lg leading-relaxed text-gray-200 max-w-xl mx-auto mb-10">
         A cloud storage platform stripped of the noise. No bloatware, no
         complicated settings, and zero compromises on your privacy.
       </p>
@@ -389,22 +457,22 @@ const LoggedOutHero = () => (
     </Reveal>
 
     <Reveal delay={300}>
-      <div className="flex flex-wrap items-center justify-center gap-6 font-semibold text-sm text-black">
+      <div className="flex flex-wrap items-center justify-center gap-6 font-semibold text-sm text-white">
         <span className="flex items-center gap-1.5">
-          <p className="p-2 bg-blue-400 rounded-full">
-            <Check className="w-3.5 h-3.5 text-black" />
+          <p className="p-1 bg-blue-400 rounded-full">
+            <Check className="w-5 h-5 text-black" />
           </p>
           No credit card
         </span>
         <span className="flex items-center gap-1.5">
-          <p className="p-2 bg-blue-400 rounded-full">
-            <Check className="w-3.5 h-3.5 text-black" />
+          <p className="p-1 bg-blue-400 rounded-full">
+            <Check className="w-5 h-5 text-black" />
           </p>{" "}
           Encrypted
         </span>
         <span className="flex items-center gap-1.5">
-          <p className="p-2 bg-blue-400 rounded-full">
-            <Check className="w-3.5 h-3.5 text-black" />
+          <p className="p-1 bg-blue-400 rounded-full">
+            <Check className="w-5 h-5 text-black" />
           </p>
           Zero AI training
         </span>
@@ -418,31 +486,28 @@ const PreviewSection = () => (
   <section className="max-w-5xl mx-auto px-6 pb-16">
     <Reveal>
       <div className="text-center mb-8">
-        <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-50 text-green-700 border border-green-100 mb-3">
-          <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />{" "}
-          LIVE PREVIEW
+        <span className="inline-flex items-center gap-1.5 px-2.5 py-2 rounded-full text-md font-medium bg-red-700 text-white mb-3">
+          <span className="w-3 h-3 rounded-full bg-white animate-pulse" /> LIVE
+          PREVIEW
         </span>
-        <h2
-          className="text-3xl font-bold tracking-tight"
-          style={{ color: INK }}
-        >
+        <h2 className="text-3xl font-bold tracking-tight text-white">
           See it in action.
         </h2>
-        <p className="mt-1.5 text-sm text-gray-500">
+        <p className="mt-1.5 text-sm text-gray-200">
           A dashboard that respects your time and your data.
         </p>
       </div>
     </Reveal>
 
     <Reveal delay={80}>
-      <div className="rounded-2xl overflow-hidden border border-gray-200 shadow-lg">
-        <div className="flex items-center gap-2.5 px-4 py-2.5 bg-gray-50 border-b border-gray-200">
+      <div className="rounded-4xl overflow-hidden shadow-lg">
+        <div className="flex items-center gap-2.5 px-4 py-2.5 bg-[#232323]">
           <div className="flex gap-1.5">
             {[0, 1, 2].map((i) => (
-              <span key={i} className="w-2.5 h-2.5 rounded-full bg-gray-200" />
+              <span key={i} className="w-2.5 h-2.5 rounded-full bg-blue-500" />
             ))}
           </div>
-          <div className="flex-1 mx-3 px-3 py-1 rounded bg-white border border-gray-200 text-xs text-center text-gray-400 truncate">
+          <div className="flex-1 mx-3 px-3 py-1 rounded-full border border-[#444444] bg-[#1e1e1e] text-sm text-center text-yellow-200 truncate">
             kosha.cloudkinshuk.in/dashboard
           </div>
         </div>
@@ -520,19 +585,16 @@ const FeaturesGrid = () => (
   >
     <Reveal>
       <div className="text-center mb-12">
-        <h2
-          className="text-3xl sm:text-4xl font-bold tracking-tight mb-3"
-          style={{ color: INK }}
-        >
+        <h2 className="text-3xl sm:text-4xl font-bold tracking-tight mb-3 text-white">
           Brilliantly simple.
         </h2>
-        <p className="text-base text-gray-500">
+        <p className="text-base text-gray-200">
           Everything you need. Nothing you don&apos;t.
         </p>
       </div>
     </Reveal>
 
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 rounded-2xl border border-gray-100 overflow-hidden bg-white">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 rounded-3xl border border-[#444444] overflow-hidden bg-[#1e1e1e]">
       {FEATURES.map((f, i) => {
         const Icon = f.icon;
         const cols = 4;
@@ -542,30 +604,22 @@ const FeaturesGrid = () => (
         return (
           <Reveal key={f.id} delay={i * 40}>
             <div
-              className="group h-full p-6 hover:bg-blue-50 transition-colors relative"
+              className="group h-full p-6 hover:bg-[#252525] transition-colors relative"
               style={{
-                borderRight: col < cols - 1 ? "1px solid #f3f4f6" : "none",
-                borderBottom: !lastRow ? "1px solid #f3f4f6" : "none",
+                borderRight: col < cols - 1 ? "1px solid #444444" : "none",
+                borderBottom: !lastRow ? "1px solid #444444" : "none",
               }}
             >
               <div className="flex items-start justify-between mb-4">
-                <div
-                  className="w-9 h-9 rounded-lg flex items-center justify-center"
-                  style={{ background: BLUE_SOFT }}
-                >
-                  <Icon className="w-4 h-4" style={{ color: BLUE }} />
+                <div className="w-9 h-9 rounded-full flex items-center justify-center bg-blue-800">
+                  <Icon className="w-5 h-5 text-white" />
                 </div>
                 <span className="text-xs text-gray-300 font-mono">{f.id}</span>
               </div>
-              <h3
-                className="text-sm font-semibold mb-1.5"
-                style={{ color: INK }}
-              >
+              <h3 className="text-sm font-semibold mb-1.5 text-white">
                 {f.title}
               </h3>
-              <p className="text-sm leading-relaxed" style={{ color: INK_3 }}>
-                {f.body}
-              </p>
+              <p className="text-sm leading-relaxed text-gray-200">{f.body}</p>
               <div
                 className="absolute bottom-0 left-0 h-0.5 w-0 group-hover:w-full transition-all duration-500"
                 style={{ background: BLUE }}
@@ -582,16 +636,13 @@ const FeaturesGrid = () => (
 const CTA = ({ isLoggedIn }: { isLoggedIn: boolean }) => (
   <section id="pricing" className="max-w-6xl mx-auto px-6 py-20">
     <Reveal>
-      <div className="rounded-2xl border border-gray-100 bg-white p-8 sm:p-14">
+      <div className="rounded-4xl border border-[#444444] bg-[#1e1e1e] p-8 sm:p-14">
         {isLoggedIn ? (
           <div className="max-w-xl">
-            <h2
-              className="text-3xl sm:text-4xl font-bold tracking-tight mb-4"
-              style={{ color: INK }}
-            >
+            <h2 className="text-3xl sm:text-4xl font-bold tracking-tight mb-4 text-white">
               Your files are waiting.
             </h2>
-            <p className="text-base text-gray-600 mb-8">
+            <p className="text-base text-gray-200 mb-8">
               Jump back into your dashboard and keep your workflow going.
             </p>
             <PrimaryLink href="/dashboard">
@@ -601,13 +652,10 @@ const CTA = ({ isLoggedIn }: { isLoggedIn: boolean }) => (
         ) : (
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
             <div className="lg:col-span-7">
-              <h2
-                className="text-3xl sm:text-4xl font-bold tracking-tight mb-4"
-                style={{ color: INK }}
-              >
+              <h2 className="text-3xl sm:text-4xl font-bold tracking-tight mb-4 text-white">
                 Ready to take back your data?
               </h2>
-              <p className="text-base text-gray-600 mb-8 max-w-lg">
+              <p className="text-base text-gray-200 mb-8 max-w-lg">
                 Join thousands who have migrated to a simpler, more secure way
                 to store their digital life.
               </p>
@@ -622,17 +670,15 @@ const CTA = ({ isLoggedIn }: { isLoggedIn: boolean }) => (
             </div>
 
             <div className="lg:col-span-5">
-              <div className="rounded-xl border border-gray-100 bg-gray-50 p-6">
-                <p className="text-xs font-semibold uppercase tracking-widest text-gray-400 mb-2">
+              <div className="rounded-4xl border border-[#444444] bg-[#121212] p-6">
+                <p className="text-sm font-semibold uppercase tracking-widest text-[#ff9100] mb-2">
                   Free plan
                 </p>
                 <div className="flex items-baseline gap-1.5 mb-5">
-                  <span className="text-4xl font-bold" style={{ color: INK }}>
-                    Free
-                  </span>
-                  <span className="text-sm text-gray-400">/ forever</span>
+                  <span className="text-4xl font-bold text-white">Free</span>
+                  <span className="text-md text-gray-300">/ forever</span>
                 </div>
-                <ul className="space-y-2.5 text-sm text-gray-600">
+                <ul className="space-y-2.5 text-sm text-gray-200">
                   {[
                     "5 GB encrypted storage",
                     "Unlimited file types",
@@ -641,7 +687,7 @@ const CTA = ({ isLoggedIn }: { isLoggedIn: boolean }) => (
                     "No AI training, ever",
                   ].map((x) => (
                     <li key={x} className="flex items-start gap-2">
-                      <Check className="w-4 h-4 mt-0.5 shrink-0 text-green-600" />
+                      <Check className="w-4 h-4 mt-0.5 shrink-0 text-white" />
                       {x}
                     </li>
                   ))}
@@ -655,45 +701,10 @@ const CTA = ({ isLoggedIn }: { isLoggedIn: boolean }) => (
   </section>
 );
 
-/* ── Footer ── */
-const Footer = () => (
-  <footer className="border-t border-gray-100">
-    <div className="max-w-6xl mx-auto px-6 py-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-      <div className="flex items-center gap-3 text-sm">
-        <span
-          className="inline-flex items-center justify-center w-6 h-6 rounded-lg text-white text-xs font-bold"
-          style={{ background: INK }}
-        >
-          K
-        </span>
-        <span className="font-semibold" style={{ color: INK }}>
-          kosha
-        </span>
-        <span className="text-gray-300">·</span>
-        <span className="text-gray-400">© 2026 · built with care</span>
-      </div>
-      <div className="flex items-center gap-5 text-sm text-gray-400">
-        <Link href="/privacy" className="hover:text-gray-900 transition">
-          privacy
-        </Link>
-        <Link href="/terms" className="hover:text-gray-900 transition">
-          terms
-        </Link>
-        <Link
-          href="/supported-formats"
-          className="hover:text-gray-900 transition"
-        >
-          formats
-        </Link>
-      </div>
-    </div>
-  </footer>
-);
-
 /* ── Root ── */
 export default function Home() {
   return (
-    <Suspense fallback={<div className="min-h-screen bg-white" />}>
+    <Suspense fallback={<div className="min-h-screen bg-black" />}>
       <HomeContent />
     </Suspense>
   );
@@ -709,7 +720,7 @@ function HomeContent() {
   const firstName = user?.firstName || "there";
 
   return (
-    <div className="min-h-screen bg-white" style={{ color: INK }}>
+    <div className="min-h-screen bg-black" style={{ color: INK }}>
       <main>
         <HeroGrid />
 
@@ -726,7 +737,6 @@ function HomeContent() {
 
       <FeaturesGrid />
       <CTA isLoggedIn={isLoggedIn} />
-      <Footer />
     </div>
   );
 }

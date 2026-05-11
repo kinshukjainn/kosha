@@ -7,6 +7,7 @@ import { FaSpinner } from "react-icons/fa";
 import Image from "next/image";
 import Link from "next/link";
 import { LockKeyhole } from "lucide-react";
+import HeroGrid from "../components/HeroGrid";
 
 function getErrorMessage(error: unknown): string {
   if (!error) return "An unexpected error occurred.";
@@ -245,10 +246,10 @@ export default function AuthPage() {
 
   // Azure Standard Input Classes
   const inputClass =
-    "w-full px-3 py-2 bg-white border border-gray-300 text-[14px] text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#0078D4] focus:ring-1 focus:ring-[#0078D4] rounded-xl transition-all";
+    "w-full px-3 py-3 bg-[#121212] border border-[#444444] text-[14px] text-gray-100 placeholder-gray-400 focus:outline-none focus:border-[#0078D4] focus:ring-1 focus:ring-[#0078D4] rounded-4xl transition-all";
 
   // Azure Standard Label Classes
-  const labelClass = "block text-[13px] font-semibold text-gray-700 mb-1.5";
+  const labelClass = "block text-[14px] font-semibold text-gray-100 mb-1.5";
 
   // Azure Flat Button Effects
   const primaryButtonClass =
@@ -258,7 +259,10 @@ export default function AuthPage() {
     "w-full flex items-center justify-center gap-2 py-2 px-4 font-semibold text-[14px] cursor-pointer bg-gray-800 border border-gray-300 text-gray-100 rounded-full transition-colors disabled:opacity-50";
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 bg-[#faf9f8] text-gray-900  selection:bg-[#cce3f5]">
+    <div className="min-h-screen flex items-center justify-center p-4 bg-black text-gray-100  selection:bg-[#cce3f5]">
+      <main>
+        <HeroGrid />
+      </main>
       <div className="w-full max-w-[440px] p-8">
         {/* Header Section */}
         <div className="flex flex-col items-center text-center mb-6">
@@ -271,16 +275,16 @@ export default function AuthPage() {
               className="object-contain"
             />
           </div>
-          <h1 className="text-xl font-semibold text-gray-900 mb-1 leading-tight">
-            Kosha Authentication
+          <h1 className="text-3xl font-semibold text-gray-100 mb-1 leading-tight">
+            Welcome to Kosha
           </h1>
-          <h2 className="text-lg text-gray-800 mt-2">{heading}</h2>
-          <p className="text-[13px] text-gray-500 mt-1">{subtext}</p>
+          <h2 className="text-lg text-gray-100 mt-2">{heading}</h2>
+          <p className="text-[13px] text-gray-300 mt-1">{subtext}</p>
         </div>
 
         {/* Security Badge */}
         <div className="flex justify-center mb-6">
-          <div className="flex items-center gap-1.5 text-[12px] text-black bg-blue-400 px-3 py-2 rounded-full border border-gray-100">
+          <div className="flex items-center gap-1.5 text-[14px] text-white bg-blue-800 px-3 py-2 rounded-full ">
             <LockKeyhole className="w-3.5 h-3.5" />
             <span className="font-bold">Secured by</span>
             <div className="relative flex items-center justify-start w-[40px] h-[16px] overflow-hidden">
@@ -291,7 +295,7 @@ export default function AuthPage() {
                   animate={{ y: 0, opacity: 1 }}
                   exit={{ y: -15, opacity: 0 }}
                   transition={{ duration: 0.2 }}
-                  className="text-black  font-semibold absolute left-0"
+                  className="text-white  font-semibold absolute left-0"
                 >
                   {providers[index]}
                 </motion.span>
@@ -302,7 +306,7 @@ export default function AuthPage() {
 
         {/* Error Banner */}
         {authError && (
-          <div className="mb-5 p-3 bg-[#fdf3f4] border border-[#f4c8ca] text-[#a4262c] text-[13px] font-medium rounded-xl">
+          <div className="mb-5 p-3 bg-[#252525] border border-[#444444] text-white  text-[15px] font-medium rounded-xl">
             {authError}
           </div>
         )}
@@ -434,7 +438,7 @@ export default function AuthPage() {
                   <div className="absolute inset-0 flex items-center">
                     <div className="w-full border-t border-gray-200"></div>
                   </div>
-                  <div className="relative bg-white px-2 text-[12px] text-gray-500 bg-white">
+                  <div className="relative bg-blue-700  px-2 text-[14px] font-bold rounded-full text-gray-100 ">
                     or
                   </div>
                 </div>

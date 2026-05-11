@@ -53,8 +53,8 @@ export default function HeroGrid() {
               position: "absolute",
               inset: 0,
               backgroundImage: [
-                "linear-gradient(to bottom, rgba(0,0,0,0.10) 1px, transparent 1px)",
-                "linear-gradient(to right,  rgba(0,0,0,0.10) 1px, transparent 1px)",
+                "linear-gradient(to bottom, rgba(255, 255, 255, 0.1) 1px, transparent 1px)",
+                "linear-gradient(to right,  rgba(255, 255, 255, 0.1) 1px, transparent 1px)",
               ].join(", "),
               backgroundSize: "52px 52px",
               maskImage:
@@ -70,8 +70,8 @@ export default function HeroGrid() {
               position: "absolute",
               inset: 0,
               backgroundImage: [
-                "linear-gradient(to bottom, rgba(0,0,0,0.16) 1.5px, transparent 1.5px)",
-                "linear-gradient(to right,  rgba(0,0,0,0.16) 1.5px, transparent 1.5px)",
+                "linear-gradient(to bottom, rgba(255, 255, 255, 0.16) 1.5px, transparent 1.5px)",
+                "linear-gradient(to right,  rgba(255, 255, 255, 0.16) 1.5px, transparent 1.5px)",
               ].join(", "),
               backgroundSize: "208px 208px",
               maskImage:
@@ -87,8 +87,8 @@ export default function HeroGrid() {
               position: "absolute",
               inset: 0,
               backgroundImage: [
-                "linear-gradient(to bottom, rgba(0,120,212,0.06) 1px, transparent 1px)",
-                "linear-gradient(to right,  rgba(0,120,212,0.06) 1px, transparent 1px)",
+                "linear-gradient(to bottom, rgba(255, 255, 255, 0.06) 1px, transparent 1px)",
+                "linear-gradient(to right,  rgba(255, 255, 255, 0.27) 1px, transparent 1px)",
               ].join(", "),
               backgroundSize: "52px 52px",
               maskImage:
@@ -104,7 +104,7 @@ export default function HeroGrid() {
               position: "absolute",
               inset: 0,
               backgroundImage:
-                "radial-gradient(circle 2px at center, rgba(0,0,0,0.14) 0%, transparent 100%)",
+                "radial-gradient(circle 2px at center, rgba(44, 7, 7, 0.14) 0%, transparent 100%)",
               backgroundSize: "52px 52px",
               maskImage:
                 "radial-gradient(ellipse 55% 50% at 50% 42%, black 15%, transparent 65%)",
@@ -119,7 +119,7 @@ export default function HeroGrid() {
               position: "absolute",
               inset: 0,
               backgroundImage:
-                "radial-gradient(circle 3px at center, rgba(0,0,0,0.18) 0%, transparent 100%)",
+                "radial-gradient(circle 3px at center, rgba(0, 0, 0, 0.18) 0%, transparent 100%)",
               backgroundSize: "208px 208px",
               maskImage:
                 "radial-gradient(ellipse 50% 45% at 50% 42%, black 10%, transparent 60%)",
