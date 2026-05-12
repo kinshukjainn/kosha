@@ -11,13 +11,11 @@ import {
   FileBox,
   Database,
   File as DefaultFile,
-  ChevronRight,
   ArrowLeft,
   RefreshCw,
   Code2,
   FileSymlink,
 } from "lucide-react";
-import Link from "next/link";
 
 // ============================================================================
 // Configuration & Types
@@ -216,57 +214,21 @@ export default function RepositoryViewer() {
     });
   }, [treeData, currentPath, viewMode]);
 
-  const pathBreadcrumbs = currentPath.split("/").filter(Boolean);
-
   return (
-    <div className="min-h-screen bg-[#faf9f8] text-gray-900 ">
+    <div className="min-h-screen bg-black text-gray-100 ">
       {/* PAGE HEADER */}
-      <div className="bg-white border-b border-gray-200">
+      <div className="bg-black border-b border-gray-200">
         <div className="px-4 sm:px-6 py-4">
           {/* Breadcrumbs */}
-          <div className="text-[13px] font-medium text-[#0078D4] flex flex-wrap items-center gap-1.5 mb-4">
-            <Link href="/git-track" className="hover:underline cursor-pointer">
-              Repositories
-            </Link>
-            <ChevronRight size={14} className="text-gray-500 shrink-0" />
-            <span
-              onClick={() => jumpToPath("")}
-              className="hover:underline cursor-pointer"
-            >
-              {GITHUB_CONFIG.repository}
-            </span>
-            {pathBreadcrumbs.map((part, index) => {
-              const buildPath = pathBreadcrumbs.slice(0, index + 1).join("/");
-              const isLast = index === pathBreadcrumbs.length - 1;
-              const isCurrentFile = isLast && viewMode === "blob";
-
-              return (
-                <React.Fragment key={buildPath}>
-                  <ChevronRight size={14} className="text-gray-500 shrink-0" />
-                  <span
-                    onClick={() => !isCurrentFile && jumpToPath(buildPath)}
-                    className={
-                      isCurrentFile
-                        ? "text-gray-900 font-semibold cursor-default"
-                        : "hover:underline cursor-pointer"
-                    }
-                  >
-                    {part}
-                  </span>
-                </React.Fragment>
-              );
-            })}
-          </div>
-
           <div className="flex items-center gap-4">
-            <div className="w-10 h-10 bg-[#0078D4] rounded-xl flex items-center justify-center shrink-0">
-              <Code2 size={20} className="text-white" />
+            <div className="w-12 h-12 bg-blue-800 rounded-full flex items-center justify-center shrink-0">
+              <Code2 size={30} className="text-white" />
             </div>
             <div>
-              <h1 className="text-xl font-semibold text-gray-900 tracking-tight leading-tight">
+              <h1 className="text-xl font-semibold text-gray-100 tracking-tight leading-tight">
                 Source Browser
               </h1>
-              <p className="text-[13px] text-gray-600 mt-0.5">
+              <p className="text-[13px] text-gray-200 mt-0.5">
                 Browsing branch:{" "}
                 <span className="font-semibold">{GITHUB_CONFIG.branch}</span>
               </p>
@@ -275,76 +237,56 @@ export default function RepositoryViewer() {
         </div>
 
         {/* COMMAND BAR */}
-        <div className="bg-[#f3f2f1] px-4 sm:px-6 py-2 flex flex-wrap items-center gap-4 border-t border-gray-200">
-          <Link
-            href="/git-track"
-            className="flex items-center gap-1.5 text-gray-700 hover:text-[#0078D4] text-[13px] font-medium transition-colors"
-          >
-            <ArrowLeft size={16} />
-            Back to Repos
-          </Link>
-          <div className="w-px h-4 bg-gray-300 hidden sm:block" />
-          <button
-            onClick={fetchRepositoryTree}
-            className="flex items-center gap-1.5 text-gray-700 hover:text-[#0078D4] text-[13px] font-medium transition-colors"
-          >
-            <RefreshCw
-              size={14}
-              className={isLoadingTree ? "animate-spin" : ""}
-            />
-            Refresh Tree
-          </button>
-        </div>
       </div>
 
       <div className="p-4 sm:p-6 max-w-[1400px] mx-auto">
         {/* ESSENTIALS BLOCK */}
         <div className="mb-6 hidden sm:block">
-          <h2 className="font-semibold text-[14px] text-gray-900 mb-3">
+          <h2 className="font-semibold text-[17px] text-gray-200 mb-3">
             Essentials
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-x-12 gap-y-4 text-[13px] ml-1">
             <div className="flex flex-col gap-1">
-              <span className="text-gray-500">Repository Owner</span>
-              <span className="text-gray-900 font-medium">
-                {GITHUB_CONFIG.username}
-              </span>
+              <span className="text-gray-200 font-bold">Repository Owner</span>
+              <span className="text-blue-300 ">@{GITHUB_CONFIG.username}</span>
             </div>
             <div className="flex flex-col gap-1">
-              <span className="text-gray-500">Current Path</span>
-              <span className="text-gray-900 truncate">
+              <span className="text-gray-200 font-bold">Current Path</span>
+              <span className="text-blue-300 truncate">
                 /{currentPath || "root"}
               </span>
             </div>
             <div className="flex flex-col gap-1">
-              <span className="text-gray-500">Remote URL</span>
+              <span className="text-gray-200 font-bold">Remote URL</span>
               <a
                 href={`https://github.com/${GITHUB_CONFIG.username}/${GITHUB_CONFIG.repository}`}
                 target="_blank"
                 rel="noreferrer"
-                className="text-[#0078D4] hover:underline truncate"
+                className="text-blue-300 hover:underline truncate"
               >
                 github.com/.../{GITHUB_CONFIG.repository}.git
               </a>
             </div>
             <div className="flex flex-col gap-1">
-              <span className="text-gray-500">Total Items (Tree)</span>
-              <span className="text-gray-900">{treeData.length} indexed</span>
+              <span className="text-gray-200 font-bold">
+                Total Items (Tree)
+              </span>
+              <span className="text-blue-300">{treeData.length} indexed</span>
             </div>
           </div>
         </div>
 
         {/* ERROR DISPLAY */}
         {error && (
-          <div className="mb-6 p-4 bg-[#fdf3f4] border border-[#f4c8ca] text-[#a4262c] text-[13px] font-medium rounded-xl">
+          <div className="mb-6 p-4 bg-[#1e1e1e] border border-[#1e1e1e] text-white text-[13px] font-medium rounded-xl">
             Error: {error}
           </div>
         )}
 
         {/* CONTENT AREA */}
-        <div className="bg-white border border-gray-200 shadow-sm rounded-xl overflow-hidden">
+        <div className="bg-[#1e1e1e] border border-[#444444] shadow-sm rounded-3xl overflow-hidden">
           {/* Section Header */}
-          <div className="bg-[#fafafa] border-b border-gray-200 px-4 py-3 flex items-center justify-between text-[13px] font-semibold text-gray-700">
+          <div className="bg-[#121212] border-b border-[#444444] px-4 py-3 flex items-center justify-between text-[13px] font-semibold text-gray-100">
             <div className="flex items-center gap-2">
               {viewMode === "tree" ? (
                 <Folder size={16} />
@@ -356,7 +298,7 @@ export default function RepositoryViewer() {
             {viewMode === "blob" && (
               <button
                 onClick={navigateUp}
-                className="text-[#0078D4] hover:underline flex items-center gap-1 font-medium"
+                className="text-white hover:underline flex items-center gap-1 font-medium"
               >
                 <ArrowLeft size={14} /> Back to Folder
               </button>
@@ -367,11 +309,8 @@ export default function RepositoryViewer() {
           {viewMode === "tree" && (
             <div className="w-full">
               {isLoadingTree ? (
-                <div className="p-8 flex items-center justify-center gap-2 text-gray-500 text-[13px]">
-                  <RefreshCw
-                    size={16}
-                    className="animate-spin text-[#0078D4]"
-                  />
+                <div className="p-8 flex items-center justify-center gap-2 text-gray-100 text-[13px]">
+                  <RefreshCw size={16} className="animate-spin text-white" />
                   Fetching repository tree...
                 </div>
               ) : (
@@ -380,14 +319,11 @@ export default function RepositoryViewer() {
                   {currentPath !== "" && (
                     <div
                       onClick={navigateUp}
-                      className="flex items-center px-4 py-2.5 hover:bg-[#f6f6f6] transition-colors gap-3 cursor-pointer group"
+                      className="flex items-center px-4 py-2.5 hover:bg-[#1e1e1e] transition-colors gap-3 cursor-pointer group"
                     >
-                      <FileSymlink
-                        size={16}
-                        className="text-[#0078D4] shrink-0"
-                      />
-                      <span className="text-[#0078D4] group-hover:underline text-[13px] font-medium select-none">
-                        ..
+                      <FileSymlink size={16} className="text-white shrink-0" />
+                      <span className="text-white group-hover:underline text-[13px] font-medium select-none">
+                        cd /
                       </span>
                     </div>
                   )}
@@ -402,7 +338,7 @@ export default function RepositoryViewer() {
                           icon: (
                             <Folder
                               size={16}
-                              className="text-[#0078D4] fill-[#cce3f5] shrink-0"
+                              className="text-white fill-[#cce3f5] shrink-0"
                             />
                           ),
                         }
@@ -412,19 +348,19 @@ export default function RepositoryViewer() {
                       <div
                         key={item.sha}
                         onClick={() => handleNavigate(item.path, item.type)}
-                        className="flex flex-col sm:flex-row sm:items-center px-4 py-2.5 hover:bg-[#f6f6f6] transition-colors gap-2 sm:gap-4 cursor-pointer"
+                        className="flex flex-col sm:flex-row sm:items-center px-4 py-2.5 hover:bg-[#252525] transition-colors gap-2 sm:gap-4 cursor-pointer"
                       >
                         <div className="flex-1 min-w-0 flex items-center gap-3">
                           {icon}
                           <span
-                            className={`truncate text-[13px] ${isFolder ? "text-[#0078D4] font-semibold hover:underline" : "text-gray-800 font-medium hover:underline"}`}
+                            className={`truncate text-[13px] ${isFolder ? "text-white font-semibold hover:underline" : "text-gray-100 font-medium hover:underline"}`}
                           >
                             {itemName}
                           </span>
                         </div>
 
                         {/* Hidden on very small screens, visible on sm+ */}
-                        <div className="hidden sm:flex items-center gap-6 shrink-0 text-gray-500 text-[13px] w-[200px] justify-end">
+                        <div className="hidden sm:flex items-center gap-6 shrink-0 text-gray-100 text-[13px] w-[200px] justify-end">
                           <span className="truncate">{lang}</span>
                           <span className="w-[60px] text-right">
                             {isFolder ? "--" : formatBytes(item.size)}
@@ -442,16 +378,13 @@ export default function RepositoryViewer() {
           {viewMode === "blob" && (
             <div className="w-full">
               {isFileLoading ? (
-                <div className="p-8 flex items-center justify-center gap-2 text-gray-500 text-[13px] bg-[#fafafa]">
-                  <RefreshCw
-                    size={16}
-                    className="animate-spin text-[#0078D4]"
-                  />
+                <div className="p-8 flex items-center justify-center gap-2 text-gray-500 text-[13px] bg-[#1e1e1e]">
+                  <RefreshCw size={16} className="animate-spin text-white" />
                   Loading file contents...
                 </div>
               ) : (
-                <div className="overflow-x-auto bg-[#fafafa]">
-                  <pre className="p-4 m-0 text-[13px] font-mono leading-relaxed text-gray-800 min-h-[400px]">
+                <div className="overflow-x-auto bg-[#1e1e1e]">
+                  <pre className="p-4 m-0 text-[13px] font-mono leading-relaxed text-gray-100 min-h-[400px]">
                     <code>{fileContent}</code>
                   </pre>
                 </div>

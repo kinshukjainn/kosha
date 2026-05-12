@@ -1,8 +1,8 @@
 @import "tailwindcss";
 
 body {
-  background-color: white;
-  font-family: var(--font-inter), sans-serif;
+  background-color: black;
+  font-family: var(--font-roboto), sans-serif;
 }
 
 .special-font {

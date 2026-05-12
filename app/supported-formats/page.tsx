@@ -89,7 +89,7 @@ export default function SupportedFormatsPage() {
             reference guide details the file specifications, rendering
             protocols, and security measures applied to data stored within your
             private ecosystem. All files, regardless of format, are secured
-            using zero-knowledge AES-256 encryption at rest.
+            using Amazon S3 side encryption at transit.
           </p>
         </header>
 

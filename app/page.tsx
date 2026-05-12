@@ -139,7 +139,7 @@ const PrimaryLink = ({
 }) => (
   <Link
     href={href}
-    className={`inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-medium bg-blue-800 text-white transition hover:opacity-90 ${className}`}
+    className={`inline-flex items-center gap-2 px-5 py-2.5 rounded-tr-2xl rounded-bl-2xl text-sm font-medium bg-blue-800 text-white transition hover:opacity-90 ${className}`}
   >
     {children}
   </Link>
@@ -447,9 +447,12 @@ const LoggedOutHero = () => (
 
     <Reveal delay={240}>
       <div className="flex flex-wrap items-center justify-center gap-3 mb-8">
-        <PrimaryLink href="/verify-regis">
+        <Link
+          className="inline-flex items-center gap-2 px-5 py-2.5 rounded-tr-2xl rounded-bl-2xl text-sm font-medium bg-blue-800 text-white transition hover:opacity-90"
+          href="/verify-regis"
+        >
           Start for free <ArrowRight className="w-3.5 h-3.5" />
-        </PrimaryLink>
+        </Link>
         <SecondaryLink href="/supported-formats">
           Supported Formats
         </SecondaryLink>
