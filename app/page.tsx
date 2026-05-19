@@ -431,8 +431,9 @@ const AnimatedHeadline = () => {
 const LoggedOutHero = () => (
   <section className="max-w-3xl mx-auto px-6 pt-24 pb-16 text-center">
     <Reveal>
-      <span className="inline-flex items-center gap-1.5 px-3 py-2 rounded-full border border-[#444444] text-sm font-medium bg-[#121212]/10 backdrop-blur-xs text-gray-100 mb-8">
-        <LockKeyhole className="w-5 h-5 text-blue-300" /> Secured by AWS Cloud
+      <span className="inline-flex items-center gap-1.5 px-3 py-2 rounded-full border border-[#444444] text-md font-medium bg-[#121212]/10 backdrop-blur-xs text-gray-100 mb-8">
+        <LockKeyhole className="w-5 h-5 text-blue-300" /> Secured by{" "}
+        <span className="font-bold text-blue-400">AWS Cloud</span>
       </span>
     </Reveal>
 
@@ -605,29 +606,19 @@ const FeaturesGrid = () => (
       </div>
     </Reveal>
 
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 rounded-3xl border border-[#444444] overflow-hidden bg-[#1e1e1e]">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4  overflow-hidden ">
       {FEATURES.map((f, i) => {
         const Icon = f.icon;
-        const cols = 4;
-        const col = i % cols;
-        const row = Math.floor(i / cols);
-        const lastRow = row === Math.ceil(FEATURES.length / cols) - 1;
         return (
           <Reveal key={f.id} delay={i * 40}>
-            <div
-              className="group h-full p-6 hover:bg-[#252525] transition-colors relative"
-              style={{
-                borderRight: col < cols - 1 ? "1px solid #444444" : "none",
-                borderBottom: !lastRow ? "1px solid #444444" : "none",
-              }}
-            >
+            <div className="group h-full p-6 hover:bg-[#181818] transition-colors relative">
               <div className="flex items-start justify-between mb-4">
                 <div className="w-12 h-12 rounded-full flex items-center justify-center bg-blue-800">
                   <Icon className="w-7 h-7 text-white" />
                 </div>
-                <span className="text-xs text-gray-300 font-mono">{f.id}</span>
+                <span className="text-md text-[#ff9100] font-mono">{f.id}</span>
               </div>
-              <h3 className="text-sm font-semibold mb-1.5 text-white">
+              <h3 className="text-md font-semibold mb-1.5 text-white">
                 {f.title}
               </h3>
               <p className="text-sm leading-relaxed text-gray-200">{f.body}</p>
@@ -647,7 +638,7 @@ const FeaturesGrid = () => (
 const CTA = ({ isLoggedIn }: { isLoggedIn: boolean }) => (
   <section id="pricing" className="max-w-6xl mx-auto px-6 py-20">
     <Reveal>
-      <div className="rounded-4xl border border-[#444444] bg-[#1e1e1e] p-8 sm:p-14">
+      <div className="  p-8 sm:p-14">
         {isLoggedIn ? (
           <div className="max-w-xl">
             <h2 className="text-3xl sm:text-4xl title-font font-bold tracking-tight mb-4 text-white">
@@ -681,7 +672,7 @@ const CTA = ({ isLoggedIn }: { isLoggedIn: boolean }) => (
             </div>
 
             <div className="lg:col-span-5">
-              <div className="rounded-4xl border border-[#444444] bg-[#121212] p-6">
+              <div className="rounded-4xl border border-[#ff9100] bg-[#090909] p-6">
                 <p className="text-sm font-semibold uppercase tracking-widest text-[#ff9100] mb-2">
                   Free plan
                 </p>

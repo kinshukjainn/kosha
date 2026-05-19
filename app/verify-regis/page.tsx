@@ -6,9 +6,16 @@ import { motion, AnimatePresence } from "framer-motion";
 import { FaSpinner } from "react-icons/fa";
 import Image from "next/image";
 import Link from "next/link";
-import { LockKeyhole } from "lucide-react";
+import {
+  LockKeyhole,
+  ShieldCheck,
+  Zap,
+  Sparkles,
+  LayoutDashboard,
+} from "lucide-react";
 import HeroGrid from "../components/HeroGrid";
 
+// Helper function to extract error messages safely
 function getErrorMessage(error: unknown): string {
   if (!error) return "An unexpected error occurred.";
   const e = error as { errors?: { longMessage?: string }[]; message?: string };
@@ -19,11 +26,40 @@ function getErrorMessage(error: unknown): string {
   );
 }
 
+// Reusable component for the benefits list on the left side
+function BenefitItem({
+  icon,
+  title,
+  description,
+}: {
+  icon: React.ReactNode;
+  title: string;
+  description: string;
+}) {
+  return (
+    <div className="flex items-start gap-4">
+      <div className="flex-shrink-0 w-10 h-10 rounded-full bg-white flex items-center justify-center text-blue-800">
+        {icon}
+      </div>
+      <div>
+        <h3 className="text-gray-100 font-semibold text-[15px] mb-1">
+          {title}
+        </h3>
+        <p className="text-gray-400 text-[13px] leading-relaxed">
+          {description}
+        </p>
+      </div>
+    </div>
+  );
+}
+
 export default function AuthPage() {
+  // Clerk Hooks
   const { signIn } = useSignIn();
   const { signUp } = useSignUp();
   const { setActive } = useClerk();
 
+  // State
   const [isSignUp, setIsSignUp] = useState(false);
   const [loading, setLoading] = useState(false);
   const [authError, setAuthError] = useState<string | null>(null);
@@ -42,14 +78,15 @@ export default function AuthPage() {
   const providers = ["AWS", "Clerk"];
   const [index, setIndex] = useState(0);
 
+  // Rotate security providers every 2.5 seconds
   useEffect(() => {
-    // Cycle through the providers every 2.5 seconds
     const interval = setInterval(() => {
       setIndex((prevIndex) => (prevIndex + 1) % providers.length);
     }, 2500);
     return () => clearInterval(interval);
   }, [providers.length]);
 
+  // Auth Handlers (Logic strictly preserved)
   const handleSignIn = useCallback(async () => {
     if (!signIn) return;
     setLoading(true);
@@ -65,9 +102,7 @@ export default function AuthPage() {
       if (signIn.status === "complete" && signIn.createdSessionId) {
         await setActive({ session: signIn.createdSessionId });
         window.location.href = "/dashboard";
-      }
-      // Catch both "needs_second_factor" and "needs_client_trust"
-      else if (
+      } else if (
         signIn.status === "needs_second_factor" ||
         signIn.status === "needs_client_trust"
       ) {
@@ -76,14 +111,12 @@ export default function AuthPage() {
         );
 
         if (emailFactor) {
-          // Uses the new SignInFutureResource method instead of prepareSecondFactor
           const { error: sendError } = await signIn.emailCode.sendCode();
           if (sendError) {
             setAuthError(getErrorMessage(sendError));
             setLoading(false);
             return;
           }
-
           setPendingMfa(true);
           setLoading(false);
         } else {
@@ -107,15 +140,12 @@ export default function AuthPage() {
     setLoading(true);
     setAuthError(null);
     try {
-      // Uses the new SignInFutureResource method instead of attemptSecondFactor
       const { error } = await signIn.emailCode.verifyCode({ code: mfaCode });
-
       if (error) {
         setAuthError(getErrorMessage(error));
         setLoading(false);
         return;
       }
-
       if (signIn.status === "complete" && signIn.createdSessionId) {
         await setActive({ session: signIn.createdSessionId });
         window.location.href = "/dashboard";
@@ -220,21 +250,22 @@ export default function AuthPage() {
     setMfaCode("");
   }, []);
 
+  // Form Computed Values
   const heading = pendingMfa
     ? "Device Verification"
     : pendingVerification
       ? "Verify Email"
       : isSignUp
-        ? "Create Account"
-        : "System Login";
+        ? "Create an Account"
+        : "Welcome Back";
 
   const subtext = pendingMfa
     ? "A security code has been sent to your email."
     : pendingVerification
       ? `A 6-digit code has been sent to ${email}.`
       : isSignUp
-        ? "Provide credentials to register a new user."
-        : "Enter your credentials to access the system.";
+        ? "Enter your details below to set up your workspace."
+        : "Log in to Kosha to continue to your dashboard.";
 
   const canSubmit = pendingMfa
     ? mfaCode.length === 6
@@ -244,58 +275,90 @@ export default function AuthPage() {
         ? !!(email && password && firstName && lastName)
         : !!(email && password);
 
-  // Azure Standard Input Classes
+  // Styles
   const inputClass =
-    "w-full px-3 py-3 bg-[#121212] border border-[#444444] text-[14px] text-gray-100 placeholder-gray-400 focus:outline-none focus:border-[#0078D4] focus:ring-1 focus:ring-[#0078D4] rounded-4xl transition-all";
-
-  // Azure Standard Label Classes
-  const labelClass = "block text-[14px] font-semibold text-gray-100 mb-1.5";
-
-  // Azure Flat Button Effects
+    "w-full px-4 py-2 bg-[#111111] border border-[#333333] text-[16px] text-gray-100 placeholder-gray-500 focus:border-[#0078D4] focus:ring-1 focus:ring-[#0078D4] focus:outline-none rounded-md transition-all";
+  const labelClass = "block text-[16px] font-medium text-gray-100 mb-1.5";
   const primaryButtonClass =
-    "w-full flex items-center justify-center gap-2 py-2 px-4 font-semibold text-[14px] bg-[#0078D4] hover:bg-[#005a9e] text-white rounded-full cursor-pointer transition-colors disabled:opacity-50 disabled:cursor-not-allowed";
-
+    "w-full flex items-center justify-center gap-2 py-3 px-4 font-semibold text-[14px] bg-[#0078D4] hover:bg-[#006abc] text-white rounded-full shadow-lg shadow-[#0078D4]/20 cursor-pointer transition-all disabled:opacity-50 disabled:cursor-not-allowed";
   const secondaryButtonClass =
-    "w-full flex items-center justify-center gap-2 py-2 px-4 font-semibold text-[14px] cursor-pointer bg-gray-800 border border-gray-300 text-gray-100 rounded-full transition-colors disabled:opacity-50";
+    "w-full flex items-center justify-center gap-2 py-3 px-4 font-semibold text-[14px] cursor-pointer bg-transparent border border-[#333333] hover:bg-[#1a1a1a] text-gray-200 rounded-full transition-all disabled:opacity-50";
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 bg-black text-gray-100  selection:bg-[#cce3f5]">
-      <main>
-        <HeroGrid />
-      </main>
-      <div className="w-full max-w-[440px] p-8">
-        {/* Header Section */}
-        <div className="flex flex-col items-center text-center mb-6">
-          <div className="mb-4">
+    <div className="flex min-h-screen bg-[#050505] text-gray-100 selection:bg-[#0078D4] selection:text-white ">
+      {/* LEFT PANEL: Branding & Benefits (Hidden on small screens) */}
+      <div className="relative hidden lg:flex flex-col justify-between w-1/2 max-w-2xl p-12 xl:p-16 border-r border-[#1f1f1f] bg-black overflow-hidden">
+        {/* Background Graphic */}
+        <div className="absolute inset-0 z-0 opacity-100">
+          <HeroGrid />
+        </div>
+
+        {/* Gradient Overlay for readibility */}
+        <div className="absolute inset-0 z-0 bg-black/80" />
+
+        <div className="relative z-10 flex flex-col gap-12">
+          {/* Logo */}
+          <div className="flex items-center gap-3">
             <Image
               src="/authlogo.png"
               alt="Kosha Logo"
-              width={80}
-              height={80}
+              width={44}
+              height={44}
               className="object-contain"
             />
+            <span className="text-2xl font-bold tracking-tight   text-white">
+              KOSHA /{" "}
+              <span className="text-xs  px-3 py-1 bg-blue-800/20 border-blue-400 border rounded-full">
+                Authentication
+              </span>
+            </span>
           </div>
-          <h1 className="text-3xl title-font font-semibold text-gray-100 mb-1  leading-tight">
-            Welcome to Kosha
-          </h1>
-          <h2 className="text-lg text-gray-100 mt-2">{heading}</h2>
-          <p className="text-[13px] text-gray-300 mt-1">{subtext}</p>
+
+          {/* Value Proposition */}
+          <div className="mt-8">
+            <h1 className="text-4xl xl:text-5xl font-bold text-white mb-6 leading-tight">
+              Push and secure your files with kosha
+            </h1>
+            <p className="text-lg text-gray-400 max-w-md leading-relaxed">
+              Expierience a modern cloud storage provider platform which is open
+              source and simple to use
+            </p>
+          </div>
+
+          {/* Benefits List */}
+          <div className="space-y-8 mt-4 max-w-md">
+            <BenefitItem
+              icon={<ShieldCheck className="w-5 h-5" />}
+              title="Advanced Security"
+              description="Protect your workspace with industry-leading encryption and robust multi-factor authentication protocols."
+            />
+            <BenefitItem
+              icon={<Zap className="w-5 h-5" />}
+              title="Lightning Fast Execution"
+              description="Built on a high-performance edge architecture ensuring your data is available instantaneously."
+            />
+            <BenefitItem
+              icon={<LayoutDashboard className="w-5 h-5" />}
+              title="Intuitive Workflows"
+              description="A clean, optimized dashboard that puts your most important tools exactly where you need them."
+            />
+          </div>
         </div>
 
-        {/* Security Badge */}
-        <div className="flex justify-center mb-6">
-          <div className="flex items-center gap-1.5 text-[14px] text-white bg-blue-800 px-3 py-2 rounded-full ">
-            <LockKeyhole className="w-3.5 h-3.5" />
-            <span className="font-bold">Secured by</span>
-            <div className="relative flex items-center justify-start w-[40px] h-[16px] overflow-hidden">
+        {/* Dynamic Security Badge inside the Left Panel */}
+        <div className="relative z-10 flex items-center gap-2 mt-auto pt-12">
+          <div className="flex items-center gap-2 text-[13px] text-gray-400 bg-[#111111] border border-[#222222] px-4 py-2 rounded-full">
+            <LockKeyhole className="w-4 h-4 text-[#0078D4]" />
+            <span>Secured infrastructure by</span>
+            <div className="relative flex items-center justify-start w-[45px] h-[18px] overflow-hidden font-semibold text-gray-200">
               <AnimatePresence mode="popLayout">
                 <motion.span
                   key={providers[index]}
                   initial={{ y: 15, opacity: 0 }}
                   animate={{ y: 0, opacity: 1 }}
                   exit={{ y: -15, opacity: 0 }}
-                  transition={{ duration: 0.2 }}
-                  className="text-white  font-semibold absolute left-0"
+                  transition={{ duration: 0.3 }}
+                  className="absolute left-0"
                 >
                   {providers[index]}
                 </motion.span>
@@ -303,165 +366,224 @@ export default function AuthPage() {
             </div>
           </div>
         </div>
+      </div>
 
-        {/* Error Banner */}
-        {authError && (
-          <div className="mb-5 p-3 bg-[#252525] border border-[#444444] text-white  text-[15px] font-medium rounded-xl">
-            {authError}
-          </div>
-        )}
-
-        {/* Main Form */}
-        <div className="space-y-5">
-          {pendingMfa || pendingVerification ? (
-            <>
-              <div className="flex flex-col gap-1">
-                <label className={labelClass}>Security Code</label>
-                <input
-                  type="text"
-                  inputMode="numeric"
-                  placeholder="000000"
-                  value={pendingMfa ? mfaCode : verificationCode}
-                  onChange={(e) => {
-                    const val = e.target.value.replace(/\D/g, "").slice(0, 6);
-                    if (pendingMfa) setMfaCode(val);
-                    else setVerificationCode(val);
-                  }}
-                  onKeyDown={(e) =>
-                    e.key === "Enter" && canSubmit && handleSubmit()
-                  }
-                  className={`${inputClass} text-center text-xl tracking-[0.2em] py-3`}
-                />
-              </div>
-
-              <div className="pt-2 space-y-3">
-                <button
-                  onClick={handleSubmit}
-                  disabled={loading || !canSubmit}
-                  className={primaryButtonClass}
-                >
-                  {loading ? (
-                    <FaSpinner className="animate-spin" />
-                  ) : (
-                    "Verify & Continue"
-                  )}
-                </button>
-
-                <button
-                  onClick={() => {
-                    setPendingMfa(false);
-                    setPendingVerification(false);
-                    setVerificationCode("");
-                    setMfaCode("");
-                    setAuthError(null);
-                  }}
-                  className="w-full text-center text-[13px] text-[#0078D4] hover:text-[#005a9e] hover:underline py-1 cursor-pointer transition-colors"
-                >
-                  Cancel and go back
-                </button>
-              </div>
-            </>
-          ) : (
-            <>
-              {isSignUp && (
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className={labelClass}>First Name</label>
-                    <input
-                      type="text"
-                      value={firstName}
-                      onChange={(e) => setFirstName(e.target.value)}
-                      className={inputClass}
-                    />
-                  </div>
-                  <div>
-                    <label className={labelClass}>Last Name</label>
-                    <input
-                      type="text"
-                      value={lastName}
-                      onChange={(e) => setLastName(e.target.value)}
-                      className={inputClass}
-                    />
-                  </div>
-                </div>
-              )}
-
-              <div>
-                <label className={labelClass}>Email Address</label>
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  autoComplete="email"
-                  className={inputClass}
-                />
-              </div>
-
-              <div>
-                <label className={labelClass}>Password</label>
-                <input
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  autoComplete={isSignUp ? "new-password" : "current-password"}
-                  onKeyDown={(e) =>
-                    e.key === "Enter" && canSubmit && handleSubmit()
-                  }
-                  className={inputClass}
-                />
-              </div>
-
-              {/* CLERK CAPTCHA - Theme switched to light to match Azure */}
-              <div
-                id="clerk-captcha"
-                data-cl-theme="light"
-                data-cl-size="flexible"
-                className="pt-1"
-              />
-
-              <div className="pt-4 space-y-3">
-                <button
-                  onClick={handleSubmit}
-                  disabled={loading || !canSubmit}
-                  className={primaryButtonClass}
-                >
-                  {loading ? (
-                    <FaSpinner className="animate-spin" />
-                  ) : isSignUp ? (
-                    "Create Account"
-                  ) : (
-                    "Sign In"
-                  )}
-                </button>
-
-                <div className="relative py-2 flex items-center justify-center">
-                  <div className="absolute inset-0 flex items-center">
-                    <div className="w-full border-t border-gray-200"></div>
-                  </div>
-                  <div className="relative bg-blue-700  px-2 text-[14px] font-bold rounded-full text-gray-100 ">
-                    or
-                  </div>
-                </div>
-
-                <button onClick={toggleMode} className={secondaryButtonClass}>
-                  {isSignUp ? "Switch to Sign In" : "Create New Account"}
-                </button>
-              </div>
-            </>
-          )}
+      {/* RIGHT PANEL: Authentication Form */}
+      <div className="flex-1 flex flex-col justify-center px-6 py-12 sm:px-12 lg:px-16 xl:px-24 bg-[#050505]">
+        {/* Mobile Logo (Visible only on small screens) */}
+        <div className="lg:hidden flex items-center justify-center gap-3 mb-10">
+          <Image
+            src="/authlogo.png"
+            alt="Kosha Logo"
+            width={40}
+            height={40}
+            className="object-contain"
+          />
+          <span className="text-2xl font-bold tracking-tight text-white">
+            Kosha /
+            <span className="ml-2 text-xs px-2 py-1 bg-blue-800/20  border border-blue-400 rounded-full">
+              Authentication
+            </span>
+          </span>
         </div>
 
-        {/* Footer */}
-        <div className="mt-8 text-center text-[12px] text-gray-500 leading-relaxed">
-          By continuing, you agree to our{" "}
-          <Link href="/terms" className="text-[#0078D4] hover:underline">
-            Terms of Service
-          </Link>{" "}
-          and{" "}
-          <Link href="/privacy" className="text-[#0078D4] hover:underline">
-            Privacy Policy
-          </Link>
-          .
+        <div className="w-full max-w-[420px] mx-auto">
+          {/* Header */}
+          <div className="mb-8">
+            <h2 className="text-3xl font-bold text-white mb-2">{heading}</h2>
+            <p className="text-[15px] text-gray-400">{subtext}</p>
+          </div>
+
+          {/* Error Banner */}
+          {authError && (
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="mb-6 p-4 bg-red-950/30 border border-red-900/50 flex items-start gap-3 rounded-xl"
+            >
+              <div className="mt-0.5 text-red-500">
+                <Sparkles className="w-4 h-4" /> {/* Or an alert icon */}
+              </div>
+              <p className="text-[13.5px] font-medium text-red-200 leading-snug">
+                {authError}
+              </p>
+            </motion.div>
+          )}
+
+          {/* Main Form container */}
+          <div className="space-y-5">
+            {pendingMfa || pendingVerification ? (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="space-y-6"
+              >
+                <div>
+                  <label className={labelClass}>Security Code</label>
+                  <input
+                    type="text"
+                    inputMode="numeric"
+                    placeholder="000000"
+                    value={pendingMfa ? mfaCode : verificationCode}
+                    onChange={(e) => {
+                      const val = e.target.value.replace(/\D/g, "").slice(0, 6);
+                      if (pendingMfa) setMfaCode(val);
+                      else setVerificationCode(val);
+                    }}
+                    onKeyDown={(e) =>
+                      e.key === "Enter" && canSubmit && handleSubmit()
+                    }
+                    className={`${inputClass} text-center text-3xl tracking-[0.3em] py-4 font-mono`}
+                  />
+                </div>
+
+                <div className="space-y-4 pt-2">
+                  <button
+                    onClick={handleSubmit}
+                    disabled={loading || !canSubmit}
+                    className={primaryButtonClass}
+                  >
+                    {loading ? (
+                      <FaSpinner className="animate-spin w-5 h-5" />
+                    ) : (
+                      "Verify & Continue"
+                    )}
+                  </button>
+
+                  <button
+                    onClick={() => {
+                      setPendingMfa(false);
+                      setPendingVerification(false);
+                      setVerificationCode("");
+                      setMfaCode("");
+                      setAuthError(null);
+                    }}
+                    className="w-full text-center text-[14px] text-gray-400 hover:text-white transition-colors"
+                  >
+                    Cancel and go back
+                  </button>
+                </div>
+              </motion.div>
+            ) : (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="space-y-5"
+              >
+                {isSignUp && (
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className={labelClass}>First Name</label>
+                      <input
+                        type="text"
+                        value={firstName}
+                        onChange={(e) => setFirstName(e.target.value)}
+                        className={inputClass}
+                        placeholder="Jane"
+                      />
+                    </div>
+                    <div>
+                      <label className={labelClass}>Last Name</label>
+                      <input
+                        type="text"
+                        value={lastName}
+                        onChange={(e) => setLastName(e.target.value)}
+                        className={inputClass}
+                        placeholder="Doe"
+                      />
+                    </div>
+                  </div>
+                )}
+
+                <div>
+                  <label className={labelClass}>Email Address</label>
+                  <input
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    autoComplete="email"
+                    className={inputClass}
+                    placeholder="you@company.com"
+                  />
+                </div>
+
+                <div>
+                  <label className={labelClass}>Password</label>
+                  <input
+                    type="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    autoComplete={
+                      isSignUp ? "new-password" : "current-password"
+                    }
+                    onKeyDown={(e) =>
+                      e.key === "Enter" && canSubmit && handleSubmit()
+                    }
+                    className={inputClass}
+                    placeholder="••••••••"
+                  />
+                </div>
+
+                {/* CLERK CAPTCHA */}
+                <div
+                  id="clerk-captcha"
+                  data-cl-theme="light"
+                  data-cl-size="flexible"
+                  className="pt-1"
+                />
+
+                <div className="pt-2 space-y-4">
+                  <button
+                    onClick={handleSubmit}
+                    disabled={loading || !canSubmit}
+                    className={primaryButtonClass}
+                  >
+                    {loading ? (
+                      <FaSpinner className="animate-spin w-5 h-5" />
+                    ) : isSignUp ? (
+                      "Create Account"
+                    ) : (
+                      "Sign In"
+                    )}
+                  </button>
+
+                  <div className="relative flex items-center justify-center py-2">
+                    <div className="absolute inset-0 flex items-center">
+                      <div className="w-full border-t border-[#222]"></div>
+                    </div>
+                    <div className="relative bg-[#050505] px-4 text-[12px] font-semibold text-gray-200 uppercase tracking-wider">
+                      or continue with
+                    </div>
+                  </div>
+
+                  <button onClick={toggleMode} className={secondaryButtonClass}>
+                    {isSignUp
+                      ? "Log in to existing account"
+                      : "Create a new account"}
+                  </button>
+                </div>
+              </motion.div>
+            )}
+          </div>
+
+          {/* Footer Terms */}
+          <div className="mt-12 text-center text-[13px] text-gray-500 leading-relaxed">
+            By continuing, you agree to our{" "}
+            <Link
+              href="/terms"
+              className="text-gray-300 hover:text-white transition-colors underline decoration-gray-600 underline-offset-2"
+            >
+              Terms of Service
+            </Link>{" "}
+            and{" "}
+            <Link
+              href="/privacy"
+              className="text-gray-300 hover:text-white transition-colors underline decoration-gray-600 underline-offset-2"
+            >
+              Privacy Policy
+            </Link>
+            .
+          </div>
         </div>
       </div>
     </div>
