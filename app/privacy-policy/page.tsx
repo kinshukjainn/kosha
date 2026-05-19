@@ -1,5 +1,7 @@
+"use client";
+
 import React from "react";
-import { ChevronRight, Shield, Mail } from "lucide-react";
+import { ShieldCheck, Mail, Server, Lock, ExternalLink } from "lucide-react";
 
 const PLATFORM_NAME = "Kosha";
 const PLATFORM_URL = "https://kosha.cloudkinshuk.in";
@@ -9,223 +11,306 @@ const EFFECTIVE_DATE = "April 15, 2026";
 
 export default function PrivacyPolicy() {
   return (
-    <div className="min-h-screen bg-[#faf9f8] text-gray-900  pb-12">
-      {/* PAGE HEADER */}
-      <div className="bg-white border-b border-gray-200">
-        <div className="px-6 py-4">
-          <div className="text-[13px] font-medium text-[#0078D4] flex items-center gap-1.5 mb-4 w-fit">
-            <span className="hover:underline cursor-pointer">Home</span>
-            <ChevronRight size={14} className="text-gray-500" />
-            <span className="hover:underline cursor-pointer">Legal</span>
-            <ChevronRight size={14} className="text-gray-500" />
-            <span className="text-gray-600">Privacy Policy</span>
-          </div>
+    <div className="min-h-screen bg-[#050505] text-gray-300 selection:bg-[#0078D4] selection:text-white">
+      {/* TOP NAVIGATION / BREADCRUMBS */}
 
-          <div className="flex items-center gap-4">
-            <div className="w-10 h-10 bg-[#0078D4] rounded-xl flex items-center justify-center shrink-0">
-              <Shield size={20} className="text-white" />
-            </div>
-            <div>
-              <h1 className="text-xl font-semibold text-gray-900 tracking-tight leading-tight">
+      <main className="max-w-7xl mx-auto px-6 py-12 flex flex-col lg:flex-row gap-12 lg:gap-24">
+        {/* LEFT SIDEBAR - TABLE OF CONTENTS (Desktop Only) */}
+        <aside className="hidden lg:block w-[240px] shrink-0">
+          <div className="sticky top-24">
+            <h4 className="text-[12px] font-bold text-gray-500 uppercase tracking-wider mb-4">
+              Contents
+            </h4>
+            <ul className="space-y-3 text-[14px]">
+              <TocLink href="#introduction" text="Introduction" />
+              <TocLink
+                href="#information-we-collect"
+                text="1. Information We Collect"
+              />
+              <TocLink href="#how-we-use-data" text="2. How We Use Your Data" />
+              <TocLink
+                href="#data-security"
+                text="3. Data Security & Storage"
+              />
+              <TocLink
+                href="#third-party-services"
+                text="4. Third-Party Subprocessors"
+              />
+              <TocLink href="#user-rights" text="5. Your Data Rights" />
+              <TocLink href="#contact" text="6. Contact Us" />
+            </ul>
+          </div>
+        </aside>
+
+        {/* MAIN CONTENT AREA */}
+        <article className="flex-1 max-w-3xl">
+          {/* Header */}
+          <div className="mb-12">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-10 h-10 bg-[#0078D4]/10 rounded-lg flex items-center justify-center border border-[#0078D4]/20">
+                <ShieldCheck size={20} className="text-[#0078D4]" />
+              </div>
+              <h1 className="text-3xl md:text-4xl font-semibold text-white tracking-tight">
                 Privacy Policy
               </h1>
-              <p className="text-[13px] text-gray-600 mt-0.5">
-                Effective Date: {EFFECTIVE_DATE}
-              </p>
             </div>
-          </div>
-        </div>
-      </div>
-
-      {/* MAIN CONTENT */}
-      <main className="max-w-[1000px] mx-auto px-4 sm:px-6 mt-6 sm:mt-8">
-        <div className="bg-white border border-gray-200 shadow-sm rounded-xl p-6 sm:p-8 space-y-8">
-          {/* Intro */}
-          <section className="text-[14px] text-gray-700 leading-relaxed border-b border-gray-100 pb-6">
-            <p>
-              <strong className="font-semibold text-gray-900">
-                {PLATFORM_NAME}
-              </strong>{" "}
-              (&quot;we&quot;, &quot;us&quot;, &quot;our&quot;) operates the
-              platform at{" "}
-              <a
-                href={PLATFORM_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-[#0078D4] hover:underline"
-              >
-                {PLATFORM_URL}
-              </a>
-              . This policy explains how we collect, use, and protect your data.
+            <p className="text-[14px] text-gray-500">
+              Last updated and effective as of{" "}
+              <span className="text-gray-300">{EFFECTIVE_DATE}</span>
             </p>
-          </section>
+          </div>
 
-          {/* Section 1 */}
-          <section>
-            <SectionHeading number="1" title="Information We Collect" />
+          <div className="space-y-12">
+            {/* Introduction */}
+            <section
+              id="introduction"
+              className="text-[15px] leading-relaxed text-gray-400"
+            >
+              <p>
+                This Privacy Policy describes how{" "}
+                <strong className="font-medium text-gray-200">
+                  {COMPANY_NAME}
+                </strong>{" "}
+                (&quot;we&quot;, &quot;us&quot;, or &quot;our&quot;) collects,
+                uses, and discloses your information when you use our services,
+                accessible via{" "}
+                <a
+                  href={PLATFORM_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-[#0078D4] hover:text-[#3399ff] hover:underline transition-colors inline-flex items-center gap-1"
+                >
+                  {PLATFORM_URL}
+                  <ExternalLink size={12} />
+                </a>
+                .
+              </p>
+              <p className="mt-4">
+                We are committed to maintaining the highest standards of data
+                privacy and security. By accessing our platform, you agree to
+                the collection and use of information in accordance with this
+                policy.
+              </p>
+            </section>
 
-            <div className="ml-1 sm:ml-6 space-y-5">
-              <div>
-                <SubHeading title="1.1 Account Information" />
+            {/* Section 1 */}
+            <section id="information-we-collect" className="scroll-mt-24">
+              <SectionHeading number="1" title="Information We Collect" />
+              <p className="text-[15px] text-gray-400 mb-6 leading-relaxed">
+                We collect information to provide better services to our users.
+                The data we collect depends on how you interact with our
+                platform and the features you use.
+              </p>
+
+              <div className="space-y-8 pl-1 sm:pl-4 border-l border-[#1f1f1f]">
+                <div>
+                  <SubHeading title="1.1 Account & Profile Information" />
+                  <BulletList
+                    items={[
+                      "Email addresses and authentication identifiers provided during registration.",
+                      "Display names, profile pictures, and preferences.",
+                      "Unique User IDs generated by our authentication providers.",
+                    ]}
+                  />
+                </div>
+
+                <div>
+                  <SubHeading title="1.2 Infrastructure & Storage Data" />
+                  <BulletList
+                    items={[
+                      "Files, documents, and assets you voluntarily upload to our secure AWS S3 buckets.",
+                      "Extracted metadata associated with your files (e.g., file size, MIME type, upload timestamps).",
+                      "Storage allocation and usage metrics associated with your workspace.",
+                    ]}
+                  />
+                </div>
+
+                <div>
+                  <SubHeading title="1.3 Telemetry & Usage Data" />
+                  <BulletList
+                    items={[
+                      "System logs including IP addresses, browser types, and request timestamps.",
+                      "Interaction data detailing how you navigate and utilize the platform's features.",
+                      "API request metrics to monitor rate limits and ensure service stability.",
+                    ]}
+                  />
+                </div>
+              </div>
+            </section>
+
+            {/* Section 2 */}
+            <section id="how-we-use-data" className="scroll-mt-24">
+              <SectionHeading number="2" title="How We Use Your Data" />
+              <p className="text-[15px] text-gray-400 mb-4 leading-relaxed">
+                The information we collect is strictly utilized to operate,
+                maintain, and improve the {PLATFORM_NAME} ecosystem. Specific
+                use cases include:
+              </p>
+              <div className="pl-1 sm:pl-4 border-l border-[#1f1f1f]">
                 <BulletList
                   items={[
-                    "Email address",
-                    "Display name and profile data",
-                    "User ID from authentication provider",
+                    "Authenticating users and safeguarding against unauthorized access or fraudulent activity.",
+                    "Provisioning and maintaining your cloud storage resources and database records.",
+                    "Enforcing service quotas, rate limits, and terms of service.",
+                    "Delivering critical administrative notices, security alerts, and support responses.",
+                    "Complying with applicable legal regulations and statutory obligations.",
+                  ]}
+                />
+              </div>
+            </section>
+
+            {/* Section 3 */}
+            <section id="data-security" className="scroll-mt-24">
+              <SectionHeading number="3" title="Data Security & Storage" />
+              <p className="text-[15px] text-gray-400 mb-4 leading-relaxed">
+                We implement enterprise-grade security measures to protect your
+                personal information and uploaded assets from unauthorized
+                access, alteration, or destruction.
+              </p>
+              <div className="pl-1 sm:pl-4 border-l border-[#1f1f1f] mb-6">
+                <BulletList
+                  items={[
+                    "All data in transit is encrypted using TLS 1.3.",
+                    "Data at rest is secured via AES-256 encryption within AWS S3.",
+                    "Database access is strictly governed by role-based access control (RBAC).",
+                    "User sessions are managed securely via cryptographic tokens.",
                   ]}
                 />
               </div>
 
-              <div>
-                <SubHeading title="1.2 Files & Storage Data" />
-                <BulletList
-                  items={[
-                    "Uploaded files stored securely in AWS S3",
-                    "File metadata (name, size, type, timestamps)",
-                    "Storage usage per account",
-                  ]}
-                />
-              </div>
-
-              <div>
-                <SubHeading title="1.3 Usage Data" />
-                <BulletList
-                  items={[
-                    "Server logs (timestamps, request paths)",
-                    "Usage quotas and rate limits",
-                  ]}
-                />
-              </div>
-
-              <div>
-                <SubHeading title="1.4 Payment Information" />
-                <p className="text-[13px] text-gray-700 leading-relaxed mt-2">
-                  Payments are processed by third-party providers. We do not
-                  store card or banking details.
+              <div className="bg-[#0a0a0c] border border-[#1f1f1f] rounded-xl p-4 sm:p-5 flex gap-3 items-start">
+                <Lock className="w-5 h-5 text-gray-500 shrink-0 mt-0.5" />
+                <p className="text-[13.5px] text-gray-400 leading-relaxed">
+                  <strong className="text-gray-200 font-medium">
+                    Security Disclaimer:
+                  </strong>{" "}
+                  While we strive to use commercially acceptable means to
+                  protect your data, no method of transmission over the Internet
+                  or electronic storage is 100% secure. You are responsible for
+                  maintaining the confidentiality of your credentials.
                 </p>
               </div>
-            </div>
-          </section>
+            </section>
 
-          {/* Section 2 */}
-          <section>
-            <SectionHeading number="2" title="How We Use Data" />
-            <div className="ml-1 sm:ml-6 mt-3">
-              <BulletList
-                items={[
-                  "Operate and maintain the service",
-                  "Authenticate users and secure access",
-                  "Enforce usage limits",
-                  "Respond to support requests",
-                  "Comply with legal obligations",
-                ]}
-              />
-            </div>
-          </section>
-
-          {/* Section 3 */}
-          <section>
-            <SectionHeading number="3" title="Data Security" />
-            <div className="ml-1 sm:ml-6 mt-3">
-              <BulletList
-                items={[
-                  "Encrypted storage (AWS S3)",
-                  "Secure database connections",
-                  "Strict access controls",
-                  "Session-based authentication",
-                ]}
-              />
-              <p className="text-[13px] text-gray-500 mt-4 bg-[#f3f2f1] p-3 rounded-xl border border-gray-200">
-                <strong className="font-semibold text-gray-700">Note:</strong>{" "}
-                No system is completely secure. Users are responsible for
-                maintaining the confidentiality of their credentials.
+            {/* Section 4 - Table */}
+            <section id="third-party-services" className="scroll-mt-24">
+              <SectionHeading number="4" title="Third-Party Subprocessors" />
+              <p className="text-[15px] text-gray-400 mb-5 leading-relaxed">
+                We partner with specialized service providers to deliver our
+                core infrastructure. These third parties are bound by strict
+                data processing agreements.
               </p>
-            </div>
-          </section>
 
-          {/* Section 4 - Table */}
-          <section>
-            <SectionHeading number="4" title="Third-Party Services" />
-            <div className="ml-1 sm:ml-6 mt-4">
-              <div className="overflow-x-auto border border-gray-200 rounded-xl">
+              <div className="overflow-x-auto rounded-xl border border-[#1f1f1f] bg-[#0a0a0c]">
                 <table className="w-full text-left border-collapse min-w-[500px]">
                   <thead>
-                    <tr className="bg-[#fafafa] border-b border-gray-200">
-                      <th className="px-4 py-2.5 text-[12px] font-semibold text-gray-600 uppercase tracking-wider">
-                        Provider
+                    <tr className="border-b border-[#1f1f1f] bg-[#0f0f11]">
+                      <th className="px-5 py-3.5 text-[12px] font-semibold text-gray-400 uppercase tracking-wider">
+                        Infrastructure Provider
                       </th>
-                      <th className="px-4 py-2.5 text-[12px] font-semibold text-gray-600 uppercase tracking-wider">
-                        Purpose
+                      <th className="px-5 py-3.5 text-[12px] font-semibold text-gray-400 uppercase tracking-wider">
+                        Core Purpose
                       </th>
-                      <th className="px-4 py-2.5 text-[12px] font-semibold text-gray-600 uppercase tracking-wider">
-                        Data Shared
+                      <th className="px-5 py-3.5 text-[12px] font-semibold text-gray-400 uppercase tracking-wider">
+                        Data Shared / Processed
                       </th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-gray-100">
-                    <tr className="hover:bg-[#f8f8f8] transition-colors">
-                      <td className="px-4 py-3 text-[13px] font-medium text-gray-900">
-                        Clerk
+                  <tbody className="divide-y divide-[#1f1f1f]">
+                    <tr className="hover:bg-[#111113] transition-colors">
+                      <td className="px-5 py-4 text-[14px] font-medium text-gray-200 flex items-center gap-2">
+                        <Lock size={14} className="text-gray-500" /> Clerk
                       </td>
-                      <td className="px-4 py-3 text-[13px] text-gray-700">
-                        Authentication
+                      <td className="px-5 py-4 text-[14px] text-gray-400">
+                        Identity & Authentication
                       </td>
-                      <td className="px-4 py-3 text-[13px] text-gray-700">
-                        Email, user ID
-                      </td>
-                    </tr>
-                    <tr className="hover:bg-[#f8f8f8] transition-colors">
-                      <td className="px-4 py-3 text-[13px] font-medium text-gray-900">
-                        AWS S3
-                      </td>
-                      <td className="px-4 py-3 text-[13px] text-gray-700">
-                        File storage
-                      </td>
-                      <td className="px-4 py-3 text-[13px] text-gray-700">
-                        Uploaded files
+                      <td className="px-5 py-4 text-[14px] text-gray-400">
+                        Email, User ID, Profile metadata
                       </td>
                     </tr>
-                    <tr className="hover:bg-[#f8f8f8] transition-colors">
-                      <td className="px-4 py-3 text-[13px] font-medium text-gray-900">
-                        Neon
+                    <tr className="hover:bg-[#111113] transition-colors">
+                      <td className="px-5 py-4 text-[14px] font-medium text-gray-200 flex items-center gap-2">
+                        <Server size={14} className="text-gray-500" /> AWS S3
                       </td>
-                      <td className="px-4 py-3 text-[13px] text-gray-700">
-                        Database
+                      <td className="px-5 py-4 text-[14px] text-gray-400">
+                        Cloud Object Storage
                       </td>
-                      <td className="px-4 py-3 text-[13px] text-gray-700">
-                        Metadata
+                      <td className="px-5 py-4 text-[14px] text-gray-400">
+                        Raw uploaded files, Storage metrics
+                      </td>
+                    </tr>
+                    <tr className="hover:bg-[#111113] transition-colors">
+                      <td className="px-5 py-4 text-[14px] font-medium text-gray-200 flex items-center gap-2">
+                        <Server size={14} className="text-gray-500" /> Neon
+                      </td>
+                      <td className="px-5 py-4 text-[14px] text-gray-400">
+                        Serverless Database
+                      </td>
+                      <td className="px-5 py-4 text-[14px] text-gray-400">
+                        Application state, File metadata
                       </td>
                     </tr>
                   </tbody>
                 </table>
               </div>
-            </div>
-          </section>
+            </section>
 
-          {/* Section 11 - Contact */}
-          <section>
-            <SectionHeading number="11" title="Contact" />
-            <div className="ml-1 sm:ml-6 mt-4 border border-gray-200 bg-[#fafafa] rounded-xl p-5">
-              <p className="text-[13px] text-gray-600 mb-3">
-                For privacy-related requests or inquiries, please contact our
-                support team:
+            {/* Section 5 - Rights (Added for professional detail) */}
+            <section id="user-rights" className="scroll-mt-24">
+              <SectionHeading number="5" title="Your Data Rights" />
+              <p className="text-[15px] text-gray-400 mb-4 leading-relaxed">
+                Depending on your jurisdiction, you may have specific rights
+                regarding your personal data. We provide all users with the
+                ability to:
               </p>
-              <div className="space-y-1">
-                <p className="font-semibold text-[14px] text-gray-900">
-                  {COMPANY_NAME}
-                </p>
-                <a
-                  href={`mailto:${SUPPORT_EMAIL}`}
-                  className="flex items-center gap-1.5 text-[13px] text-[#0078D4] hover:underline w-fit"
-                >
-                  <Mail size={14} />
-                  {SUPPORT_EMAIL}
-                </a>
+              <div className="pl-1 sm:pl-4 border-l border-[#1f1f1f]">
+                <BulletList
+                  items={[
+                    "Access and export a copy of the personal data we hold about you.",
+                    "Request corrections to inaccurate or incomplete information.",
+                    "Delete your account and all associated data permanently from our active servers.",
+                    "Opt-out of non-essential telemetry and marketing communications.",
+                  ]}
+                />
               </div>
-            </div>
-          </section>
-        </div>
+            </section>
+
+            {/* Section 6 - Contact */}
+            <section id="contact" className="scroll-mt-24">
+              <SectionHeading number="6" title="Contact Us" />
+              <div className="bg-gradient-to-br from-[#0a0a0c] to-[#050505] border border-[#1f1f1f] rounded-xl p-6 sm:p-8 mt-4 relative overflow-hidden">
+                {/* Decorative background element */}
+                <div className="absolute top-0 right-0 w-32 h-32 bg-[#0078D4]/5 rounded-full blur-3xl" />
+
+                <p className="text-[15px] text-gray-400 mb-6 relative z-10">
+                  If you have questions, concerns, or requests regarding this
+                  Privacy Policy or the handling of your data, please contact
+                  our Data Protection Office:
+                </p>
+                <div className="space-y-2 relative z-10">
+                  <p className="font-semibold text-[16px] text-gray-200">
+                    {COMPANY_NAME} Privacy Team
+                  </p>
+                  <a
+                    href={`mailto:${SUPPORT_EMAIL}`}
+                    className="inline-flex items-center gap-2 text-[14px] font-medium text-[#0078D4] hover:text-[#3399ff] transition-colors"
+                  >
+                    <Mail size={16} />
+                    {SUPPORT_EMAIL}
+                  </a>
+                </div>
+              </div>
+            </section>
+          </div>
+        </article>
       </main>
+
+      {/* FOOTER */}
+      <footer className="border-t border-[#1f1f1f] mt-12 py-8">
+        <div className="max-w-7xl mx-auto px-6 text-center text-[13px] text-gray-600">
+          © {new Date().getFullYear()} {COMPANY_NAME}. All rights reserved.
+        </div>
+      </footer>
     </div>
   );
 }
@@ -236,8 +321,10 @@ export default function PrivacyPolicy() {
 
 function SectionHeading({ number, title }: { number: string; title: string }) {
   return (
-    <h2 className="text-[16px] font-semibold text-gray-900 mb-3 border-b border-gray-100 pb-2 flex items-center gap-2">
-      <span className="text-[#0078D4] font-mono text-[14px]">{number}.</span>
+    <h2 className="text-[20px] font-semibold text-gray-100 mb-4 flex items-center gap-3">
+      <span className="text-[#0078D4] font-mono text-[16px] bg-[#0078D4]/10 w-8 h-8 rounded-full flex items-center justify-center border border-[#0078D4]/20">
+        {number}
+      </span>
       {title}
     </h2>
   );
@@ -245,21 +332,34 @@ function SectionHeading({ number, title }: { number: string; title: string }) {
 
 function SubHeading({ title }: { title: string }) {
   return (
-    <h3 className="text-[14px] font-semibold text-gray-800 mb-2">{title}</h3>
+    <h3 className="text-[15px] font-medium text-gray-200 mb-3">{title}</h3>
   );
 }
 
 function BulletList({ items }: { items: string[] }) {
   return (
-    <ul className="space-y-2 text-gray-700 text-[13px]">
+    <ul className="space-y-3 text-gray-400 text-[14.5px]">
       {items.map((item, i) => (
-        <li key={i} className="flex gap-2 items-start">
-          <span className="text-[#0078D4] mt-[3px] shrink-0 text-[10px]">
-            ■
+        <li key={i} className="flex gap-3 items-start group">
+          <span className="text-[#333] group-hover:text-[#0078D4] transition-colors mt-[6px] shrink-0 text-[10px]">
+            ◆
           </span>
           <span className="leading-relaxed">{item}</span>
         </li>
       ))}
     </ul>
+  );
+}
+
+function TocLink({ href, text }: { href: string; text: string }) {
+  return (
+    <li>
+      <a
+        href={href}
+        className="text-gray-500 hover:text-[#0078D4] transition-colors block py-1"
+      >
+        {text}
+      </a>
+    </li>
   );
 }
