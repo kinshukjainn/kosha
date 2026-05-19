@@ -2,7 +2,7 @@
 
 body {
   background-color: black;
-  font-family: var(--font-roboto), sans-serif;
+  font-family: var(--font-plus-jakarta), sans-serif;
 }
 
 .special-font {
@@ -10,7 +10,7 @@ body {
 }
 
 .title-font {
-  font-family: var(--font-noto-serif), serif;
+  font-family: var(--font-varela-round), serif;
 }
 
 .gold-text {

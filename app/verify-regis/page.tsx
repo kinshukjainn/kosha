@@ -275,7 +275,7 @@ export default function AuthPage() {
               className="object-contain"
             />
           </div>
-          <h1 className="text-3xl font-semibold text-gray-100 mb-1 leading-tight">
+          <h1 className="text-3xl title-font font-semibold text-gray-100 mb-1  leading-tight">
             Welcome to Kosha
           </h1>
           <h2 className="text-lg text-gray-100 mt-2">{heading}</h2>

@@ -9,7 +9,7 @@ const isPublicRoute = createRouteMatcher([
   "/openned-tickets(.*)",
   "/terms-of-service(.*)",
   "/privacy-policy(.*)",
-  "/verify-regis(.*)", // <-- This is the magic fix!
+  "/verify-regis(.*)",
   "/sso-callback(.*)",
   "/api/webhooks(.*)",
 ]);

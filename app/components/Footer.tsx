@@ -30,7 +30,7 @@ export default function Footer() {
 
           {/* Navigation - Platform */}
           <div className="flex flex-col gap-2.5">
-            <h3 className="text-[15px] font-semibold text-gray-200 mb-1">
+            <h3 className="text-[15px] uppercase font-bold text-blue-400 mb-1">
               Platform
             </h3>
             <Link
@@ -49,7 +49,7 @@ export default function Footer() {
 
           {/* Navigation - Resources */}
           <div className="flex flex-col gap-2.5">
-            <h3 className="text-[15px] font-semibold text-gray-200  mb-1">
+            <h3 className="text-[15px] uppercase font-bold text-blue-400  mb-1">
               Resources
             </h3>
             <Link
@@ -74,7 +74,7 @@ export default function Footer() {
 
           {/* Navigation - Legal */}
           <div className="flex flex-col gap-2.5">
-            <h3 className="text-[15px] font-semibold text-gray-200  mb-1">
+            <h3 className="text-[15px] uppercase font-bold text-blue-400  mb-1">
               Legal
             </h3>
             <Link

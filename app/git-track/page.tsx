@@ -208,14 +208,14 @@ export default function ChangelogTracker() {
 
   // Azure input field styles
   const inputClass =
-    "bg-[#121212] text-gray-100 border border-gray-300 px-3 py-2.5 rounded-xl outline-none  transition-all w-full sm:w-auto";
+    "bg-[#121212] text-gray-100 border border-[#444444] px-6 py-2.5 rounded-full outline-none  transition-all w-full sm:w-auto";
 
   return (
     <div className="min-h-screen bg-black text-white  text-[13px] sm:text-[14px] p-4 md:p-8  selection:bg-[#cce3f5] selection:text-black">
       <div className="max-w-7xl mx-auto">
         {/* ── TOP HEADER (Breadcrumbs & Links) ── */}
         <div className="mb-2 border-b border-gray-200 pb-4">
-          <h1 className="text-[20px] sm:text-[24px] font-semibold m-0 p-0 text-gray-200">
+          <h1 className="text-[20px] title-font sm:text-[24px] font-semibold m-0 p-0 text-gray-200">
             <Link
               href="#"
               className="text-blue-200 hover:underline no-underline"
@@ -330,7 +330,7 @@ export default function ChangelogTracker() {
                   setAuthorFilter("all");
                   setTypeFilter("all");
                 }}
-                className="bg-blue-800 text-gray-100 px-4 py-1.5 font-semibold cursor-pointer   rounded-full transition-colors w-full sm:w-auto"
+                className="bg-blue-800 text-gray-100 px-6 py-2 font-semibold text-md cursor-pointer   rounded-full transition-colors w-full sm:w-auto"
               >
                 Clear
               </button>

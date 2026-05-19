@@ -225,8 +225,8 @@ export default function RepositoryViewer() {
               <Code2 size={30} className="text-white" />
             </div>
             <div>
-              <h1 className="text-xl font-semibold text-gray-100 tracking-tight leading-tight">
-                Source Browser
+              <h1 className="text-2xl title-font font-semibold text-gray-100 tracking-tight leading-tight">
+                {GITHUB_CONFIG.username} / {GITHUB_CONFIG.repository}
               </h1>
               <p className="text-[13px] text-gray-200 mt-0.5">
                 Browsing branch:{" "}

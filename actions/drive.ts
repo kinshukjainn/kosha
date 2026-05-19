@@ -10,11 +10,12 @@ import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { s3Client } from "@/lib/s3";
 import { auth, currentUser } from "@clerk/nextjs/server";
 import { sql } from "@/lib/db";
+import { checkRateLimit } from "@/lib/rate_limit";
 
 const FILE_LIST_PAGE_SIZE = 30;
+const MAX_FILE_SIZE_BYTES = 500 * 1024 * 1024;
 
 const ALLOWED_CONTENT_TYPES = new Set([
-  // Images
   "image/jpeg",
   "image/png",
   "image/webp",
@@ -25,7 +26,6 @@ const ALLOWED_CONTENT_TYPES = new Set([
   "image/bmp",
   "image/tiff",
   "image/x-icon",
-  // Documents
   "application/pdf",
   "application/msword",
   "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
@@ -34,15 +34,12 @@ const ALLOWED_CONTENT_TYPES = new Set([
   "text/plain",
   "text/csv",
   "text/markdown",
-  // Spreadsheets
   "application/vnd.ms-excel",
   "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
   "application/vnd.oasis.opendocument.spreadsheet",
-  // Presentations
   "application/vnd.ms-powerpoint",
   "application/vnd.openxmlformats-officedocument.presentationml.presentation",
   "application/vnd.oasis.opendocument.presentation",
-  // Archives
   "application/zip",
   "application/x-zip-compressed",
   "application/x-rar-compressed",
@@ -51,7 +48,6 @@ const ALLOWED_CONTENT_TYPES = new Set([
   "application/gzip",
   "application/x-tar",
   "application/x-bzip2",
-  // Audio
   "audio/mpeg",
   "audio/wav",
   "audio/ogg",
@@ -59,43 +55,16 @@ const ALLOWED_CONTENT_TYPES = new Set([
   "audio/flac",
   "audio/x-m4a",
   "audio/mp4",
-  // Video
   "video/mp4",
   "video/quicktime",
   "video/x-msvideo",
   "video/webm",
   "video/x-matroska",
   "video/mpeg",
-  // Other
   "application/json",
   "application/xml",
   "text/xml",
 ]);
-
-const MAX_FILE_SIZE_BYTES = 500 * 1024 * 1024; // 500 MB
-
-const rateLimitMap = new Map<string, { count: number; resetAt: number }>();
-
-function checkRateLimit(
-  userId: string,
-  action: string,
-  maxRequests: number,
-  windowMs: number,
-): void {
-  const key = `${userId}:${action}`;
-  const now = Date.now();
-  const entry = rateLimitMap.get(key);
-
-  if (!entry || now > entry.resetAt) {
-    rateLimitMap.set(key, { count: 1, resetAt: now + windowMs });
-    return;
-  }
-
-  entry.count++;
-  if (entry.count > maxRequests) {
-    throw new Error("Too many requests. Please slow down and try again.");
-  }
-}
 
 const getBucketName = () => {
   const bucket = process.env.BUCKET_NAME;
@@ -103,13 +72,6 @@ const getBucketName = () => {
   return bucket;
 };
 
-// ── Helpers ────────────────────────────────────────────────────────────────
-
-/**
- * Coerce a value that might be a BigInt / numeric string / number into a safe
- * JS number. ALWAYS use this at the RSC boundary — BigInt breaks Next.js
- * Server Components serialization.
- */
 function toNum(v: unknown): number {
   if (v === null || v === undefined) return 0;
   if (typeof v === "number") return v;
@@ -118,7 +80,6 @@ function toNum(v: unknown): number {
   return Number.isFinite(n) ? n : 0;
 }
 
-/** Strip anything dangerous in an S3 key segment; never collapse to empty. */
 function sanitizeFilename(raw: string): string {
   let s = raw
     .normalize("NFKD")
@@ -127,33 +88,35 @@ function sanitizeFilename(raw: string): string {
     .replace(/^[.\-]+/, "")
     .replace(/[.\-]+$/, "");
   if (!s) s = "file";
-  // Keep below S3 key segment sanity
   if (s.length > 200) s = s.slice(0, 200);
   return s;
 }
 
-async function getDbUser(clerkId: string) {
-  const rows = await sql`
-    SELECT 
-      u.id, 
-      u.storage_used, 
-      u.plan_id,
-      p.storage_limit AS plan_storage_limit, 
-      p.file_count_limit AS plan_file_count_limit
-    FROM users u
-    JOIN plans p ON u.plan_id = p.id
-    WHERE u.clerk_id = ${clerkId}
-  `;
+type DbUser = {
+  id: string;
+  storage_used: string | number | bigint;
+  file_count: string | number | bigint;
+  plan_id: string;
+  plan_storage_limit: string | number | bigint;
+  plan_file_count_limit: string | number | bigint;
+};
 
-  if (rows.length > 0) {
-    return rows[0] as {
-      id: string;
-      storage_used: string | number | bigint;
-      plan_id: string;
-      plan_storage_limit: string | number | bigint;
-      plan_file_count_limit: string | number | bigint;
-    };
-  }
+const selectUser = (clerkId: string) => sql`
+  SELECT
+    u.id,
+    u.storage_used,
+    u.file_count,
+    u.plan_id,
+    p.storage_limit    AS plan_storage_limit,
+    p.file_count_limit AS plan_file_count_limit
+  FROM users u
+  JOIN plans p ON u.plan_id = p.id
+  WHERE u.clerk_id = ${clerkId}
+`;
+
+async function getDbUser(clerkId: string): Promise<DbUser> {
+  const rows = await selectUser(clerkId);
+  if (rows.length > 0) return rows[0] as DbUser;
 
   const clerkUser = await currentUser();
   if (!clerkUser) throw new Error("Unauthorized");
@@ -167,33 +130,15 @@ async function getDbUser(clerkId: string) {
   await sql`
     INSERT INTO users (clerk_id, email, name, avatar_url)
     VALUES (${clerkId}, ${email}, ${name}, ${clerkUser.imageUrl ?? null})
-    ON CONFLICT (clerk_id) DO UPDATE SET updated_at = NOW()
+    ON CONFLICT (clerk_id) DO NOTHING
   `;
 
-  const retry = await sql`
-    SELECT 
-      u.id, 
-      u.storage_used, 
-      u.plan_id,
-      p.storage_limit AS plan_storage_limit, 
-      p.file_count_limit AS plan_file_count_limit
-    FROM users u
-    JOIN plans p ON u.plan_id = p.id
-    WHERE u.clerk_id = ${clerkId}
-  `;
-
+  const retry = await selectUser(clerkId);
   if (retry.length === 0) throw new Error("User provision failed");
-
-  return retry[0] as {
-    id: string;
-    storage_used: string | number | bigint;
-    plan_id: string;
-    plan_storage_limit: string | number | bigint;
-    plan_file_count_limit: string | number | bigint;
-  };
+  return retry[0] as DbUser;
 }
 
-// ── 1. Get S3 Presigned POST URL ───────────────────────────────────────────
+// 1. Presigned POST URL
 export async function getUploadUrl(
   fileName: string,
   contentType: string,
@@ -202,7 +147,7 @@ export async function getUploadUrl(
   const { userId } = await auth();
   if (!userId) throw new Error("Unauthorized");
 
-  checkRateLimit(userId, "upload", 30, 60_000);
+  await checkRateLimit(userId, "upload");
 
   if (!ALLOWED_CONTENT_TYPES.has(contentType)) {
     throw new Error(
@@ -222,20 +167,15 @@ export async function getUploadUrl(
 
   const user = await getDbUser(userId);
 
-  const countResult =
-    await sql`SELECT COUNT(*)::int AS total FROM files WHERE user_id = ${user.id}`;
-  const currentFileCount = toNum(countResult[0]?.total);
-
   const planFileLimit = toNum(user.plan_file_count_limit);
-  if (currentFileCount >= planFileLimit) {
+  if (toNum(user.file_count) >= planFileLimit) {
     throw new Error(
       `Upload blocked. Your ${user.plan_id} plan is limited to ${planFileLimit} files.`,
     );
   }
 
   const planStorageLimit = toNum(user.plan_storage_limit);
-  const used = toNum(user.storage_used);
-  if (used + fileSize > planStorageLimit) {
+  if (toNum(user.storage_used) + fileSize > planStorageLimit) {
     const limitInGb = Math.round(planStorageLimit / (1024 * 1024 * 1024));
     throw new Error(
       `Storage limit exceeded. Your ${user.plan_id} plan allows ${limitInGb} GB max.`,
@@ -259,7 +199,7 @@ export async function getUploadUrl(
   return { url, fields, key };
 }
 
-// ── 2. Confirm Upload ──────────────────────────────────────────────────────
+// 2. Confirm Upload (atomic enforcement of both limits)
 export async function confirmUploadDB(
   key: string,
   fileName: string,
@@ -268,10 +208,9 @@ export async function confirmUploadDB(
 ) {
   const { userId } = await auth();
   if (!userId) throw new Error("Unauthorized");
-
   if (!key.startsWith(`uploads/${userId}/`)) throw new Error("Unauthorized");
 
-  checkRateLimit(userId, "confirm", 30, 60_000);
+  await checkRateLimit(userId, "confirm");
 
   if (contentType && !ALLOWED_CONTENT_TYPES.has(contentType)) {
     await s3Client
@@ -310,14 +249,16 @@ export async function confirmUploadDB(
 
   const user = await getDbUser(userId);
   const planStorageLimit = toNum(user.plan_storage_limit);
+  const planFileLimit = toNum(user.plan_file_count_limit);
 
-  // ── Atomic quota update: only succeeds if the new total fits the plan.
-  //    Eliminates the TOCTOU race between concurrent uploads.
   const updated = await sql`
     UPDATE users
-    SET storage_used = storage_used + ${actualSize}, updated_at = NOW()
+    SET storage_used = storage_used + ${actualSize},
+        file_count   = file_count + 1,
+        updated_at   = NOW()
     WHERE id = ${user.id}
       AND storage_used + ${actualSize} <= ${planStorageLimit}
+      AND file_count + 1 <= ${planFileLimit}
     RETURNING id
   `;
 
@@ -325,7 +266,9 @@ export async function confirmUploadDB(
     await s3Client
       .send(new DeleteObjectCommand({ Bucket: getBucketName(), Key: key }))
       .catch(() => {});
-    throw new Error("Storage limit exceeded. File removed.");
+    throw new Error(
+      "Upload blocked: storage or file count limit reached. File removed.",
+    );
   }
 
   try {
@@ -340,11 +283,11 @@ export async function confirmUploadDB(
       )
     `;
   } catch (e) {
-    // Roll back the quota bump and clean up S3 if the row insert fails.
     await sql`
       UPDATE users
       SET storage_used = GREATEST(storage_used - ${actualSize}, 0),
-          updated_at = NOW()
+          file_count   = GREATEST(file_count - 1, 0),
+          updated_at   = NOW()
       WHERE id = ${user.id}
     `.catch(() => {});
     await s3Client
@@ -352,25 +295,27 @@ export async function confirmUploadDB(
       .catch(() => {});
     throw e;
   }
+
+  return { success: true };
 }
 
-// ── 3. List Files ──────────────────────────────────────────────────────────
+// 3. List Files
 export async function listPhotos(page = 0) {
   try {
     const { userId } = await auth();
     if (!userId) return { files: [], total: 0, hasMore: false };
 
-    checkRateLimit(userId, "list", 60, 60_000);
+    await checkRateLimit(userId, "list");
 
     const user = await getDbUser(userId);
     const offset = page * FILE_LIST_PAGE_SIZE;
 
     const files = await sql`
-      SELECT 
-        id, 
-        file_key AS key, 
-        original_name AS name, 
-        file_size AS size, 
+      SELECT
+        id,
+        file_key      AS key,
+        original_name AS name,
+        file_size     AS size,
         content_type
       FROM files
       WHERE user_id = ${user.id}
@@ -379,14 +324,9 @@ export async function listPhotos(page = 0) {
       OFFSET ${offset}
     `;
 
-    const countResult = await sql`
-      SELECT COUNT(*)::int AS total FROM files WHERE user_id = ${user.id}
-    `;
-    const total = toNum(countResult[0]?.total);
-
+    const total = toNum(user.file_count);
     const bucketName = getBucketName();
 
-    // Use allSettled so ONE broken object doesn't nuke the entire dashboard.
     const settled = await Promise.allSettled(
       files.map(async (file) => {
         const url = await getSignedUrl(
@@ -394,8 +334,6 @@ export async function listPhotos(page = 0) {
           new GetObjectCommand({ Bucket: bucketName, Key: file.key as string }),
           { expiresIn: 900 },
         );
-        // CRITICAL: explicitly cast everything that could be a BigInt to Number
-        // before it crosses the RSC boundary.
         return {
           id: String(file.id),
           key: String(file.key),
@@ -423,7 +361,6 @@ export async function listPhotos(page = 0) {
       )
       .map((r) => r.value);
 
-    // Log any individual failures so they're visible in server logs.
     settled.forEach((r, i) => {
       if (r.status === "rejected") {
         console.error(
@@ -445,14 +382,13 @@ export async function listPhotos(page = 0) {
   }
 }
 
-// ── 4. Delete File ─────────────────────────────────────────────────────────
+// 4. Delete File
 export async function deletePhoto(key: string) {
   const { userId } = await auth();
   if (!userId) throw new Error("Unauthorized");
-
   if (!key.startsWith(`uploads/${userId}/`)) throw new Error("Unauthorized");
 
-  checkRateLimit(userId, "delete", 60, 60_000);
+  await checkRateLimit(userId, "delete");
 
   const user = await getDbUser(userId);
 
@@ -469,33 +405,35 @@ export async function deletePhoto(key: string) {
 
   const actualSize = toNum(fileRows[0].file_size);
 
-  await s3Client.send(
-    new DeleteObjectCommand({ Bucket: getBucketName(), Key: key }),
-  );
-
   await sql.transaction([
     sql`DELETE FROM files WHERE file_key = ${key} AND user_id = ${user.id}`,
     sql`
       UPDATE users
       SET storage_used = GREATEST(storage_used - ${actualSize}, 0),
-          updated_at = NOW()
+          file_count   = GREATEST(file_count - 1, 0),
+          updated_at   = NOW()
       WHERE id = ${user.id}
     `,
   ]);
 
+  await s3Client
+    .send(new DeleteObjectCommand({ Bucket: getBucketName(), Key: key }))
+    .catch((err) => {
+      console.error("S3 delete failed (orphan created):", key, err);
+    });
+
   return { success: true };
 }
 
-// ── 5. Get Download URL ────────────────────────────────────────────────────
+// 5. Download URL
 export async function getDownloadUrl(key: string) {
   const { userId } = await auth();
-  if (!userId || !key.startsWith(`uploads/${userId}/`))
+  if (!userId || !key.startsWith(`uploads/${userId}/`)) {
     throw new Error("Unauthorized");
+  }
 
-  checkRateLimit(userId, "download", 60, 60_000);
+  await checkRateLimit(userId, "download");
 
-  // Look up the ORIGINAL filename so the user gets "Next Toppers (5).mp4"
-  // back, not the ugly sanitized S3 key.
   const rows = await sql`
     SELECT f.original_name
     FROM files f
@@ -506,27 +444,28 @@ export async function getDownloadUrl(key: string) {
 
   const original = (rows[0]?.original_name as string | undefined) ?? "download";
 
-  // RFC 5987: ASCII fallback + UTF-8 encoded version. Strip header-breaking chars.
   const asciiFallback =
     original.replace(/[^\x20-\x7E]/g, "_").replace(/["\\\r\n]/g, "_") ||
     "download";
   const utf8 = encodeURIComponent(original);
   const contentDisposition = `attachment; filename="${asciiFallback}"; filename*=UTF-8''${utf8}`;
 
-  const command = new GetObjectCommand({
-    Bucket: getBucketName(),
-    Key: key,
-    ResponseContentDisposition: contentDisposition,
-  });
-
-  return await getSignedUrl(s3Client, command, { expiresIn: 60 });
+  return await getSignedUrl(
+    s3Client,
+    new GetObjectCommand({
+      Bucket: getBucketName(),
+      Key: key,
+      ResponseContentDisposition: contentDisposition,
+    }),
+    { expiresIn: 60 },
+  );
 }
 
-// ── 6. Get user storage info ───────────────────────────────────────────────
+// 6. Storage info
 export async function getStorageInfo() {
   try {
     const { userId } = await auth();
-    if (!userId)
+    if (!userId) {
       return {
         used: 0,
         limit: 0,
@@ -534,19 +473,16 @@ export async function getStorageInfo() {
         currentFileCount: 0,
         planId: "free",
       };
+    }
 
-    checkRateLimit(userId, "storage-info", 60, 60_000);
-
+    await checkRateLimit(userId, "storage-info");
     const user = await getDbUser(userId);
-
-    const countResult =
-      await sql`SELECT COUNT(*)::int AS total FROM files WHERE user_id = ${user.id}`;
 
     return {
       used: toNum(user.storage_used),
       limit: toNum(user.plan_storage_limit),
       fileCountLimit: toNum(user.plan_file_count_limit),
-      currentFileCount: toNum(countResult[0]?.total),
+      currentFileCount: toNum(user.file_count),
       planId: String(user.plan_id),
     };
   } catch (error) {

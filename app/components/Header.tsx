@@ -35,7 +35,6 @@ export default function Header() {
   const toggle = () => setOpen((o) => !o);
   const close = () => setOpen(false);
 
-  // Subtle elevation change when scrolled
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 8);
     onScroll();
@@ -43,7 +42,6 @@ export default function Header() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // Lock body scroll when mobile menu open
   useEffect(() => {
     document.body.style.overflow = open ? "hidden" : "";
     return () => {
@@ -53,38 +51,40 @@ export default function Header() {
 
   return (
     <header
-      className={`sticky top-0 z-50 w-full transition-all duration-300
-        bg-[#0f0f10]/70 backdrop-blur-xl backdrop-saturate-150
-        border-b ${
-          scrolled
-            ? "border-white/10 shadow-[0_4px_24px_-8px_rgba(0,0,0,0.6)]"
-            : "border-white/5 shadow-none"
+      className={`sticky z-50 transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] mx-auto backdrop-saturate-150
+        ${
+          scrolled && !open
+            ? "top-2 w-[calc(100%-1rem)] max-w-6xl rounded-full border border-white/10 bg-[#050505]/80 backdrop-blur-xl shadow-[0_16px_40px_-10px_rgba(0,0,0,0.8)]"
+            : "top-0 w-full rounded-none border-b border-white/5 bg-[#050505]/50 backdrop-blur-lg shadow-none"
         }`}
     >
-      {/* Top hairline highlight for that "glass edge" feel */}
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
+      {/* Top hairline highlight - fades out when pill shaped so it doesn't bleed out the corners */}
+      <div
+        className={`pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent transition-opacity duration-300
+        ${scrolled && !open ? "opacity-0" : "opacity-100"}`}
+      />
 
-      <div className="flex items-center justify-between h-14 px-4 max-w-screen-2xl mx-auto">
+      <div className="flex items-center justify-between h-14 px-4 md:px-6 max-w-screen-2xl mx-auto">
         {/* ── Logo ── */}
         <Link
           href="/"
           onClick={close}
-          className="flex items-center gap-2.5 px-2 py-1.5 rounded-lg hover:bg-white/5 transition-all shrink-0 group"
+          className="flex items-center gap-2.5 py-1.5 rounded-lg hover:bg-white/5 transition-all shrink-0 group"
         >
           <Image
             src="/anylogo.png"
             alt="Kosha"
-            width={28}
-            height={28}
+            width={40}
+            height={40}
             className="object-contain group-hover:scale-105 transition-transform duration-300"
           />
-          <span className="font-bold text-[15px] tracking-wider text-gray-100">
+          <span className="font-bold text-[23px] tracking-wider title-font text-gray-100">
             KOSHA
           </span>
         </Link>
 
         {/* ── Desktop Nav ── */}
-        <nav className="hidden md:flex items-center gap-1 flex-1 px-6 overflow-x-auto no-scrollbar mask-fade-edges">
+        <nav className="hidden md:flex items-center gap-1 flex-1 px-8 overflow-x-auto no-scrollbar mask-fade-edges">
           {isLoaded && userId && (
             <NavLink href="/dashboard" icon={LayoutDashboard}>
               Dashboard
@@ -142,73 +142,81 @@ export default function Header() {
         </button>
       </div>
 
-      {/* ── Mobile Menu ── */}
+      {/* ── Mobile Menu — FIXED Reliable Glassmorphism ── */}
       <div
-        className={`md:hidden absolute top-full left-0 w-full
-          bg-[#0f0f10]/85 backdrop-blur-xl backdrop-saturate-150
-          border-b border-white/10
-          shadow-[0_16px_40px_-12px_rgba(0,0,0,0.7)]
+        className={`md:hidden absolute top-full left-0 right-0
+          bg-[#050505]/95 backdrop-blur-xl
+          border-x border-b border-white/10
           rounded-b-3xl overflow-hidden
-          transition-all duration-300 ease-out origin-top
+          shadow-[0_40px_80px_-15px_rgba(0,0,0,0.9),inset_0_1px_0_rgba(255,255,255,0.05)]
+          transition-all duration-400 ease-[cubic-bezier(0.22,1,0.36,1)] origin-top
           ${
             open
-              ? "max-h-[calc(100vh-3.5rem)] opacity-100 overflow-y-auto"
-              : "max-h-0 opacity-0 pointer-events-none"
+              ? "max-h-[calc(100vh-3.5rem)] opacity-100 translate-y-0 visible"
+              : "max-h-0 opacity-0 -translate-y-2 invisible pointer-events-none"
           }`}
       >
-        <nav className="flex flex-col py-2">
-          {isLoaded && userId && (
-            <MobileNavLink
-              href="/dashboard"
-              icon={LayoutDashboard}
-              onClick={close}
-            >
-              Dashboard
-            </MobileNavLink>
-          )}
-          {NAV_LINKS.map(({ href, label, icon }) => (
-            <MobileNavLink key={href} href={href} icon={icon} onClick={close}>
-              {label}
-            </MobileNavLink>
-          ))}
-
-          <div className="h-px bg-white/10 my-2 mx-5" />
-
-          <a
-            href="https://github.com/kinshukjainn/pvtcldstrg"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center gap-3 px-5 py-3.5 text-sm font-medium text-gray-300 hover:bg-white/5 hover:text-white transition-all"
-          >
-            <FaGithub className="w-5 h-5 text-gray-400" />
-            Open Source
-          </a>
-
-          {isLoaded && !userId && (
-            <div className="px-5 py-4">
-              <Link
-                href="/verify-regis"
+        <div className="relative overflow-y-auto max-h-[calc(100vh-3.5rem)] pb-6">
+          <nav className="flex flex-col p-3 gap-1.5">
+            {isLoaded && userId && (
+              <MobileNavLink
+                href="/dashboard"
+                icon={LayoutDashboard}
                 onClick={close}
-                className="flex items-center justify-center gap-2 w-full bg-white text-black text-sm font-bold tracking-wide py-3 rounded-full transition-all active:scale-[0.98] shadow-[0_2px_12px_-2px_rgba(0,0,0,0.5)]"
               >
-                <LogIn className="w-4 h-4" />
-                Sign In / Up
-              </Link>
-            </div>
-          )}
+                Dashboard
+              </MobileNavLink>
+            )}
+            {NAV_LINKS.map(({ href, label, icon }) => (
+              <MobileNavLink key={href} href={href} icon={icon} onClick={close}>
+                {label}
+              </MobileNavLink>
+            ))}
 
-          {isLoaded && userId && (
-            <div className="px-5 py-4 bg-white/[0.02] border-t border-white/10">
-              <UserProfileDropdown variant="mobile" onAction={close} />
-            </div>
-          )}
-        </nav>
+            {/* Gradient hairline divider */}
+            <div className="my-3 mx-4 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
+
+            <a
+              href="https://github.com/kinshukjainn/pvtcldstrg"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group relative flex items-center gap-3 px-4 py-3 rounded-2xl text-[14px] font-medium text-gray-300 hover:text-white hover:bg-white/[0.06] transition-all duration-300"
+            >
+              <div className="w-9 h-9 flex items-center justify-center rounded-xl bg-white/[0.04] border border-white/[0.08] group-hover:bg-white/10 transition-all duration-300">
+                <FaGithub className="w-4 h-4 text-gray-400 group-hover:text-white transition-colors" />
+              </div>
+              <span className="flex-1">Open Source</span>
+              <span className="text-[11px] text-gray-500 group-hover:text-gray-300 transition-colors">
+                ↗
+              </span>
+            </a>
+
+            {isLoaded && !userId && (
+              <div className="px-2 pt-4">
+                <Link
+                  href="/verify-regis"
+                  onClick={close}
+                  className="relative flex items-center justify-center gap-2 w-full bg-white text-black text-sm font-bold tracking-wide py-3.5 rounded-2xl transition-all hover:bg-gray-200 active:scale-[0.98] shadow-lg"
+                >
+                  <LogIn className="w-4 h-4" />
+                  Sign In / Up
+                </Link>
+              </div>
+            )}
+
+            {isLoaded && userId && (
+              <div className="mt-2 pt-3 border-t border-white/5">
+                <UserProfileDropdown variant="mobile" onAction={close} />
+              </div>
+            )}
+          </nav>
+        </div>
       </div>
     </header>
   );
 }
 
-/* ── Shared Sub-components ── */
+/* ── Desktop NavLink ── */
 function NavLink({
   href,
   icon: Icon,
@@ -223,41 +231,45 @@ function NavLink({
   return (
     <Link
       href={href}
-      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[13px] font-medium text-gray-100 hover:bg-white/5 hover:text-gray-100 transition-all whitespace-nowrap ${
+      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[15px] font-medium text-gray-300 hover:bg-white/[0.08] hover:text-white transition-colors whitespace-nowrap ${
         underline
           ? "underline decoration-white/20 underline-offset-4 hover:decoration-gray-400"
           : ""
       }`}
     >
-      <Icon className="w-3.5 h-3.5 shrink-0 opacity-70" />
+      <Icon className="w-4 h-4 shrink-0 opacity-70" />
       {children}
     </Link>
   );
 }
 
+/* ── Mobile NavLink — refined glass pill ── */
 function MobileNavLink({
   href,
   icon: Icon,
   children,
-  underline = false,
   onClick,
 }: {
   href: string;
   icon: React.ComponentType<{ className?: string }>;
   children: React.ReactNode;
-  underline?: boolean;
   onClick: () => void;
 }) {
   return (
     <Link
       href={href}
       onClick={onClick}
-      className={`flex items-center gap-3 px-5 py-3.5 text-sm font-medium text-gray-300 hover:bg-white/5 hover:text-white transition-all ${
-        underline ? "underline decoration-white/20 underline-offset-4" : ""
-      }`}
+      className="group relative flex items-center gap-3 px-4 py-3 rounded-2xl text-[14px] font-medium text-gray-300 hover:text-white hover:bg-white/[0.04] active:bg-white/[0.06] transition-all duration-300"
     >
-      <Icon className="w-5 h-5 text-gray-400 shrink-0" />
-      {children}
+      {/* Icon tile */}
+      <div className="w-9 h-9 flex items-center justify-center rounded-xl bg-white/[0.03] border border-white/[0.05] shadow-[inset_0_1px_0_rgba(255,255,255,0.05)] group-hover:bg-white/[0.08] group-hover:border-white/10 transition-all duration-300">
+        <Icon className="w-4 h-4 text-gray-400 group-hover:text-white transition-colors" />
+      </div>
+      <span className="flex-1">{children}</span>
+      {/* Reveal arrow on hover */}
+      <span className="text-gray-500 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300">
+        →
+      </span>
     </Link>
   );
 }

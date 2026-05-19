@@ -30,7 +30,7 @@ import {
   getDownloadUrl,
   getStorageInfo,
 } from "@/actions/drive";
-import { Database, HardDrive, ChevronRight } from "lucide-react";
+import { Database, HardDrive } from "lucide-react";
 
 type DriveFile = {
   key: string;
@@ -63,7 +63,7 @@ const formatBytes = (bytes: number, decimals = 2) => {
 /* Azure Standard Button Classes                                      */
 /* ------------------------------------------------------------------ */
 const primaryButtonClass =
-  "inline-flex items-center justify-center gap-2 py-1.5 px-4 font-semibold text-[13px] bg-[#0078D4] text-white hover:bg-[#005a9e] rounded-xl transition-colors disabled:opacity-50 disabled:cursor-not-allowed";
+  "inline-flex items-center justify-center gap-2 py-3 px-5 font-semibold text-[15px] cursor-pointer bg-blue-800 text-white hover:bg-blue-800 rounded-full transition-colors disabled:opacity-50 disabled:cursor-not-allowed";
 
 const secondaryButtonClass =
   "inline-flex items-center justify-center gap-2 py-1.5 px-4 font-semibold text-[13px] bg-white border border-gray-300 text-gray-800 hover:bg-gray-50 rounded-xl transition-colors disabled:opacity-50 disabled:cursor-not-allowed";
@@ -88,34 +88,34 @@ function ToastContainer({
 
   const config = {
     error: {
-      border: "border-l-[#d13438]",
-      bg: "bg-[#fdf3f4]",
+      border: "border-l-[#444444]",
+      bg: "bg-black",
       icon: (
         <FaExclamationCircle
           size={16}
-          className="text-[#d13438] shrink-0 mt-0.5"
+          className="text-red-500 shrink-0 mt-0.5"
         />
       ),
       title: "Error",
-      titleColor: "text-[#d13438]",
+      titleColor: "text-white",
     },
     success: {
-      border: "border-l-[#107c10]",
-      bg: "bg-[#f1faf1]",
+      border: "border-l-green-500",
+      bg: "bg-black",
       icon: (
-        <FaCheckCircle size={16} className="text-[#107c10] shrink-0 mt-0.5" />
+        <FaCheckCircle size={16} className="text-green-500 shrink-0 mt-0.5" />
       ),
       title: "Success",
-      titleColor: "text-[#107c10]",
+      titleColor: "text-green-500",
     },
     info: {
-      border: "border-l-[#0078D4]",
-      bg: "bg-[#f0f6ff]",
+      border: "border-l-blue-500",
+      bg: "bg-black",
       icon: (
-        <FaInfoCircle size={16} className="text-[#0078D4] shrink-0 mt-0.5" />
+        <FaInfoCircle size={16} className="text-blue-500 shrink-0 mt-0.5" />
       ),
       title: "Info",
-      titleColor: "text-[#0078D4]",
+      titleColor: "text-blue-500",
     },
   };
 
@@ -205,7 +205,7 @@ function ActionMenu({
 
       {open && (
         <div
-          className="absolute right-0 top-full mt-1 z-[100] min-w-[160px] bg-white border border-gray-200 shadow-md py-1 flex flex-col rounded-xl"
+          className="absolute right-0 top-full mt-1 z-[100] min-w-[160px] bg-black border border-[#444444] shadow-md py-1 flex flex-col rounded-xl"
           onClick={(e) => e.stopPropagation()}
         >
           <button
@@ -213,7 +213,7 @@ function ActionMenu({
               onDownload(e, fileKey);
               setOpen(false);
             }}
-            className="w-full flex items-center gap-3 px-4 py-2 text-[13px] text-gray-700 hover:bg-gray-100 transition-colors"
+            className="w-full flex items-center gap-3 px-4 py-2 text-[13px] cursor-pointer   text-gray-100 hover:bg-[#252525] transition-colors"
           >
             <FaDownload size={14} className="text-gray-500" />
             Download
@@ -224,7 +224,7 @@ function ActionMenu({
               onDelete(e, fileKey);
               setOpen(false);
             }}
-            className="w-full flex items-center gap-3 px-4 py-2 text-[13px] text-[#d13438] hover:bg-[#fdf3f4] transition-colors"
+            className="w-full flex items-center gap-3 px-4 py-2 text-[13px] cursor-pointer text-gray-100 hover:bg-[#252525] transition-colors"
           >
             <FaTrash size={14} />
             Delete
@@ -481,26 +481,22 @@ export default function DriveManager() {
   );
 
   return (
-    <div className="w-full min-h-screen bg-[#faf9f8] text-gray-900  flex flex-col">
+    <div className="w-full min-h-screen bg-black text-gray-100  flex flex-col">
       {/* ── Toast Notifications ── */}
       <ToastContainer toasts={toasts} onDismiss={dismissToast} />
 
       {/* --- Page Header & Breadcrumbs --- */}
-      <div className="bg-white border-b border-gray-200">
+      <div className="bg-black border-b border-[#444444]">
         <div className="px-6 py-4">
-          <div className="text-[13px] font-medium text-[#0078D4] flex items-center gap-1.5 mb-4 w-fit cursor-pointer hover:underline">
-            Home <ChevronRight size={14} className="text-gray-500" /> Storage
-            Explorer
-          </div>
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-[#0078D4] rounded-xl flex items-center justify-center shrink-0">
+            <div className="w-10 h-10 bg-blue-800 rounded-full flex items-center justify-center shrink-0">
               <HardDrive size={20} className="text-white" />
             </div>
             <div>
-              <h1 className="text-xl font-semibold text-gray-900 tracking-tight leading-tight">
-                Storage Explorer
+              <h1 className="text-xl title-font font-semibold text-gray-100 tracking-tight leading-tight">
+                My Drive
               </h1>
-              <p className="text-[13px] text-gray-600 mt-0.5">
+              <p className="text-[13px] text-gray-200 mt-0.5">
                 Manage and review your secure files
               </p>
             </div>
@@ -508,7 +504,7 @@ export default function DriveManager() {
         </div>
 
         {/* --- Command Bar --- */}
-        <div className="bg-[#f3f2f1] px-4 sm:px-6 py-2 flex flex-wrap items-center justify-between border-t border-gray-200 gap-3">
+        <div className="bg-black px-4 sm:px-6 py-2 flex flex-wrap items-center justify-between border-t border-[#444444] gap-3">
           <div className="flex flex-wrap items-center gap-2">
             <input
               type="file"
@@ -532,32 +528,32 @@ export default function DriveManager() {
               {isUploading ? "Uploading..." : "Upload Files"}
             </button>
 
-            <div className="w-px h-5 bg-gray-300 mx-2 hidden sm:block" />
+            <div className="w-px h-5 bg-black mx-2 hidden sm:block" />
 
             {/* View Mode Toggles */}
-            <div className="flex items-center bg-white p-1 rounded-full overflow-hidden">
+            <div className="flex items-center bg-black py-1 px-3 rounded-full gap-2 overflow-hidden">
               <button
                 onClick={() => setViewMode("grid")}
-                className={`p-2 transition-colors rounded-xl ${
+                className={`py-2 px-5 transition-colors  rounded-full ${
                   viewMode === "grid"
-                    ? "bg-blue-400 text-black"
-                    : "text-gray-500 hover:bg-gray-50"
+                    ? "bg-blue-800 text-white"
+                    : "hover:text-gray-900 text hover:bg-gray-50"
                 }`}
                 title="Grid View"
               >
-                <FaThLarge size={14} />
+                <FaThLarge size={18} />
               </button>
               <div className="w-px h-4 bg-gray-200" />
               <button
                 onClick={() => setViewMode("list")}
-                className={`p-2 transition-colors rounded-xl ${
+                className={`py-2 px-5 transition-colors  rounded-full ${
                   viewMode === "list"
-                    ? "bg-blue-400 text-black"
-                    : "text-gray-500 hover:bg-gray-50"
+                    ? "bg-blue-800 text-white"
+                    : "hover:text-gray-900 text hover:bg-gray-50"
                 }`}
                 title="List View"
               >
-                <FaListUl size={14} />
+                <FaListUl size={18} />
               </button>
             </div>
           </div>
@@ -566,14 +562,14 @@ export default function DriveManager() {
           <div className="relative w-full sm:w-64">
             <FaSearch
               size={12}
-              className="absolute left-2.5 top-2.5 text-gray-500"
+              className="absolute left-2.5 top-3 text-gray-500"
             />
             <input
               type="text"
               placeholder="Filter by name..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-8 pr-3 py-1.5 bg-white border border-gray-300 rounded-xl text-[13px] text-gray-900 focus:outline-none focus:border-[#0078D4] focus:ring-1 focus:ring-[#0078D4] transition-all placeholder-gray-400"
+              className="w-full pl-8 pr-3 py-2 bg-black border border-[#444444] rounded-full text-[15px] text-gray-100 focus:outline-none transition-all placeholder-gray-400"
             />
           </div>
         </div>
@@ -583,28 +579,28 @@ export default function DriveManager() {
       <div className="flex-1 w-full max-w-[1600px] mx-auto p-4 md:p-6 lg:p-8 z-10">
         {/* Essentials Block */}
         <div className="mb-6">
-          <h2 className="font-semibold text-[14px] text-gray-900 mb-3">
+          <h2 className="font-semibold text-[14px] text-gray-100 mb-3">
             Essentials
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-x-12 gap-y-4 text-[13px] ml-1">
             <div className="flex flex-col gap-1">
-              <span className="text-gray-500">Total Resources</span>
-              <span className="text-gray-900 font-medium">
+              <span className="text-gray-100">Total Resources</span>
+              <span className="text-gray-100 font-medium">
                 {totalFiles} items
               </span>
             </div>
             <div className="flex flex-col gap-1">
-              <span className="text-gray-500">Storage Used</span>
+              <span className="text-gray-100">Storage Used</span>
               <span className="text-[#0078D4] font-medium">
                 {formatBytes(storageUsed)}
               </span>
             </div>
             <div className="flex flex-col gap-1">
-              <span className="text-gray-500">Storage Capacity</span>
-              <span className="text-gray-900">{formatBytes(storageLimit)}</span>
+              <span className="text-gray-100">Storage Capacity</span>
+              <span className="text-gray-100">{formatBytes(storageLimit)}</span>
             </div>
             <div className="flex flex-col gap-1">
-              <span className="text-gray-500">Status</span>
+              <span className="text-gray-100">Status</span>
               <span className="text-[#107c10] font-medium flex items-center gap-1">
                 <Database size={14} /> Online
               </span>
@@ -614,29 +610,29 @@ export default function DriveManager() {
 
         {/* Content View */}
         {isLoading ? (
-          <div className="flex flex-col items-center justify-center py-20 gap-3">
-            <FaSpinner className="animate-spin text-[#0078D4]" size={24} />
-            <span className="text-[13px] text-gray-600">
+          <div className="flex flex-col bg-black items-center justify-center py-20 gap-3">
+            <FaSpinner className="animate-spin text-white" size={24} />
+            <span className="text-[13px] text-gray-100">
               Loading resources...
             </span>
           </div>
         ) : filteredFiles.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-16 bg-white border border-gray-200 rounded-xl">
+          <div className="flex flex-col items-center justify-center py-16 bg-black border border-[#444444] rounded-xl">
             <FaFileAlt className="text-4xl text-gray-300 mb-3" />
-            <h3 className="text-[15px] font-semibold text-gray-900 mb-1">
+            <h3 className="text-[15px] font-semibold text-gray-100 mb-1">
               No files found
             </h3>
-            <p className="text-[13px] text-gray-500 text-center">
+            <p className="text-[13px] text-gray-100 text-center">
               Upload documents or media to populate this directory.
             </p>
           </div>
         ) : (
-          <div className="bg-white border border-gray-200 rounded-xl">
+          <div className="bg-black border border-[#444444] rounded-xl p-4">
             {/* ===================== LIST VIEW ===================== */}
             {viewMode === "list" ? (
               <div className="overflow-x-auto w-full">
                 <table className="w-full text-left border-collapse whitespace-nowrap">
-                  <thead className="bg-[#fafafa] border-b border-gray-200 text-[12px] font-semibold text-gray-700 uppercase">
+                  <thead className="bg-black border-b border-[#444444] text-[12px] font-semibold text-gray-100 uppercase">
                     <tr>
                       <th className="px-4 py-2.5 w-12 text-center">Type</th>
                       <th className="px-4 py-2.5">Name</th>
@@ -646,7 +642,7 @@ export default function DriveManager() {
                       <th className="px-4 py-2.5 w-20 text-center">Actions</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-gray-100">
+                  <tbody className="divide-y divide-[#444444]">
                     {filteredFiles.map((file) => {
                       const fileName = getFileName(file.key);
                       const fileType = getFileType(fileName);
@@ -655,22 +651,22 @@ export default function DriveManager() {
                         <tr
                           key={file.key}
                           onClick={() => setSelectedFile(file)}
-                          className="hover:bg-[#f6f6f6] cursor-pointer transition-colors group"
+                          className="hover:bg-[#252525] cursor-pointer transition-colors group"
                         >
                           <td className="px-4 py-3 text-center">
                             {getFileIcon(
                               fileType,
-                              "text-[16px] text-[#0078D4] mx-auto",
+                              "text-[16px] text-green-500 mx-auto",
                             )}
                           </td>
-                          <td className="px-4 py-3 text-[13px] text-[#0078D4] font-medium truncate max-w-[200px] md:max-w-md group-hover:underline">
+                          <td className="px-4 py-3 text-[13px] text-white font-medium truncate max-w-[200px] md:max-w-md group-hover:underline">
                             {fileName}
-                            <span className="block sm:hidden text-[11px] text-gray-500 mt-0.5 no-underline">
+                            <span className="block sm:hidden text-[11px] text-gray-100 mt-0.5 no-underline">
                               {ext.toUpperCase()}
                             </span>
                           </td>
                           <td className="px-4 py-3 hidden sm:table-cell">
-                            <span className="bg-gray-100 text-gray-700 px-2 py-0.5 text-[11px] font-semibold rounded-xl">
+                            <span className="bg-[#252525] text-gray-100 px-2 py-0.5 text-[11px] font-semibold rounded-xl">
                               {ext.toUpperCase()}
                             </span>
                           </td>
@@ -701,10 +697,10 @@ export default function DriveManager() {
                     <div
                       key={file.key}
                       onClick={() => setSelectedFile(file)}
-                      className="relative bg-white border border-gray-200 hover:border-[#0078D4] hover:shadow-sm transition-all duration-150 cursor-pointer flex flex-col group rounded-xl overflow-hidden"
+                      className="relative bg-[#121212] border border-[#444444] hover:border-[#444444] hover:shadow-sm transition-all duration-150 cursor-pointer flex flex-col group rounded-xl overflow-hidden"
                     >
                       <div
-                        className="absolute top-1.5 right-1.5 z-10 bg-white/90 rounded-xl opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity shadow-sm"
+                        className="absolute top-1.5 right-1.5 z-10 bg-black/90 rounded-2xl opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity shadow-sm"
                         onClick={(e) => e.stopPropagation()}
                       >
                         <ActionMenu
@@ -715,7 +711,7 @@ export default function DriveManager() {
                       </div>
 
                       {/* Preview Area */}
-                      <div className="h-28 sm:h-32 bg-[#fafafa] border-b border-gray-100 flex items-center justify-center relative overflow-hidden">
+                      <div className="h-28 sm:h-32 bg-black border-b border-[#444444] flex items-center justify-center relative overflow-hidden">
                         {fileType === "image" ? (
                           // eslint-disable-next-line @next/next/no-img-element
                           <img
@@ -750,7 +746,7 @@ export default function DriveManager() {
                       {/* File Info Footer */}
                       <div className="p-2.5 flex flex-col gap-1">
                         <span
-                          className="text-[12px] font-semibold text-gray-900 truncate"
+                          className="text-[12px] font-semibold text-gray-100 truncate"
                           title={fileName}
                         >
                           {fileName}
@@ -789,35 +785,35 @@ export default function DriveManager() {
         >
           {/* Viewer Header */}
           <div
-            className="bg-white px-4 py-3 flex justify-between items-center shadow-sm"
+            className="bg-[#121212] rounded-b-2xl px-4 py-3 flex border border-[#444444] justify-between items-center shadow-sm"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center gap-2 min-w-0">
               {getFileIcon(
                 getFileType(getFileName(selectedFile.key)),
-                "text-[#0078D4] text-lg shrink-0",
+                "text-white text-lg shrink-0",
               )}
-              <span className="text-[14px] font-semibold text-gray-900 truncate">
+              <span className="text-[14px] font-semibold text-gray-100 truncate">
                 {getFileName(selectedFile.key)}
               </span>
             </div>
             <div className="flex items-center gap-2 shrink-0 ml-4">
               <button
                 onClick={(e) => handleDownload(e, selectedFile.key)}
-                className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-800 text-[13px] font-semibold rounded-xl transition-colors"
+                className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 bg-blue-800 cursor-pointer hover:bg-blue-800 text-white text-[13px] font-semibold rounded-xl transition-colors"
               >
                 <FaDownload size={12} /> Download
               </button>
               <button
                 onClick={(e) => handleDeleteClick(e, selectedFile.key)}
-                className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 bg-[#fdf3f4] hover:bg-[#f8d7da] text-[#a4262c] text-[13px] font-semibold rounded-xl transition-colors"
+                className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 bg-red-800  cursor-pointer text-white text-[13px] font-semibold rounded-xl transition-colors"
               >
                 <FaTrash size={12} /> Delete
               </button>
               <div className="w-px h-5 bg-gray-300 mx-1 hidden sm:block" />
               <button
                 onClick={() => setSelectedFile(null)}
-                className="p-1.5 text-gray-500 hover:text-gray-900 hover:bg-gray-100 rounded-xl transition-colors"
+                className="p-1.5 text-gray-100 hover:text-gray-100 hover:bg-gray-900 rounded-xl cursor-pointer transition-colors"
                 title="Close Viewer"
               >
                 <FaTimes size={18} />

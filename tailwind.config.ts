@@ -11,15 +11,19 @@ const config: Config = {
     extend: {
       fontFamily: {
         // Add your custom font here
-        inter: "var(--font-inter) , sans-serif",
         lucida: "var(--font-lucida) , sans-serif",
         segoeui: "var(--font-segoeui) , sans-serif",
         ubuntu: "var(--font-ubuntu) , sans-serif",
-        notoSerif: "var(--font-noto-serif) , serif",
         supermercado: "var(--font-supermercado) , sans-serif",
+        varelaRound: "var(--font-varela-round) , sans-serif",
         geist: "var(--font-geist-mono) , monospaced",
-        googleSans: "var(--font-google-sans) , sans-serif",
         roboto: "var(--font-roboto) , sans-serif",
+        publicSans: "var(--font-public-sans) , sans-serif",
+        poppins: "var(--font-poppins) , sans-serif",
+        googleSans: "var(--font-google-sans) , sans-serif",
+        plusJakarta: "var(--font-plus-jakarta) , sans-serif",
+        inter: "var(--font-inter) , sans-serif",
+        notoSerif: "var(--font-noto-serif) , serif",
         verdana: "var(--font-verdana) , sans-serif",
       },
     },

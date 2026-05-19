@@ -13,16 +13,10 @@ const getBucketName = () => {
   return bucket;
 };
 
-/**
- * Deletes ALL S3 objects under a user's upload prefix.
- * FIX: Now tracks failures and throws if any objects couldn't be deleted,
- * so we don't proceed to delete the DB user and orphan S3 objects.
- */
 async function deleteAllUserS3Files(clerkId: string) {
   const bucket = getBucketName();
   const prefix = `uploads/${clerkId}/`;
   const failedKeys: string[] = [];
-
   let continuationToken: string | undefined;
 
   do {
@@ -35,8 +29,8 @@ async function deleteAllUserS3Files(clerkId: string) {
     );
 
     const objects = listResponse.Contents ?? [];
-
     const BATCH_SIZE = 25;
+
     for (let i = 0; i < objects.length; i += BATCH_SIZE) {
       const batch = objects.slice(i, i + BATCH_SIZE);
       const results = await Promise.allSettled(
@@ -46,12 +40,8 @@ async function deleteAllUserS3Files(clerkId: string) {
           ),
         ),
       );
-
-      // Track any failed deletions
-      results.forEach((result, idx) => {
-        if (result.status === "rejected") {
-          failedKeys.push(batch[idx].Key!);
-        }
+      results.forEach((r, idx) => {
+        if (r.status === "rejected") failedKeys.push(batch[idx].Key!);
       });
     }
 
@@ -62,17 +52,20 @@ async function deleteAllUserS3Files(clerkId: string) {
 
   if (failedKeys.length > 0) {
     throw new Error(
-      `Failed to delete ${failedKeys.length} S3 object(s): ${failedKeys.slice(0, 5).join(", ")}${failedKeys.length > 5 ? "..." : ""}`,
+      `Failed to delete ${failedKeys.length} S3 object(s): ${failedKeys
+        .slice(0, 5)
+        .join(", ")}${failedKeys.length > 5 ? "..." : ""}`,
     );
   }
 }
 
 export async function POST(req: Request) {
   const WEBHOOK_SECRET = process.env.CLERK_WEBHOOK_SECRET;
-
   if (!WEBHOOK_SECRET) {
-    throw new Error(
-      "Please add CLERK_WEBHOOK_SECRET from Clerk Dashboard to .env",
+    console.error("CLERK_WEBHOOK_SECRET missing");
+    return NextResponse.json(
+      { error: "Server misconfigured" },
+      { status: 500 },
     );
   }
 
@@ -82,14 +75,14 @@ export async function POST(req: Request) {
   const svix_signature = headerPayload.get("svix-signature");
 
   if (!svix_id || !svix_timestamp || !svix_signature) {
-    return new Response("Error -- no svix headers", { status: 400 });
+    return new Response("Missing svix headers", { status: 400 });
   }
 
   const payload = await req.json();
   const body = JSON.stringify(payload);
   const wh = new Webhook(WEBHOOK_SECRET);
-  let evt: WebhookEvent;
 
+  let evt: WebhookEvent;
   try {
     evt = wh.verify(body, {
       "svix-id": svix_id,
@@ -98,10 +91,10 @@ export async function POST(req: Request) {
     }) as WebhookEvent;
   } catch (err) {
     console.error("Error verifying webhook:", err);
-    return new Response("Error verifying webhook", { status: 400 });
+    return new Response("Invalid signature", { status: 400 });
   }
 
-  // ── user.created ──
+  // user.created
   if (evt.type === "user.created") {
     const {
       id,
@@ -117,7 +110,7 @@ export async function POST(req: Request) {
         ?.email_address ?? email_addresses[0]?.email_address;
 
     if (!primaryEmail) {
-      console.error("user.created: no email found for", id);
+      console.error("user.created: no email for", id);
       return NextResponse.json({ error: "No email" }, { status: 400 });
     }
 
@@ -126,22 +119,17 @@ export async function POST(req: Request) {
     try {
       await sql`
         INSERT INTO users (clerk_id, email, name, avatar_url)
-        VALUES (
-          ${id},
-          ${primaryEmail},
-          ${name},
-          ${image_url ?? null}
-        )
+        VALUES (${id}, ${primaryEmail}, ${name}, ${image_url ?? null})
         ON CONFLICT (clerk_id) DO NOTHING
       `;
       return NextResponse.json({ message: "User synced" }, { status: 201 });
     } catch (error) {
-      console.error("Database insertion error:", error);
+      console.error("user.created DB error:", error);
       return NextResponse.json({ error: "Database error" }, { status: 500 });
     }
   }
 
-  // ── user.updated ──
+  // user.updated — upsert so updates aren't lost if row doesn't exist yet
   if (evt.type === "user.updated") {
     const {
       id,
@@ -156,47 +144,40 @@ export async function POST(req: Request) {
       email_addresses.find((e) => e.id === primary_email_address_id)
         ?.email_address ?? email_addresses[0]?.email_address;
 
+    if (!primaryEmail) {
+      return NextResponse.json({ error: "No email" }, { status: 400 });
+    }
+
     const name = [first_name, last_name].filter(Boolean).join(" ") || null;
 
     try {
       await sql`
-        UPDATE users
-        SET
-          email      = ${primaryEmail},
-          name       = ${name},
-          avatar_url = ${image_url ?? null},
+        INSERT INTO users (clerk_id, email, name, avatar_url)
+        VALUES (${id}, ${primaryEmail}, ${name}, ${image_url ?? null})
+        ON CONFLICT (clerk_id) DO UPDATE SET
+          email      = EXCLUDED.email,
+          name       = EXCLUDED.name,
+          avatar_url = EXCLUDED.avatar_url,
           updated_at = NOW()
-        WHERE clerk_id = ${id}
       `;
       return NextResponse.json({ message: "User updated" }, { status: 200 });
     } catch (error) {
-      console.error("Database update error:", error);
+      console.error("user.updated DB error:", error);
       return NextResponse.json({ error: "Database error" }, { status: 500 });
     }
   }
 
-  // ── user.deleted ──
+  // user.deleted
   if (evt.type === "user.deleted") {
     const { id } = evt.data;
-
-    if (!id) {
-      return NextResponse.json({ error: "No user id" }, { status: 400 });
-    }
+    if (!id) return NextResponse.json({ error: "No user id" }, { status: 400 });
 
     try {
-      // 1. Purge all of the user's files from S3 BEFORE the DB cascade
-      //    wipes the file_key references we'd need to find them.
-      // FIX: If this throws (partial failure), we abort and return 500.
-      //      Clerk will retry the webhook, giving us another chance.
       await deleteAllUserS3Files(id);
-
-      // 2. Now delete the user row — CASCADE will clean up the files table.
       await sql`DELETE FROM users WHERE clerk_id = ${id}`;
-
       return NextResponse.json({ message: "User deleted" }, { status: 200 });
     } catch (error) {
-      console.error("User deletion error:", error);
-      // FIX: Return 500 so Clerk retries the webhook instead of silently orphaning files
+      console.error("user.deleted error:", error);
       return NextResponse.json(
         { error: "Deletion incomplete — will retry" },
         { status: 500 },

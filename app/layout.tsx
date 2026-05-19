@@ -1,6 +1,19 @@
 import type { Metadata } from "next";
-import { Noto_Serif, Supermercado_One } from "next/font/google";
-import { Geist, Geist_Mono, Ubuntu, Roboto, Inter } from "next/font/google";
+import {
+  Noto_Serif,
+  Plus_Jakarta_Sans,
+  Supermercado_One,
+} from "next/font/google";
+import {
+  Geist,
+  Geist_Mono,
+  Public_Sans,
+  Ubuntu,
+  Poppins,
+  Varela_Round,
+  Roboto,
+  Inter,
+} from "next/font/google";
 import localFont from "next/font/local";
 import { ClerkProvider } from "@clerk/nextjs";
 import "./globals.css";
@@ -10,6 +23,12 @@ import Footer from "./components/Footer";
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
+});
+
+const poppins = Poppins({
+  subsets: ["latin"],
+  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
+  variable: "--font-poppins",
 });
 
 const roboto = Roboto({
@@ -35,6 +54,12 @@ const ubuntu = Ubuntu({
   weight: ["300", "400", "500", "700"],
   variable: "--font-ubuntu",
   display: "swap",
+});
+
+const publicSans = Public_Sans({
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700"],
+  variable: "--font-public-sans",
 });
 
 export const segoeui = localFont({
@@ -64,11 +89,23 @@ export const verdana = localFont({
   display: "swap",
 });
 
+const varelaRound = Varela_Round({
+  subsets: ["latin"],
+  weight: ["400"],
+  variable: "--font-varela-round",
+});
+
 export const notoSerif = Noto_Serif({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"], // adjust as needed
   variable: "--font-noto-serif",
   display: "swap",
+});
+
+const plusJakarta = Plus_Jakarta_Sans({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700", "800"],
+  variable: "--font-plus-jakarta",
 });
 
 const supermercado = Supermercado_One({
@@ -152,7 +189,7 @@ export default function RootLayout({
     <ClerkProvider>
       <html lang="en" data-google-analytics-opt-out="">
         <body
-          className={`${geistSans.variable} ${ubuntu.variable} ${notoSerif.variable} ${roboto.variable} ${verdana.variable} ${segoeui.variable} ${geistMono.variable} ${inter.variable} ${lucideSans.variable} ${googleSans.variable} ${supermercado.variable}  antialiased`}
+          className={`${geistSans.variable} ${plusJakarta.variable} ${publicSans.variable} ${ubuntu.variable} ${notoSerif.variable} ${poppins.variable} ${roboto.variable} ${verdana.variable} ${segoeui.variable} ${geistMono.variable} ${inter.variable} ${lucideSans.variable} ${googleSans.variable} ${supermercado.variable} ${varelaRound.variable} antialiased`}
         >
           <Header />
           <main>{children}</main>

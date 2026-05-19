@@ -21,26 +21,26 @@ export default function AboutUs() {
       description:
         "Explore my main website to see my latest work and creations.",
       href: "https://cloudkinshuk.in",
-      icon: <FaGlobe className="w-6 h-6 text-white" />,
+      icon: <FaGlobe className="w-8 h-8 text-white" />,
     },
     {
       title: "Read the Blog",
       description: "Thoughts, tutorials, and articles on tech and development.",
       href: "https://cloudkinshuk.in/home-blog",
-      icon: <FaPenNib className="w-6 h-6 text-white" />, // Microsoft green
+      icon: <FaPenNib className="w-8 h-8 text-white" />, // Microsoft green
     },
     {
       title: "Share Feedback",
       description: "Got ideas or found a bug? Let me know how I can improve.",
       href: "https://fdb.cloudkinshuk.in",
-      icon: <FaCommentDots className="w-6 h-6 text-white" />, // Microsoft purple
+      icon: <FaCommentDots className="w-8 h-8 text-white" />, // Microsoft purple
     },
     {
       title: "Support My Work",
       description:
         "Buy me a brew or support the repository to keep servers running.",
       href: "https://brewrepo.cloudkinshuk.in",
-      icon: <FaMugHot className="w-6 h-6 text-white" />, // Microsoft rust/orange
+      icon: <FaMugHot className="w-8 h-8 text-white" />, // Microsoft rust/orange
     },
   ];
 
@@ -66,13 +66,13 @@ export default function AboutUs() {
     <div className="min-h-screen bg-black text-gray-100 py-10 px-4 md:px-8  selection:bg-[#cce3f5]">
       <div className="max-w-4xl mx-auto space-y-6">
         {/* ================= PROJECT SECTION ================= */}
-        <section className="bg-[#1e1e1e] border border-[#444444] p-6 md:p-8 shadow-sm rounded-3xl">
+        <section className="bg-[#1e1e1e] border border-[#444444] p-6 md:p-8 shadow-sm rounded-4xl">
           <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 mb-6">
             <div className="p-2 bg-blue-800 rounded-full flex shrink-0 items-center justify-center">
               <BsCloudRain className="w-8 h-8 text-white" />
             </div>
             <div>
-              <h1 className="text-[28px] md:text-[24px] font-semibold text-gray-100 tracking-tight leading-tight">
+              <h1 className="text-[28px] title-font md:text-[24px] font-semibold text-gray-100 tracking-tight leading-tight">
                 About Kosha
               </h1>
               <p className="text-[13px] text-blue-300 font-medium mt-0.5">
@@ -110,7 +110,7 @@ export default function AboutUs() {
         </section>
 
         {/* ================= DEVELOPER SECTION ================= */}
-        <section className="flex flex-col md:flex-row gap-6 md:gap-8 items-start bg-[#1e1e1e] border border-[#444444] p-6 md:p-8 shadow-sm rounded-3xl">
+        <section className="flex flex-col md:flex-row gap-6 md:gap-8 items-start bg-[#1e1e1e] border border-[#444444] p-6 md:p-8 shadow-sm rounded-4xl">
           {/* Avatar (Azure square/rounded profile style) */}
           <div className="flex-shrink-0 relative w-24 h-24 md:w-32 md:h-32  shadow-sm rounded-full overflow-hidden">
             <Image
@@ -178,10 +178,10 @@ export default function AboutUs() {
                 href={link.href}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group flex flex-col p-6 bg-[#1e1e1e] border border-[#444444] shadow-sm hover:shadow-md transition-shadow rounded-2xl"
+                className="group flex flex-col p-6 bg-[#1e1e1e] border border-[#444444] shadow-sm hover:shadow-md transition-shadow rounded-4xl"
               >
                 <div className="flex items-center gap-3.5 mb-3">
-                  <div className="p-2.5 bg-blue-800 rounded-full text-white transition-colors">
+                  <div className="p-3 bg-blue-800 rounded-full text-white transition-colors">
                     {link.icon}
                   </div>
                   <h4 className="text-[15px] font-semibold text-gray-100  transition-colors">

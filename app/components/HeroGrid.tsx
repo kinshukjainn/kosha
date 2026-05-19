@@ -1,14 +1,6 @@
 "use client";
-import React, { useEffect, useRef, useState } from "react";
 
-/* ═══════════════════════════════════════════════════════════
-   HeroGrid – a faded perspective grid that sits behind the
-   hero title area.  Renders a pure-CSS grid with:
-     • bold dark lines for strong visual presence
-     • radial fade so edges dissolve naturally
-     • a soft animated "pulse" sweep across the grid
-     • slight perspective tilt for depth
-   ═══════════════════════════════════════════════════════════ */
+import React, { useEffect, useRef, useState } from "react";
 
 export default function HeroGrid() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -26,7 +18,7 @@ export default function HeroGrid() {
       className="absolute inset-x-0 top-0 pointer-events-none select-none overflow-hidden"
       style={{ height: "min(720px, 90vh)" }}
     >
-      {/* ── Perspective wrapper ── */}
+      {/* Perspective wrapper */}
       <div
         className="absolute inset-0"
         style={{
@@ -34,7 +26,7 @@ export default function HeroGrid() {
           perspectiveOrigin: "50% 35%",
         }}
       >
-        {/* ── The grid plane ── */}
+        {/* The grid plane */}
         <div
           style={{
             position: "absolute",
@@ -47,16 +39,17 @@ export default function HeroGrid() {
             transition: "opacity 1s cubic-bezier(.22,1,.36,1)",
           }}
         >
-          {/* ── Primary grid: bold dark lines ── */}
+          {/* Primary grid: bold dark lines - NOW ANIMATED */}
           <div
             style={{
               position: "absolute",
               inset: 0,
               backgroundImage: [
                 "linear-gradient(to bottom, rgba(255, 255, 255, 0.1) 1px, transparent 1px)",
-                "linear-gradient(to right,  rgba(255, 255, 255, 0.1) 1px, transparent 1px)",
+                "linear-gradient(to right, rgba(255, 255, 255, 0.1) 1px, transparent 1px)",
               ].join(", "),
               backgroundSize: "52px 52px",
+              animation: "heroGridScroll 12s linear infinite",
               maskImage:
                 "radial-gradient(ellipse 70% 65% at 50% 42%, black 25%, transparent 80%)",
               WebkitMaskImage:
@@ -64,16 +57,17 @@ export default function HeroGrid() {
             }}
           />
 
-          {/* ── Major grid lines every 4th cell: heavier ── */}
+          {/* Major grid lines every 4th cell: heavier - NOW ANIMATED */}
           <div
             style={{
               position: "absolute",
               inset: 0,
               backgroundImage: [
                 "linear-gradient(to bottom, rgba(255, 255, 255, 0.16) 1.5px, transparent 1.5px)",
-                "linear-gradient(to right,  rgba(255, 255, 255, 0.16) 1.5px, transparent 1.5px)",
+                "linear-gradient(to right, rgba(255, 255, 255, 0.16) 1.5px, transparent 1.5px)",
               ].join(", "),
               backgroundSize: "208px 208px",
+              animation: "heroGridScroll 12s linear infinite",
               maskImage:
                 "radial-gradient(ellipse 65% 60% at 50% 42%, black 15%, transparent 75%)",
               WebkitMaskImage:
@@ -81,16 +75,17 @@ export default function HeroGrid() {
             }}
           />
 
-          {/* ── Blue-tinted accent lines for Azure feel ── */}
+          {/* Blue-tinted accent lines - NOW ANIMATED */}
           <div
             style={{
               position: "absolute",
               inset: 0,
               backgroundImage: [
-                "linear-gradient(to bottom, rgba(255, 255, 255, 0.06) 1px, transparent 1px)",
-                "linear-gradient(to right,  rgba(255, 255, 255, 0.27) 1px, transparent 1px)",
+                "linear-gradient(to bottom, rgba(0, 120, 212, 0.08) 1px, transparent 1px)",
+                "linear-gradient(to right, rgba(0, 120, 212, 0.2) 1px, transparent 1px)",
               ].join(", "),
               backgroundSize: "52px 52px",
+              animation: "heroGridScroll 12s linear infinite",
               maskImage:
                 "radial-gradient(ellipse 55% 50% at 50% 42%, black 20%, transparent 70%)",
               WebkitMaskImage:
@@ -98,14 +93,15 @@ export default function HeroGrid() {
             }}
           />
 
-          {/* ── Intersection dots ── */}
+          {/* Intersection dots - NOW ANIMATED */}
           <div
             style={{
               position: "absolute",
               inset: 0,
               backgroundImage:
-                "radial-gradient(circle 2px at center, rgba(44, 7, 7, 0.14) 0%, transparent 100%)",
+                "radial-gradient(circle 2px at center, rgba(44, 7, 7, 0.1) 0%, transparent 100%)",
               backgroundSize: "52px 52px",
+              animation: "heroGridScroll 12s linear infinite",
               maskImage:
                 "radial-gradient(ellipse 55% 50% at 50% 42%, black 15%, transparent 65%)",
               WebkitMaskImage:
@@ -113,7 +109,7 @@ export default function HeroGrid() {
             }}
           />
 
-          {/* ── Major intersection dots (bigger, darker) ── */}
+          {/* Major intersection dots (bigger, darker) - NOW ANIMATED */}
           <div
             style={{
               position: "absolute",
@@ -121,6 +117,7 @@ export default function HeroGrid() {
               backgroundImage:
                 "radial-gradient(circle 3px at center, rgba(0, 0, 0, 0.18) 0%, transparent 100%)",
               backgroundSize: "208px 208px",
+              animation: "heroGridScroll 12s linear infinite",
               maskImage:
                 "radial-gradient(ellipse 50% 45% at 50% 42%, black 10%, transparent 60%)",
               WebkitMaskImage:
@@ -128,7 +125,7 @@ export default function HeroGrid() {
             }}
           />
 
-          {/* ── Animated sweep highlight ── */}
+          {/* Animated sweep highlight */}
           <div
             style={{
               position: "absolute",
@@ -146,7 +143,7 @@ export default function HeroGrid() {
         </div>
       </div>
 
-      {/* ── Soft glow behind grid centre ── */}
+      {/* Soft glow behind grid centre */}
       <div
         className="absolute left-1/2 top-[36%] -translate-x-1/2 -translate-y-1/2 w-[600px] h-[380px] sm:w-[850px] sm:h-[480px] rounded-full"
         style={{
@@ -160,6 +157,12 @@ export default function HeroGrid() {
 
       {/* Keyframe injection */}
       <style>{`
+        /* Moves the entire grid downwards on the Y-axis to simulate forward motion */
+        @keyframes heroGridScroll {
+          0% { background-position: 0px 0px; }
+          100% { background-position: 0px 208px; }
+        }
+        /* The sweeping light effect */
         @keyframes heroGridSweep {
           0%   { background-position: 200% 0; }
           100% { background-position: -200% 0; }

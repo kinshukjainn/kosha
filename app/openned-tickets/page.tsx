@@ -126,11 +126,11 @@ export default function FeedbacksList() {
               <AiOutlineIssuesClose size={30} className="text-white" />
             </div>
             <div>
-              <h1 className="text-4xl font-semibold text-white tracking-tight leading-tight">
-                Kosha Logs & Issues
+              <h1 className="text-4xl font-semibold text-white title-font tracking-tight leading-tight">
+                Issues & Feedbacks
               </h1>
               <p className="text-[17px] text-gray-200 mt-0.5  tracking-wide">
-                System Feedback — Strictly Kosha Project
+                System Feedback
               </p>
             </div>
           </div>
@@ -156,19 +156,19 @@ export default function FeedbacksList() {
       {/* Main */}
       <main className="w-full max-w-7xl mx-auto px-4 sm:px-6 py-8">
         {isLoading ? (
-          <div className="bg-[#1e1e1e] border border-[#2d2d2d] shadow-sm flex flex-col items-center justify-center min-h-[40vh] gap-3 p-8 rounded-xl">
+          <div className=" flex flex-col items-center justify-center min-h-[40vh] gap-3 p-8 rounded-xl">
             <FaSpinner className="animate-spin text-[#0078D4]" size={24} />
             <span className="text-[13px] font-semibold text-gray-400">
               Fetching telemetry data...
             </span>
           </div>
         ) : filteredFeedbacks.length === 0 ? (
-          <div className="bg-[#1e1e1e] border border-[#2d2d2d] shadow-sm flex flex-col items-center justify-center min-h-[40vh] p-8 text-center rounded-xl">
-            <Search size={40} className="text-gray-600 mb-4" />
+          <div className=" flex flex-col items-center justify-center min-h-[40vh] p-8 text-center rounded-xl">
+            <Search size={40} className="text-blue-300 mb-4" />
             <h3 className="text-[16px] font-semibold text-white mb-1">
               No Results Found
             </h3>
-            <p className="text-[13px] text-gray-500 max-w-sm">
+            <p className="text-[13px] text-gray-200 max-w-sm">
               No logs matching your search in the Kosha project.
             </p>
           </div>
@@ -187,7 +187,7 @@ export default function FeedbacksList() {
               return (
                 <article
                   key={fb.id}
-                  className="bg-[#1e1e1e] border border-[#2d2d2d] p-5 rounded-xl shadow-sm hover:border-[#3d3d3d] transition-colors flex flex-col"
+                  className="bg-[#1e1e1e] border border-[#2d2d2d] p-5 rounded-3xl shadow-sm hover:border-[#3d3d3d] transition-colors flex flex-col"
                 >
                   {/* Card Header */}
                   <div className="flex flex-wrap items-center justify-between gap-3 mb-4 pb-3 border-b border-[#2d2d2d]">
@@ -200,7 +200,7 @@ export default function FeedbacksList() {
                       </span>
                     </div>
                     <span className="text-gray-500 text-[12px] flex items-center gap-1.5 font-medium">
-                      <Clock size={12} className="text-gray-600" />
+                      <Clock size={12} className="text-blue-300" />
                       {dateStr}
                     </span>
                   </div>
@@ -213,10 +213,10 @@ export default function FeedbacksList() {
                   {/* Footer */}
                   <footer className="pt-3 border-t border-[#2d2d2d] flex flex-wrap items-center justify-between mt-auto gap-4">
                     <div className="flex items-center gap-2.5">
-                      <div className="w-6 h-6 rounded-full bg-[#2d2d2d] flex items-center justify-center text-gray-400 shrink-0">
-                        <User size={14} />
+                      <div className="w-6 h-6 rounded-full bg-blue-800 flex items-center justify-center text-white shrink-0">
+                        <User size={17} />
                       </div>
-                      <span className="text-[13px] font-medium text-gray-100">
+                      <span className="text-[15px] font-medium text-gray-100">
                         <HighlightText
                           text={fb.name}
                           highlight={debouncedQuery}
@@ -233,7 +233,7 @@ export default function FeedbacksList() {
                           title="View GitHub Profile"
                           className="text-gray-400 hover:text-[#0078D4] hover:bg-[#2a2a2a] p-1.5 rounded-xl transition-colors"
                         >
-                          <LuGithub size={16} />
+                          <LuGithub size={18} />
                         </a>
                       ) : null}
                       <a
@@ -241,7 +241,7 @@ export default function FeedbacksList() {
                         title="Send Email"
                         className="text-gray-400 hover:text-[#0078D4] hover:bg-[#2a2a2a] p-1.5 rounded-xl transition-colors"
                       >
-                        <Mail size={16} />
+                        <Mail size={18} />
                       </a>
                     </div>
                   </footer>

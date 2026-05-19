@@ -156,7 +156,7 @@ const SecondaryLink = ({
 }) => (
   <Link
     href={href}
-    className={`inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-[#121212] border border-[#444444] text-white text-sm font-medium ${className}`}
+    className={`inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-[#121212]/10 backdrop-blur-md border border-[#444444] text-white text-sm font-medium ${className}`}
   >
     {children}
   </Link>
@@ -204,20 +204,22 @@ const QuickAction = ({
   <Reveal delay={delay}>
     <Link
       href={href}
-      className="group flex items-center gap-4 p-5 rounded-3xl border border-[#444444] hover:border hover:border-blue-400 hover:shadow-md hover:shadow-blue-200 bg-[#121212] transition-colors"
+      className="group flex items-center gap-4 p-4 rounded-full border border-[#444444] hover:border hover:border-blue-400 hover:shadow-md hover:shadow-blue-200 bg-[#121212]/10 backdrop-blur-xs transition-colors"
     >
-      <div className="w-10 h-10 rounded-full bg-blue-800 flex items-center justify-center shrink-0">
-        <Icon className="w-6 h-6 text-white" />
+      <div className="w-10 h-10 rounded-full bg-[#242424]/10 backdrop-blur-xs border group-hover:border-2  border-[#444444] group-hover:border-blue-500  flex items-center justify-center shrink-0">
+        <Icon className="w-6 h-6 group-hover:text-blue-300  text-white" />
       </div>
       <div className="min-w-0 flex-1">
-        <h3 className="text-sm font-semibold text-white transition-colors">
+        <h3 className="text-md font-semibold text-white transition-colors">
           {title}
         </h3>
         <p className="text-sm" style={{ color: INK_3 }}>
           {description}
         </p>
       </div>
-      <ChevronRight className="w-4 h-4 shrink-0 text-gray-400 group-hover:translate-x-0.5 transition-transform" />
+      <div className="w-9 h-9 rounded-full border bg-[#141414] border-[#444444] group-hover:border-2 group-hover:border-blue-500  flex items-center justify-center ">
+        <ChevronRight className="w-4 h-4 shrink-0 text-gray-100 group-hover:text-blue-400 group-hover:translate-x-0.5 transition-transform" />
+      </div>
     </Link>
   </Reveal>
 );
@@ -314,7 +316,7 @@ const ReturningUserHero = ({ firstName }: { firstName: string }) => (
     </Reveal>
 
     <Reveal delay={100}>
-      <p className="text-base leading-relaxed text-gray-200 mb-10 pl-4 border-l-2 border-blue-500">
+      <p className="text-base leading-relaxed text-gray-100 mb-10 pl-4 border-l-4 border-blue-500">
         System <strong className="text-blue-200">operational</strong>. Pick up
         where you left off.
       </p>
@@ -412,7 +414,7 @@ const AnimatedHeadline = () => {
             animate={{ opacity: 1, scale: 1, filter: "blur(0px)", y: 0 }}
             exit={{ opacity: 0, scale: 1.05, filter: "blur(12px)", y: -4 }}
             transition={{ duration: 0.7, ease: premiumEase }}
-            className="inline-block whitespace-nowrap bg-gradient-to-r from-[#0078D4] via-[#3aa8ff] to-cyan-300 bg-clip-text text-transparent pr-[0.04em]"
+            className="inline-block whitespace-nowrap bg-gradient-to-r title-font from-[#0078D4] via-[#3aa8ff] to-cyan-300 bg-clip-text text-transparent pr-[0.04em]"
           >
             {current}
           </motion.span>
@@ -429,8 +431,8 @@ const AnimatedHeadline = () => {
 const LoggedOutHero = () => (
   <section className="max-w-3xl mx-auto px-6 pt-24 pb-16 text-center">
     <Reveal>
-      <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-[#222222] text-gray-100 mb-8">
-        <LockKeyhole className="w-5 h-5 text-white" /> Secured by AWS Cloud
+      <span className="inline-flex items-center gap-1.5 px-3 py-2 rounded-full border border-[#444444] text-sm font-medium bg-[#121212]/10 backdrop-blur-xs text-gray-100 mb-8">
+        <LockKeyhole className="w-5 h-5 text-blue-300" /> Secured by AWS Cloud
       </span>
     </Reveal>
 
@@ -448,10 +450,19 @@ const LoggedOutHero = () => (
     <Reveal delay={240}>
       <div className="flex flex-wrap items-center justify-center gap-3 mb-8">
         <Link
-          className="inline-flex items-center gap-2 px-5 py-2.5 rounded-tr-2xl rounded-bl-2xl text-sm font-medium bg-blue-800 text-white transition hover:opacity-90"
           href="/verify-regis"
+          className="inline-flex items-center gap-2
+    px-5 py-2.5 rounded-full
+    bg-blue-500/20
+    text-white text-sm font-medium
+    border border-blue-300/20
+    backdrop-blur-xl
+    shadow-lg shadow-blue-500/20
+    hover:bg-blue-500/30
+    transition-all duration-300"
         >
-          Start for free <ArrowRight className="w-3.5 h-3.5" />
+          Start for free
+          <ArrowRight className="w-4 h-4" />
         </Link>
         <SecondaryLink href="/supported-formats">
           Supported Formats
@@ -493,7 +504,7 @@ const PreviewSection = () => (
           <span className="w-3 h-3 rounded-full bg-white animate-pulse" /> LIVE
           PREVIEW
         </span>
-        <h2 className="text-3xl font-bold tracking-tight text-white">
+        <h2 className="text-3xl title-font font-bold tracking-tight text-white">
           See it in action.
         </h2>
         <p className="mt-1.5 text-sm text-gray-200">
@@ -510,7 +521,7 @@ const PreviewSection = () => (
               <span key={i} className="w-2.5 h-2.5 rounded-full bg-blue-500" />
             ))}
           </div>
-          <div className="flex-1 mx-3 px-3 py-1 rounded-full border border-[#444444] bg-[#1e1e1e] text-sm text-center text-yellow-200 truncate">
+          <div className="flex-1 mx-3 px-3 py-1 rounded-full border border-[#444444] bg-[#1e1e1e] text-sm text-center text-gray-200 truncate">
             kosha.cloudkinshuk.in/dashboard
           </div>
         </div>
@@ -582,13 +593,10 @@ const FEATURES: Feature[] = [
 ];
 
 const FeaturesGrid = () => (
-  <section
-    id="features"
-    className="max-w-6xl mx-auto px-6 py-20 border-t border-gray-100"
-  >
+  <section id="features" className="max-w-6xl mx-auto px-6 py-20 ">
     <Reveal>
       <div className="text-center mb-12">
-        <h2 className="text-3xl sm:text-4xl font-bold tracking-tight mb-3 text-white">
+        <h2 className="text-3xl sm:text-4xl title-font font-bold tracking-tight mb-3 text-white">
           Brilliantly simple.
         </h2>
         <p className="text-base text-gray-200">
@@ -614,8 +622,8 @@ const FeaturesGrid = () => (
               }}
             >
               <div className="flex items-start justify-between mb-4">
-                <div className="w-9 h-9 rounded-full flex items-center justify-center bg-blue-800">
-                  <Icon className="w-5 h-5 text-white" />
+                <div className="w-12 h-12 rounded-full flex items-center justify-center bg-blue-800">
+                  <Icon className="w-7 h-7 text-white" />
                 </div>
                 <span className="text-xs text-gray-300 font-mono">{f.id}</span>
               </div>
@@ -642,7 +650,7 @@ const CTA = ({ isLoggedIn }: { isLoggedIn: boolean }) => (
       <div className="rounded-4xl border border-[#444444] bg-[#1e1e1e] p-8 sm:p-14">
         {isLoggedIn ? (
           <div className="max-w-xl">
-            <h2 className="text-3xl sm:text-4xl font-bold tracking-tight mb-4 text-white">
+            <h2 className="text-3xl sm:text-4xl title-font font-bold tracking-tight mb-4 text-white">
               Your files are waiting.
             </h2>
             <p className="text-base text-gray-200 mb-8">
@@ -655,7 +663,7 @@ const CTA = ({ isLoggedIn }: { isLoggedIn: boolean }) => (
         ) : (
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
             <div className="lg:col-span-7">
-              <h2 className="text-3xl sm:text-4xl font-bold tracking-tight mb-4 text-white">
+              <h2 className="text-3xl sm:text-4xl title-font font-bold tracking-tight mb-4 text-white">
                 Ready to take back your data?
               </h2>
               <p className="text-base text-gray-200 mb-8 max-w-lg">
@@ -690,7 +698,7 @@ const CTA = ({ isLoggedIn }: { isLoggedIn: boolean }) => (
                     "No AI training, ever",
                   ].map((x) => (
                     <li key={x} className="flex items-start gap-2">
-                      <Check className="w-4 h-4 mt-0.5 shrink-0 text-white" />
+                      <Check className="w-4 h-4 mt-0.5 shrink-0 text-blue-300" />
                       {x}
                     </li>
                   ))}

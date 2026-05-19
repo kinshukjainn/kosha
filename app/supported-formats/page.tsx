@@ -81,7 +81,7 @@ export default function SupportedFormatsPage() {
       <main className="max-w-[1000px] mx-auto px-6 pt-12">
         {/* Hero Section */}
         <header className="pb-10 mb-10">
-          <h1 className="text-3xl md:text-4xl font-semibold text-gray-100 mb-4 tracking-tight">
+          <h1 className="text-3xl title-font md:text-4xl font-semibold text-gray-100 mb-4 tracking-tight">
             Supported Data Formats
           </h1>
           <p className="text-[15px] text-gray-200 leading-relaxed max-w-3xl">
