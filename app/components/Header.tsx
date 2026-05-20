@@ -17,6 +17,7 @@ import {
   Ticket,
   CreditCard,
   LogIn,
+  MessageSquareText,
 } from "lucide-react";
 
 const NAV_LINKS = [
@@ -108,6 +109,15 @@ export default function Header() {
           >
             <FaGithub className="w-4 h-4" />
           </a>
+          <a
+            href="https://clkfeedbacks.cloudkinshuk.in/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="p-2 rounded-lg text-gray-400 hover:text-white hover:bg-white/5 transition-all"
+            aria-label="Feedback"
+          >
+            <MessageSquareText className="w-4 h-4" />
+          </a>
 
           <div className="w-px h-5 bg-white/10" />
 
@@ -129,15 +139,15 @@ export default function Header() {
 
         {/* ── Mobile Toggle ── */}
         <button
-          className="md:hidden p-2 rounded-lg text-white hover:bg-white/5 transition-all active:scale-95"
+          className="md:hidden p-2 cursor-pointer rounded-lg text-white hover:bg-white/5 transition-all active:scale-95"
           onClick={toggle}
           aria-label="Toggle menu"
           aria-expanded={open}
         >
           {open ? (
-            <PanelBottomOpen className="w-5 h-5" />
+            <PanelBottomOpen className="w-6 h-6" />
           ) : (
-            <PanelBottomClose className="w-5 h-5" />
+            <PanelBottomClose className="w-6 h-6" />
           )}
         </button>
       </div>
@@ -153,11 +163,11 @@ export default function Header() {
           ${
             open
               ? "max-h-[calc(100vh-3.5rem)] opacity-100 translate-y-0 visible"
-              : "max-h-0 opacity-0 -translate-y-2 invisible pointer-events-none"
+              : "max-h-0 opacity-0 -translate-y-1 invisible pointer-events-none"
           }`}
       >
         <div className="relative overflow-y-auto max-h-[calc(100vh-3.5rem)] pb-6">
-          <nav className="flex flex-col p-3 gap-1.5">
+          <nav className="flex flex-col p-1.5 gap-1">
             {isLoaded && userId && (
               <MobileNavLink
                 href="/dashboard"
@@ -173,19 +183,30 @@ export default function Header() {
               </MobileNavLink>
             ))}
 
-            {/* Gradient hairline divider */}
-            <div className="my-3 mx-4 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
-
             <a
               href="https://github.com/kinshukjainn/pvtcldstrg"
               target="_blank"
               rel="noopener noreferrer"
               className="group relative flex items-center gap-3 px-4 py-3 rounded-2xl text-[14px] font-medium text-gray-300 hover:text-white hover:bg-white/[0.06] transition-all duration-300"
             >
-              <div className="w-9 h-9 flex items-center justify-center rounded-xl bg-white/[0.04] border border-white/[0.08] group-hover:bg-white/10 transition-all duration-300">
-                <FaGithub className="w-4 h-4 text-gray-400 group-hover:text-white transition-colors" />
+              <div className="w-9 h-9 flex items-center justify-center rounded-full bg-blue-400  transition-all duration-300">
+                <FaGithub className="w-4 h-4 text-black  transition-colors" />
               </div>
               <span className="flex-1">Open Source</span>
+              <span className="text-[11px] text-gray-500 group-hover:text-gray-300 transition-colors">
+                ↗
+              </span>
+            </a>
+            <a
+              href="https://clkfeedbacks.cloudkinshuk.in"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group relative flex items-center gap-3 px-4 py-3 rounded-2xl text-[14px] font-medium text-gray-300 hover:text-white hover:bg-white/[0.06] transition-all duration-300"
+            >
+              <div className="w-9 h-9 flex items-center justify-center rounded-full bg-blue-400  transition-all duration-300">
+                <MessageSquareText className="w-4 h-4 text-black transition-colors" />
+              </div>
+              <span className="flex-1">Feedback</span>
               <span className="text-[11px] text-gray-500 group-hover:text-gray-300 transition-colors">
                 ↗
               </span>
@@ -196,7 +217,7 @@ export default function Header() {
                 <Link
                   href="/verify-regis"
                   onClick={close}
-                  className="relative flex items-center justify-center gap-2 w-full bg-white text-black text-sm font-bold tracking-wide py-3.5 rounded-2xl transition-all hover:bg-gray-200 active:scale-[0.98] shadow-lg"
+                  className="relative flex items-center justify-center gap-2 w-full bg-white text-black text-sm font-bold tracking-wide py-3.5 rounded-full transition-all hover:bg-gray-200 active:scale-[0.98] shadow-lg"
                 >
                   <LogIn className="w-4 h-4" />
                   Sign In / Up
@@ -231,13 +252,13 @@ function NavLink({
   return (
     <Link
       href={href}
-      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[15px] font-medium text-gray-300 hover:bg-white/[0.08] hover:text-white transition-colors whitespace-nowrap ${
+      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[15px] font-medium text-white hover:bg-white/[0.08] hover:text-white transition-colors whitespace-nowrap ${
         underline
           ? "underline decoration-white/20 underline-offset-4 hover:decoration-gray-400"
           : ""
       }`}
     >
-      <Icon className="w-4 h-4 shrink-0 opacity-70" />
+      <Icon className="w-4 h-4 shrink-0 text-white " />
       {children}
     </Link>
   );
@@ -259,11 +280,11 @@ function MobileNavLink({
     <Link
       href={href}
       onClick={onClick}
-      className="group relative flex items-center gap-3 px-4 py-3 rounded-2xl text-[14px] font-medium text-gray-300 hover:text-white hover:bg-white/[0.04] active:bg-white/[0.06] transition-all duration-300"
+      className="group relative flex items-center gap-3 px-4 py-1 text-white text-sm  hover:border-l-2 hover:border-blue-400 transition-all duration-300"
     >
       {/* Icon tile */}
-      <div className="w-9 h-9 flex items-center justify-center rounded-xl bg-white/[0.03] border border-white/[0.05] shadow-[inset_0_1px_0_rgba(255,255,255,0.05)] group-hover:bg-white/[0.08] group-hover:border-white/10 transition-all duration-300">
-        <Icon className="w-4 h-4 text-gray-400 group-hover:text-white transition-colors" />
+      <div className="w-9 h-9 flex items-center justify-center rounded-full bg-blue-400  transition-all duration-300">
+        <Icon className="w-4 h-4 text-black  transition-colors" />
       </div>
       <span className="flex-1">{children}</span>
       {/* Reveal arrow on hover */}
