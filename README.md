@@ -1,7 +1,7 @@
 <div align="center">
   <img src="./public/headerlogo.png" alt="pvtcldstrg logo" width="180" />
 
-  <h1>pvtcldstrg</h1>
+  <h1>Kosha</h1>
 
   <p><strong>A real cloud storage platform — where your files never touch my server.</strong></p>
 
@@ -95,7 +95,7 @@ The server's job is just to be the **gatekeeper and bookkeeper** — never the p
 ### Installation
 
 ```bash
-git clone https://github.com/<your-username>/pvtcldstrg.git
+git clone https://github.com/<your-username>/kosha.git
 cd pvtcldstrg
 npm install
 ```
@@ -118,6 +118,10 @@ AWS_REGION=ap-south-1
 AWS_ACCESS_KEY_ID=...
 AWS_SECRET_ACCESS_KEY=...
 S3_BUCKET_NAME=your-bucket-name
+
+# Redis
+UPSTASH_REDIS_REST_URL=https://xxxx-xxx1234.upstash.io
+UPSTASH_REDIS_REST_TOKEN=xxxxxrrrrrrrYTFkZTNlYTE5MzY0YWIwOQ
 ```
 
 ### S3 bucket CORS
