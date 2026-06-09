@@ -221,11 +221,11 @@ export default function RepositoryViewer() {
         <div className="px-4 sm:px-6 py-4">
           {/* Breadcrumbs */}
           <div className="flex items-center gap-4">
-            <div className="w-12 h-12 bg-blue-800 rounded-full flex items-center justify-center shrink-0">
+            <div className="w-12 h-12 bg-blue-800 rounded-lg flex items-center justify-center shrink-0">
               <Code2 size={30} className="text-white" />
             </div>
             <div>
-              <h1 className="text-2xl title-font font-semibold text-gray-100 tracking-tight leading-tight">
+              <h1 className="text-2xl  font-semibold text-gray-100 tracking-tight leading-tight">
                 {GITHUB_CONFIG.username} / {GITHUB_CONFIG.repository}
               </h1>
               <p className="text-[13px] text-gray-200 mt-0.5">
@@ -278,13 +278,13 @@ export default function RepositoryViewer() {
 
         {/* ERROR DISPLAY */}
         {error && (
-          <div className="mb-6 p-4 bg-[#1e1e1e] border border-[#1e1e1e] text-white text-[13px] font-medium rounded-xl">
+          <div className="mb-6 p-4 bg-[#1e1e1e] border border-[#1e1e1e] text-white text-[13px] font-medium rounded-lg">
             Error: {error}
           </div>
         )}
 
         {/* CONTENT AREA */}
-        <div className="bg-[#1e1e1e] border border-[#444444] shadow-sm rounded-3xl overflow-hidden">
+        <div className="bg-[#1e1e1e] border border-[#444444] shadow-sm rounded-lg overflow-hidden">
           {/* Section Header */}
           <div className="bg-[#121212] border-b border-[#444444] px-4 py-3 flex items-center justify-between text-[13px] font-semibold text-gray-100">
             <div className="flex items-center gap-2">

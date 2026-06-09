@@ -30,11 +30,10 @@ import {
 import { useAuth, useUser } from "@clerk/nextjs";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
-import HeroGrid from "./components/HeroGrid";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 
 /* ── Words that cycle in the headline ── */
-const WORDS = ["simple", "open-source", "private"] as const;
+const WORDS = ["simple", "open source", "private"] as const;
 
 // "A simple" vs "An open-source" — pick the right article for the word.
 const articleFor = (word: string) => (/^[aeiou]/i.test(word) ? "An" : "A");
@@ -118,7 +117,8 @@ const getGreeting = () => {
   const h = new Date().getHours();
   if (h >= 5 && h < 12) return "Good morning";
   if (h >= 12 && h < 17) return "Good afternoon";
-  return "Good evening";
+  if (h >= 17 && h < 21) return "Good evening ";
+  if (h >= 21 && h < 24) return "Its Night time";
 };
 
 /* ── New-user flag ── */
@@ -139,7 +139,7 @@ const PrimaryLink = ({
 }) => (
   <Link
     href={href}
-    className={`inline-flex items-center gap-2 px-5 py-2.5 rounded-tr-2xl rounded-bl-2xl text-sm font-medium bg-blue-800 text-white transition hover:opacity-90 ${className}`}
+    className={`inline-flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-medium bg-blue-800 text-white transition hover:opacity-90 ${className}`}
   >
     {children}
   </Link>
@@ -156,7 +156,7 @@ const SecondaryLink = ({
 }) => (
   <Link
     href={href}
-    className={`inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-[#121212]/10 backdrop-blur-md border border-[#444444] text-white text-sm font-medium ${className}`}
+    className={`inline-flex items-center gap-2 px-5 py-3 rounded-lg bg-[#121212] border border-[#444444] text-white text-sm font-medium ${className}`}
   >
     {children}
   </Link>
@@ -171,7 +171,7 @@ const OnboardingStep = ({
   delay,
 }: OnboardingStepProps) => (
   <Reveal delay={delay}>
-    <div className="flex items-start gap-4 p-5 rounded-xl border border-gray-100 bg-white hover:bg-gray-50 transition-colors">
+    <div className="flex items-start gap-4 p-5 rounded-lg border border-gray-100 bg-white hover:bg-gray-50 transition-colors">
       <span className="shrink-0 w-7 h-7 rounded-lg flex items-center justify-center text-xs font-semibold text-gray-400 bg-gray-100">
         {step.toString().padStart(2, "0")}
       </span>
@@ -204,10 +204,10 @@ const QuickAction = ({
   <Reveal delay={delay}>
     <Link
       href={href}
-      className="group flex items-center gap-4 p-4 rounded-full border border-[#444444] hover:border hover:border-blue-400 hover:shadow-md hover:shadow-blue-200 bg-[#121212]/10 backdrop-blur-xs transition-colors"
+      className="group flex items-center gap-4 p-4 rounded-xl border border-[#444444] bg-[#121212] transition-colors"
     >
-      <div className="w-10 h-10 rounded-full bg-[#242424]/10 backdrop-blur-xs border group-hover:border-2  border-[#444444] group-hover:border-blue-500  flex items-center justify-center shrink-0">
-        <Icon className="w-6 h-6 group-hover:text-blue-300  text-white" />
+      <div className="w-10 h-10 rounded-lg bg-[#242424]  border   flex items-center justify-center shrink-0">
+        <Icon className="w-6 h-6   text-white" />
       </div>
       <div className="min-w-0 flex-1">
         <h3 className="text-md font-semibold text-white transition-colors">
@@ -217,8 +217,8 @@ const QuickAction = ({
           {description}
         </p>
       </div>
-      <div className="w-9 h-9 rounded-full border bg-[#141414] border-[#444444] group-hover:border-2 group-hover:border-blue-500  flex items-center justify-center ">
-        <ChevronRight className="w-4 h-4 shrink-0 text-gray-100 group-hover:text-blue-400 group-hover:translate-x-0.5 transition-transform" />
+      <div className="w-9 h-9 rounded-xl border bg-[#141414] border-[#444444] group-hover:border-2   flex items-center justify-center ">
+        <ChevronRight className="w-4 h-4 shrink-0 text-gray-100  group-hover:translate-x-0.5 transition-transform" />
       </div>
     </Link>
   </Reveal>
@@ -228,7 +228,7 @@ const QuickAction = ({
 const NewUserHero = ({ firstName }: { firstName: string }) => (
   <div className="max-w-2xl mx-auto px-6 pt-20 pb-16">
     <Reveal>
-      <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-amber-50 text-amber-700 border border-amber-100 mb-6">
+      <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-medium bg-amber-50 text-amber-700 border border-amber-100 mb-6">
         <PartyPopper className="w-3 h-3" /> Account provisioned
       </span>
     </Reveal>
@@ -311,7 +311,8 @@ const ReturningUserHero = ({ firstName }: { firstName: string }) => (
   <div className="max-w-2xl mx-auto px-6 pt-20 pb-16">
     <Reveal>
       <h1 className="text-4xl sm:text-5xl font-bold tracking-tight mb-6 text-white">
-        {getGreeting()}, {firstName}.
+        {getGreeting()},{" "}
+        <span className="text-green-500 font-semibold">{firstName}</span> .
       </h1>
     </Reveal>
 
@@ -414,7 +415,7 @@ const AnimatedHeadline = () => {
             animate={{ opacity: 1, scale: 1, filter: "blur(0px)", y: 0 }}
             exit={{ opacity: 0, scale: 1.05, filter: "blur(12px)", y: -4 }}
             transition={{ duration: 0.7, ease: premiumEase }}
-            className="inline-block whitespace-nowrap bg-gradient-to-r title-font from-[#0078D4] via-[#3aa8ff] to-cyan-300 bg-clip-text text-transparent pr-[0.04em]"
+            className="inline-block whitespace-nowrap bg-gradient-to-r  from-[#0078D4] via-[#3aa8ff] to-cyan-300 bg-clip-text text-transparent pr-[0.04em]"
           >
             {current}
           </motion.span>
@@ -431,7 +432,7 @@ const AnimatedHeadline = () => {
 const LoggedOutHero = () => (
   <section className="max-w-3xl mx-auto px-6 pt-24 pb-16 text-center">
     <Reveal>
-      <span className="inline-flex items-center gap-1.5 px-3 py-2 rounded-full border border-[#444444] text-md font-medium bg-[#121212]/10 backdrop-blur-xs text-gray-100 mb-8">
+      <span className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg border border-[#444444] text-md font-medium bg-[#121212]/10 backdrop-blur-xs text-gray-100 mb-8">
         <LockKeyhole className="w-5 h-5 text-blue-300" /> Secured by{" "}
         <span className="font-bold text-blue-400">AWS Cloud</span>
       </span>
@@ -452,7 +453,7 @@ const LoggedOutHero = () => (
       <div className="flex flex-wrap items-center justify-center gap-3 mb-8">
         <Link
           href="/verify-regis"
-          className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-blue-500/20 text-white text-sm font-medium border border-blue-300/20 backdrop-blur-xl shadow-lg shadow-blue-500/20 hover:bg-blue-500/30 transition-all duration-300"
+          className="inline-flex items-center gap-2 px-5 py-3 rounded-lg bg-blue-700 text-white text-sm font-medium transition-all duration-300"
         >
           Start for free
           <ArrowRight className="w-4 h-4" />
@@ -466,19 +467,19 @@ const LoggedOutHero = () => (
     <Reveal delay={300}>
       <div className="flex flex-wrap items-center justify-center gap-6 font-semibold text-sm text-white">
         <span className="flex items-center gap-1.5">
-          <p className="p-1 bg-blue-400 rounded-full">
+          <p className="p-1 bg-blue-400 rounded-lg">
             <Check className="w-5 h-5 text-black" />
           </p>
           No credit card
         </span>
         <span className="flex items-center gap-1.5">
-          <p className="p-1 bg-blue-400 rounded-full">
+          <p className="p-1 bg-blue-400 rounded-lg">
             <Check className="w-5 h-5 text-black" />
           </p>{" "}
           Encrypted
         </span>
         <span className="flex items-center gap-1.5">
-          <p className="p-1 bg-blue-400 rounded-full">
+          <p className="p-1 bg-blue-400 rounded-lg">
             <Check className="w-5 h-5 text-black" />
           </p>
           Zero AI training
@@ -493,11 +494,11 @@ const PreviewSection = () => (
   <section className="max-w-5xl mx-auto px-6 pb-16">
     <Reveal>
       <div className="text-center mb-8">
-        <span className="inline-flex items-center gap-1.5 px-2.5 py-2 rounded-full text-md font-medium bg-red-700 text-white mb-3">
-          <span className="w-3 h-3 rounded-full bg-white animate-pulse" /> LIVE
+        <span className="inline-flex items-center gap-1.5 px-2.5 py-2 rounded-lg text-md font-medium bg-red-700 text-white mb-3">
+          <span className="w-3 h-3 rounded-lg bg-white animate-pulse" /> LIVE
           PREVIEW
         </span>
-        <h2 className="text-3xl title-font font-bold tracking-tight text-white">
+        <h2 className="text-3xl  font-bold tracking-tight text-white">
           See it in action.
         </h2>
         <p className="mt-1.5 text-sm text-gray-200">
@@ -511,10 +512,10 @@ const PreviewSection = () => (
         <div className="flex items-center gap-2.5 px-4 py-2.5 bg-[#232323]">
           <div className="flex gap-1.5">
             {[0, 1, 2].map((i) => (
-              <span key={i} className="w-2.5 h-2.5 rounded-full bg-blue-500" />
+              <span key={i} className="w-2.5 h-2.5 rounded-lg bg-blue-500" />
             ))}
           </div>
-          <div className="flex-1 mx-3 px-3 py-1 rounded-full border border-[#444444] bg-[#1e1e1e] text-sm text-center text-gray-200 truncate">
+          <div className="flex-1 mx-3 px-3 py-1 rounded-lg border border-[#444444] bg-[#1e1e1e] text-sm text-center text-gray-200 truncate">
             kosha.cloudkinshuk.in/dashboard
           </div>
         </div>
@@ -589,7 +590,7 @@ const FeaturesGrid = () => (
   <section id="features" className="max-w-6xl mx-auto px-6 py-20 ">
     <Reveal>
       <div className="text-center mb-12">
-        <h2 className="text-3xl sm:text-4xl title-font font-bold tracking-tight mb-3 text-white">
+        <h2 className="text-3xl sm:text-4xl  font-bold tracking-tight mb-3 text-white">
           Brilliantly simple.
         </h2>
         <p className="text-base text-gray-200">
@@ -598,24 +599,24 @@ const FeaturesGrid = () => (
       </div>
     </Reveal>
 
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4  overflow-hidden ">
+    <div className="grid grid-cols-1 sm:grid-cols-2 rounded-lg lg:grid-cols-4  overflow-hidden ">
       {FEATURES.map((f, i) => {
         const Icon = f.icon;
         return (
           <Reveal key={f.id} delay={i * 40}>
-            <div className="group h-full p-6 hover:bg-[#181818] transition-colors relative">
+            <div className="group h-full p-6 hover:bg-[#181818] rounded-lg transition-colors relative">
               <div className="flex items-start justify-between mb-4">
-                <div className="w-12 h-12 rounded-full flex items-center justify-center bg-blue-800">
+                <div className="w-12 h-12 rounded-md flex items-center justify-center bg-[#181818] border-[#444444] border">
                   <Icon className="w-7 h-7 text-white" />
                 </div>
-                <span className="text-md text-[#ff9100] font-mono">{f.id}</span>
+                <span className="text-md text-blue-300 font-mono">{f.id}</span>
               </div>
               <h3 className="text-md font-semibold mb-1.5 text-white">
                 {f.title}
               </h3>
               <p className="text-sm leading-relaxed text-gray-200">{f.body}</p>
               <div
-                className="absolute bottom-0 left-0 h-0.5 w-0 group-hover:w-full transition-all duration-500"
+                className="absolute bottom-0 left-0 h-0.5 w-0 group-hover:w-full rounded-full transition-all duration-500"
                 style={{ background: BLUE }}
               />
             </div>
@@ -633,7 +634,7 @@ const CTA = ({ isLoggedIn }: { isLoggedIn: boolean }) => (
       <div className="  p-8 sm:p-14">
         {isLoggedIn ? (
           <div className="max-w-xl">
-            <h2 className="text-3xl sm:text-4xl title-font font-bold tracking-tight mb-4 text-white">
+            <h2 className="text-3xl sm:text-4xl  font-bold tracking-tight mb-4 text-white">
               Your files are waiting.
             </h2>
             <p className="text-base text-gray-200 mb-8">
@@ -646,7 +647,7 @@ const CTA = ({ isLoggedIn }: { isLoggedIn: boolean }) => (
         ) : (
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
             <div className="lg:col-span-7">
-              <h2 className="text-3xl sm:text-4xl title-font font-bold tracking-tight mb-4 text-white">
+              <h2 className="text-3xl sm:text-4xl  font-bold tracking-tight mb-4 text-white">
                 Ready to take back your data?
               </h2>
               <p className="text-base text-gray-200 mb-8 max-w-lg">
@@ -664,8 +665,8 @@ const CTA = ({ isLoggedIn }: { isLoggedIn: boolean }) => (
             </div>
 
             <div className="lg:col-span-5">
-              <div className="rounded-4xl border border-[#ff9100] bg-[#090909] p-6">
-                <p className="text-sm font-semibold uppercase tracking-widest text-[#ff9100] mb-2">
+              <div className="rounded-lg border border-slate-400 bg-[#090909] p-6">
+                <p className="text-sm font-semibold uppercase tracking-widest text-slate-300 mb-2">
                   Free plan
                 </p>
                 <div className="flex items-baseline gap-1.5 mb-5">
@@ -674,7 +675,7 @@ const CTA = ({ isLoggedIn }: { isLoggedIn: boolean }) => (
                 </div>
                 <ul className="space-y-2.5 text-sm text-gray-200">
                   {[
-                    "5 GB encrypted storage",
+                    "2 GB encrypted storage",
                     "Unlimited file types",
                     "Private by default",
                     "Fast downloads, anywhere",
@@ -698,7 +699,7 @@ const CTA = ({ isLoggedIn }: { isLoggedIn: boolean }) => (
 /* ── Root ── */
 export default function Home() {
   return (
-    <Suspense fallback={<div className="min-h-screen bg-black" />}>
+    <Suspense fallback={<div className="min-h-screen bg-[#181818]" />}>
       <HomeContent />
     </Suspense>
   );
@@ -714,10 +715,8 @@ function HomeContent() {
   const firstName = user?.firstName || "there";
 
   return (
-    <div className="min-h-screen bg-black" style={{ color: INK }}>
+    <div className="min-h-screen bg-[#0b0b0b]" style={{ color: INK }}>
       <main>
-        <HeroGrid />
-
         {isLoggedIn && isNewUser ? (
           <NewUserHero firstName={firstName} />
         ) : isLoggedIn ? (

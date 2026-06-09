@@ -178,7 +178,7 @@ export default function PrivacyPolicy() {
                 />
               </div>
 
-              <div className="bg-[#0a0a0c] border border-[#1f1f1f] rounded-xl p-4 sm:p-5 flex gap-3 items-start">
+              <div className="bg-[#0a0a0c] border border-[#1f1f1f] rounded-lg p-4 sm:p-5 flex gap-3 items-start">
                 <Lock className="w-5 h-5 text-gray-500 shrink-0 mt-0.5" />
                 <p className="text-[13.5px] text-gray-400 leading-relaxed">
                   <strong className="text-gray-200 font-medium">
@@ -201,7 +201,7 @@ export default function PrivacyPolicy() {
                 data processing agreements.
               </p>
 
-              <div className="overflow-x-auto rounded-xl border border-[#1f1f1f] bg-[#0a0a0c]">
+              <div className="overflow-x-auto rounded-lg border border-[#1f1f1f] bg-[#0a0a0c]">
                 <table className="w-full text-left border-collapse min-w-[500px]">
                   <thead>
                     <tr className="border-b border-[#1f1f1f] bg-[#0f0f11]">
@@ -278,9 +278,9 @@ export default function PrivacyPolicy() {
             {/* Section 6 - Contact */}
             <section id="contact" className="scroll-mt-24">
               <SectionHeading number="6" title="Contact Us" />
-              <div className="bg-gradient-to-br from-[#0a0a0c] to-[#050505] border border-[#1f1f1f] rounded-xl p-6 sm:p-8 mt-4 relative overflow-hidden">
+              <div className="bg-gradient-to-br from-[#0a0a0c] to-[#050505] border border-[#1f1f1f] rounded-lg p-6 sm:p-8 mt-4 relative overflow-hidden">
                 {/* Decorative background element */}
-                <div className="absolute top-0 right-0 w-32 h-32 bg-[#0078D4]/5 rounded-full blur-3xl" />
+                <div className="absolute top-0 right-0 w-32 h-32 bg-[#0078D4]/5 rounded-lg blur-3xl" />
 
                 <p className="text-[15px] text-gray-400 mb-6 relative z-10">
                   If you have questions, concerns, or requests regarding this
@@ -322,7 +322,7 @@ export default function PrivacyPolicy() {
 function SectionHeading({ number, title }: { number: string; title: string }) {
   return (
     <h2 className="text-[20px] font-semibold text-gray-100 mb-4 flex items-center gap-3">
-      <span className="text-[#0078D4] font-mono text-[16px] bg-[#0078D4]/10 w-8 h-8 rounded-full flex items-center justify-center border border-[#0078D4]/20">
+      <span className="text-[#0078D4] font-mono text-[16px] bg-[#0078D4]/10 w-8 h-8 rounded-lg flex items-center justify-center border border-[#0078D4]/20">
         {number}
       </span>
       {title}

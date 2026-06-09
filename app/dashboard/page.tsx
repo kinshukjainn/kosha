@@ -31,6 +31,7 @@ import {
   getStorageInfo,
 } from "@/actions/drive";
 import { Database, HardDrive } from "lucide-react";
+import Image from "next/image";
 
 type DriveFile = {
   key: string;
@@ -50,6 +51,14 @@ type ToastItem = {
   type: "error" | "success" | "info";
 };
 
+// Safe ID generator fallback in case you test on a non-HTTPS local IP
+const generateId = () => {
+  if (typeof crypto !== "undefined" && crypto.randomUUID) {
+    return crypto.randomUUID();
+  }
+  return Date.now().toString(36) + Math.random().toString(36).substring(2);
+};
+
 const formatBytes = (bytes: number, decimals = 2) => {
   if (!+bytes) return "0 Bytes";
   const k = 1024;
@@ -60,19 +69,19 @@ const formatBytes = (bytes: number, decimals = 2) => {
 };
 
 /* ------------------------------------------------------------------ */
-/* Azure Standard Button Classes                                      */
+/* Reusable Modern Button Classes                                     */
 /* ------------------------------------------------------------------ */
 const primaryButtonClass =
-  "inline-flex items-center justify-center gap-2 py-3 px-5 font-semibold text-[15px] cursor-pointer bg-blue-800 text-white hover:bg-blue-800 rounded-full transition-colors disabled:opacity-50 disabled:cursor-not-allowed";
+  "inline-flex items-center justify-center gap-2 py-2.5 px-5 font-semibold text-sm cursor-pointer bg-green-800 text-white hover:bg-green-700 rounded-lg transition-all duration-200 active:scale-95";
 
 const secondaryButtonClass =
-  "inline-flex items-center justify-center gap-2 py-1.5 px-4 font-semibold text-[13px] bg-white border border-gray-300 text-gray-800 hover:bg-gray-50 rounded-xl transition-colors disabled:opacity-50 disabled:cursor-not-allowed";
+  "inline-flex items-center justify-center gap-2 py-5 px-6 font-bold text-lg bg-blue-700 text-white cursor-pointer hover:text-black rounded-lg transition-all duration-200 ";
 
 const dangerButtonClass =
-  "inline-flex items-center justify-center gap-2 py-1.5 px-4 font-semibold text-[13px] bg-[#d13438] text-white hover:bg-[#a4262c] rounded-xl transition-colors disabled:opacity-50 disabled:cursor-not-allowed";
+  "inline-flex items-center justify-center gap-2 py-2 px-4 font-medium text-sm bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white rounded-lg transition-all duration-200 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed";
 
 const iconButtonClass =
-  "p-1.5 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-xl transition-colors cursor-pointer outline-none";
+  "p-2 text-gray-400 hover:text-white hover:bg-white/10 rounded-lg transition-colors cursor-pointer outline-none active:scale-95";
 
 /* ------------------------------------------------------------------ */
 /* Toast Notification Component                                       */
@@ -88,75 +97,67 @@ function ToastContainer({
 
   const config = {
     error: {
-      border: "border-l-[#444444]",
-      bg: "bg-black",
+      bg: "bg-red-950/90",
+      border: "border-red-500/50",
       icon: (
         <FaExclamationCircle
+          className="text-red-400 shrink-0 mt-0.5"
           size={16}
-          className="text-red-500 shrink-0 mt-0.5"
         />
       ),
-      title: "Error",
-      titleColor: "text-white",
     },
     success: {
-      border: "border-l-green-500",
-      bg: "bg-black",
+      bg: "bg-emerald-950/90",
+      border: "border-emerald-500/50",
       icon: (
-        <FaCheckCircle size={16} className="text-green-500 shrink-0 mt-0.5" />
+        <FaCheckCircle className="text-emerald-400 shrink-0 mt-0.5" size={16} />
       ),
-      title: "Success",
-      titleColor: "text-green-500",
     },
     info: {
-      border: "border-l-blue-500",
-      bg: "bg-black",
+      bg: "bg-blue-950/90",
+      border: "border-blue-500/50",
       icon: (
-        <FaInfoCircle size={16} className="text-blue-500 shrink-0 mt-0.5" />
+        <FaInfoCircle className="text-blue-400 shrink-0 mt-0.5" size={16} />
       ),
-      title: "Info",
-      titleColor: "text-blue-500",
     },
   };
 
   return (
-    <div className="fixed top-4 right-4 z-[200] flex flex-col gap-2 max-w-sm w-full pointer-events-none">
+    <div className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-[200] flex flex-col gap-3 max-w-sm w-full pointer-events-none">
       {toasts.map((toast) => {
         const c = config[toast.type];
         return (
           <div
             key={toast.id}
-            className={`pointer-events-auto ${c.bg} border border-gray-200 border-l-4 ${c.border} shadow-lg rounded-xl animate-[slideIn_0.25s_ease-out]`}
+            className={`pointer-events-auto backdrop-blur-md ${c.bg} border ${c.border} shadow-2xl rounded-lg overflow-hidden animate-[slideUp_0.3s_cubic-bezier(0.16,1,0.3,1)] flex flex-col`}
           >
-            <div className="flex items-start gap-3 px-4 py-3">
+            <div className="flex items-start gap-3 px-4 py-3.5">
               {c.icon}
               <div className="flex-1 min-w-0">
-                <p
-                  className={`text-[12px] font-semibold ${c.titleColor} uppercase tracking-wide mb-0.5`}
-                >
-                  {c.title}
-                </p>
-                <p className="text-[13px] text-gray-700 leading-snug">
+                <p className="text-[14px] font-medium text-gray-100 leading-snug break-words">
                   {toast.message}
                 </p>
               </div>
               <button
+                type="button"
                 onClick={() => onDismiss(toast.id)}
-                className="p-0.5 text-gray-400 hover:text-gray-700 transition-colors shrink-0"
-                aria-label="Dismiss notification"
+                className="p-1 text-gray-400 hover:text-white hover:bg-white/10 rounded-md transition-colors shrink-0"
               >
-                <FaTimes size={12} />
+                <FaTimes size={14} />
               </button>
             </div>
+            <div className="h-1 w-full bg-black/20 origin-left animate-[shrink_5s_linear_forwards]" />
           </div>
         );
       })}
-
-      {/* Inline keyframes for the slide-in animation */}
       <style>{`
-        @keyframes slideIn {
-          from { opacity: 0; transform: translateX(24px); }
-          to   { opacity: 1; transform: translateX(0); }
+        @keyframes slideUp {
+          from { opacity: 0; transform: translateY(20px) scale(0.95); }
+          to   { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        @keyframes shrink {
+          from { transform: scaleX(1); }
+          to   { transform: scaleX(0); }
         }
       `}</style>
     </div>
@@ -192,12 +193,12 @@ function ActionMenu({
   return (
     <div ref={menuRef} className="relative">
       <button
+        type="button"
         onClick={(e) => {
           e.stopPropagation();
           setOpen((prev) => !prev);
         }}
-        className={iconButtonClass}
-        title="More actions"
+        className={`${iconButtonClass} bg-black/40 backdrop-blur-sm border border-white/10 hover:bg-white/20`}
         aria-label="File actions"
       >
         <FaEllipsisV size={14} />
@@ -205,32 +206,40 @@ function ActionMenu({
 
       {open && (
         <div
-          className="absolute right-0 top-full mt-1 z-[100] min-w-[160px] bg-black border border-[#444444] shadow-md py-1 flex flex-col rounded-xl"
+          className="absolute right-0 top-full mt-2 z-[100] min-w-[160px] bg-[#18181b] backdrop-blur-xl border border-white/10 shadow-2xl py-1.5 flex flex-col rounded-lg overflow-hidden animate-[fadeIn_0.15s_ease-out]"
           onClick={(e) => e.stopPropagation()}
         >
           <button
+            type="button"
             onClick={(e) => {
               onDownload(e, fileKey);
               setOpen(false);
             }}
-            className="w-full flex items-center gap-3 px-4 py-2 text-[13px] cursor-pointer   text-gray-100 hover:bg-[#252525] transition-colors"
+            className="w-full flex items-center gap-3 px-4 py-2.5 text-[13px] font-medium cursor-pointer text-gray-200 hover:bg-white/10 hover:text-white transition-colors"
           >
-            <FaDownload size={14} className="text-gray-500" />
+            <FaDownload size={14} className="text-gray-400" />
             Download
           </button>
-          <div className="w-full h-px bg-gray-100 my-1" />
+          <div className="w-full h-px bg-white/10 my-1" />
           <button
+            type="button"
             onClick={(e) => {
               onDelete(e, fileKey);
               setOpen(false);
             }}
-            className="w-full flex items-center gap-3 px-4 py-2 text-[13px] cursor-pointer text-gray-100 hover:bg-[#252525] transition-colors"
+            className="w-full flex items-center gap-3 px-4 py-2.5 text-[13px] font-medium cursor-pointer text-red-400 hover:bg-red-500/10 hover:text-red-300 transition-colors"
           >
             <FaTrash size={14} />
             Delete
           </button>
         </div>
       )}
+      <style>{`
+        @keyframes fadeIn {
+          from { opacity: 0; transform: scale(0.95) translateY(-5px); }
+          to   { opacity: 1; transform: scale(1) translateY(0); }
+        }
+      `}</style>
     </div>
   );
 }
@@ -257,10 +266,9 @@ export default function DriveManager() {
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  /* ── Toast helpers ── */
   const showToast = useCallback(
     (message: string, type: ToastItem["type"] = "error") => {
-      const id = crypto.randomUUID();
+      const id = generateId(); // Safe ID fallback
       setToasts((prev) => [...prev, { id, message, type }]);
       setTimeout(() => {
         setToasts((prev) => prev.filter((t) => t.id !== id));
@@ -276,8 +284,10 @@ export default function DriveManager() {
   const fetchStorageInfo = useCallback(async () => {
     try {
       const info = await getStorageInfo();
-      setStorageUsed(info.used);
-      setStorageLimit(info.limit);
+      if (info) {
+        setStorageUsed(info.used || 0);
+        setStorageLimit(info.limit || 0);
+      }
     } catch (e) {
       console.error("Failed to fetch storage info", e);
     }
@@ -327,69 +337,79 @@ export default function DriveManager() {
     let successCount = 0;
     const failedItems: { name: string; reason: string }[] = [];
 
-    const uploadPromises = Array.from(selectedFiles).map(async (file) => {
-      try {
-        const { url, fields, key } = await getUploadUrl(
-          file.name,
-          file.type,
-          file.size,
-        );
+    try {
+      const uploadPromises = Array.from(selectedFiles).map(async (file) => {
+        try {
+          const { url, fields, key } = await getUploadUrl(
+            file.name,
+            file.type,
+            file.size,
+          );
 
-        const formData = new FormData();
-        Object.entries(fields).forEach(([k, v]) =>
-          formData.append(k, v as string),
-        );
-        formData.append("file", file);
+          const formData = new FormData();
+          // Ensure fields are appended correctly
+          Object.entries(fields).forEach(([k, v]) =>
+            formData.append(k, String(v)),
+          );
+          // File MUST be the last field appended
+          formData.append("file", file);
 
-        const response = await fetch(url, {
-          method: "POST",
-          body: formData,
-        });
+          const response = await fetch(url, {
+            method: "POST",
+            body: formData,
+          });
 
-        if (!response.ok && response.status !== 204) {
-          throw new Error(`Upload failed with status ${response.status}`);
+          if (!response.ok && response.status !== 204) {
+            throw new Error(`Upload failed with status ${response.status}`);
+          }
+
+          await confirmUploadDB(key, file.name, file.size, file.type);
+          successCount++;
+        } catch (error) {
+          console.error("File upload error:", error);
+          const reason =
+            error instanceof Error ? error.message : "Network error";
+          failedItems.push({ name: file.name, reason });
         }
+      });
 
-        await confirmUploadDB(key, file.name, file.size, file.type);
-        successCount++;
-      } catch (error) {
-        const reason = error instanceof Error ? error.message : "Unknown error";
-        failedItems.push({ name: file.name, reason });
+      await Promise.all(uploadPromises);
+
+      // Handle Success
+      if (successCount > 0) {
+        showToast(
+          successCount === 1
+            ? "File uploaded successfully."
+            : `${successCount} files uploaded successfully.`,
+          "success",
+        );
       }
-    });
 
-    await Promise.all(uploadPromises);
+      // Handle Failures
+      if (failedItems.length > 0) {
+        const reasonGroups = new Map<string, string[]>();
+        for (const item of failedItems) {
+          const existing = reasonGroups.get(item.reason) || [];
+          existing.push(item.name);
+          reasonGroups.set(item.reason, existing);
+        }
+        for (const [reason, names] of Array.from(reasonGroups.entries())) {
+          const fileLabel =
+            names.length === 1 ? names[0] : `${names.length} files`;
+          showToast(`${fileLabel} — ${reason}`, "error");
+        }
+      }
 
-    // Show results via toast
-    if (successCount > 0) {
-      showToast(
-        successCount === 1
-          ? "File uploaded successfully."
-          : `${successCount} files uploaded successfully.`,
-        "success",
-      );
+      await fetchFiles(0, true);
+      await fetchStorageInfo();
+    } catch (criticalError) {
+      console.error("Critical upload failure", criticalError);
+      showToast("An unexpected error occurred during upload.", "error");
+    } finally {
+      // ALWAYS reset state, even if a crash occurs
+      setIsUploading(false);
+      if (fileInputRef.current) fileInputRef.current.value = "";
     }
-
-    if (failedItems.length > 0) {
-      // Show one toast per unique error reason to avoid flooding
-      const reasonGroups = new Map<string, string[]>();
-      for (const item of failedItems) {
-        const existing = reasonGroups.get(item.reason) || [];
-        existing.push(item.name);
-        reasonGroups.set(item.reason, existing);
-      }
-      for (const [reason, names] of reasonGroups) {
-        const fileLabel =
-          names.length === 1 ? names[0] : `${names.length} files`;
-        showToast(`${fileLabel} — ${reason}`, "error");
-      }
-    }
-
-    await fetchFiles(0, true);
-    await fetchStorageInfo();
-
-    setIsUploading(false);
-    if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
   const handleDeleteClick = useCallback((e: React.MouseEvent, key: string) => {
@@ -407,12 +427,12 @@ export default function DriveManager() {
     setFileToDelete(null);
     setFiles((prev) => prev.filter((p) => p.key !== key));
     if (selectedFile?.key === key) setSelectedFile(null);
-    setTotalFiles((t) => t - 1);
+    setTotalFiles((t) => Math.max(0, t - 1));
 
     try {
       await deletePhoto(key);
       await fetchStorageInfo();
-      showToast(`${fileName} deleted successfully.`, "success");
+      showToast(`"${fileName}" deleted successfully.`, "success");
     } catch (error) {
       console.error("Delete failed", error);
       showToast(
@@ -438,9 +458,10 @@ export default function DriveManager() {
         document.body.removeChild(link);
       } catch (error) {
         console.error("Download failed", error);
+        showToast("Failed to initiate download.", "error");
       }
     },
-    [],
+    [showToast],
   );
 
   const getFileName = (key: string) => key.split("/").pop() || key;
@@ -481,31 +502,112 @@ export default function DriveManager() {
   );
 
   return (
-    <div className="w-full min-h-screen bg-black text-gray-100  flex flex-col">
-      {/* ── Toast Notifications ── */}
+    <div className="w-full min-h-screen bg-[#09090b] text-gray-100 flex flex-col  selection:bg-blue-500/30">
       <ToastContainer toasts={toasts} onDismiss={dismissToast} />
 
-      {/* --- Page Header & Breadcrumbs --- */}
-      <div className="bg-black border-b border-[#444444]">
-        <div className="px-6 py-4">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-blue-800 rounded-full flex items-center justify-center shrink-0">
-              <HardDrive size={20} className="text-white" />
+      {/* --- Sticky Header & Command Bar --- */}
+      <div className="  z-40 bg-[#09090b] border-b border-white/10">
+        <div className="max-w-[1600px] mx-auto">
+          <div className="px-4 sm:px-6 lg:px-8 py-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div className="flex items-center gap-3.5">
+              <div className="w-11 h-11 bg-slate-800  rounded-lg flex items-center justify-center shrink-0 shadow-inner">
+                <HardDrive size={32} className="text-white" />
+              </div>
+              <div>
+                <h1 className="text-xl font-bold text-white tracking-tight leading-tight">
+                  My Drive
+                </h1>
+                <p className="text-sm text-gray-400 mt-0.5">
+                  Manage and review your secure files
+                </p>
+              </div>
             </div>
-            <div>
-              <h1 className="text-xl title-font font-semibold text-gray-100 tracking-tight leading-tight">
-                My Drive
-              </h1>
-              <p className="text-[13px] text-gray-200 mt-0.5">
-                Manage and review your secure files
-              </p>
+
+            <div className="flex items-center gap-3 sm:w-auto w-full">
+              <div className="relative flex-1 sm:w-64">
+                <FaSearch
+                  size={14}
+                  className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-500"
+                />
+                <input
+                  type="text"
+                  placeholder="Search files and more.."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full pl-10 pr-4 py-2 bg-[#12121b] border border-white/10 rounded-lg text-md text-white focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all placeholder-gray-500"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* --- Main Content Area --- */}
+      <div className="flex-1 w-full max-w-[1600px] mx-auto p-4 sm:p-6 lg:p-8 z-10 flex flex-col gap-8">
+        {/* Essentials Dashboard Row */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="bg-[#12121b] border border-[#444444] rounded-lg p-4 flex flex-col gap-1 shadow-sm">
+            <span className="text-md text-gray-200 font-medium">
+              Total Resources
+            </span>
+            <span className="text-2xl font-bold text-white">{totalFiles}</span>
+          </div>
+          <div className="bg-[#12121b] border border-[#444444] rounded-lg p-4 flex flex-col gap-1 shadow-sm">
+            <span className="text-md text-gray-200 font-medium">
+              Storage Used
+            </span>
+            <span className="text-2xl font-bold text-blue-500">
+              {formatBytes(storageUsed)}
+            </span>
+          </div>
+          <div className="bg-[#12121b] border border-[#444444] rounded-lg p-4 flex flex-col gap-1 shadow-sm">
+            <span className="text-md text-gray-200 font-medium">Capacity</span>
+            <span className="text-2xl font-bold text-white">
+              {formatBytes(storageLimit)}
+            </span>
+          </div>
+          <div className="bg-[#12121b] border border-[#444444] rounded-lg p-4 flex flex-col gap-1 shadow-sm">
+            <span className="text-md text-gray-200 font-medium">
+              System Status
+            </span>
+            <div className="flex items-center gap-2 text-white bg-green-700 w-fit px-2.5 py-1 rounded-md text-sm font-semibold">
+              <Database size={14} /> Online
             </div>
           </div>
         </div>
 
-        {/* --- Command Bar --- */}
-        <div className="bg-black px-4 sm:px-6 py-2 flex flex-wrap items-center justify-between border-t border-[#444444] gap-3">
-          <div className="flex flex-wrap items-center gap-2">
+        {/* --- Toolbar --- */}
+        <div className="flex flex-wrap items-center justify-between gap-4  rounded-lg ">
+          <div className="flex items-center gap-3 pl-2">
+            <div className="flex items-center ">
+              <button
+                type="button"
+                onClick={() => setViewMode("grid")}
+                className={`p-1.5 rounded-lg transition-all ${
+                  viewMode === "grid"
+                    ? "bg-green-700 text-white shadow-sm"
+                    : "text-gray-500 hover:text-gray-300 hover:bg-white/5"
+                }`}
+                title="Grid View"
+              >
+                <FaThLarge size={24} />
+              </button>
+              <button
+                type="button"
+                onClick={() => setViewMode("list")}
+                className={`p-1.5 rounded-lg transition-all ${
+                  viewMode === "list"
+                    ? "bg-green-700 text-white shadow-sm"
+                    : "text-gray-500 hover:text-gray-300 hover:bg-white/5"
+                }`}
+                title="List View"
+              >
+                <FaListUl size={24} />
+              </button>
+            </div>
+          </div>
+
+          <div className="pr-2 flex items-center">
             <input
               type="file"
               accept="image/*,video/*,application/pdf,.pptx,.ppt,.xlsx,.xls,.csv,.txt,.md"
@@ -516,133 +618,70 @@ export default function DriveManager() {
               multiple
             />
             <button
+              type="button"
               onClick={() => fileInputRef.current?.click()}
               disabled={isUploading}
               className={primaryButtonClass}
             >
               {isUploading ? (
-                <FaSpinner className="animate-spin" size={14} />
+                <FaSpinner className="animate-spin" size={22} />
               ) : (
-                <FaCloudUploadAlt size={16} />
+                <FaCloudUploadAlt size={22} />
               )}
-              {isUploading ? "Uploading..." : "Upload Files"}
+              <span className="hidden sm:inline">
+                {isUploading ? "Uploading..." : "Upload Files"}
+              </span>
+              <span className="sm:hidden">
+                {isUploading ? "Uploading..." : "Upload"}
+              </span>
             </button>
-
-            <div className="w-px h-5 bg-black mx-2 hidden sm:block" />
-
-            {/* View Mode Toggles */}
-            <div className="flex items-center bg-black py-1 px-3 rounded-full gap-2 overflow-hidden">
-              <button
-                onClick={() => setViewMode("grid")}
-                className={`py-2 px-5 transition-colors  rounded-full ${
-                  viewMode === "grid"
-                    ? "bg-blue-800 text-white"
-                    : "hover:text-gray-900 text hover:bg-gray-50"
-                }`}
-                title="Grid View"
-              >
-                <FaThLarge size={18} />
-              </button>
-              <div className="w-px h-4 bg-gray-200" />
-              <button
-                onClick={() => setViewMode("list")}
-                className={`py-2 px-5 transition-colors  rounded-full ${
-                  viewMode === "list"
-                    ? "bg-blue-800 text-white"
-                    : "hover:text-gray-900 text hover:bg-gray-50"
-                }`}
-                title="List View"
-              >
-                <FaListUl size={18} />
-              </button>
-            </div>
-          </div>
-
-          {/* Search Box */}
-          <div className="relative w-full sm:w-64">
-            <FaSearch
-              size={12}
-              className="absolute left-2.5 top-3 text-gray-500"
-            />
-            <input
-              type="text"
-              placeholder="Filter by name..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-8 pr-3 py-2 bg-black border border-[#444444] rounded-full text-[15px] text-gray-100 focus:outline-none transition-all placeholder-gray-400"
-            />
-          </div>
-        </div>
-      </div>
-
-      {/* --- Main Content Area --- */}
-      <div className="flex-1 w-full max-w-[1600px] mx-auto p-4 md:p-6 lg:p-8 z-10">
-        {/* Essentials Block */}
-        <div className="mb-6">
-          <h2 className="font-semibold text-[14px] text-gray-100 mb-3">
-            Essentials
-          </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-x-12 gap-y-4 text-[13px] ml-1">
-            <div className="flex flex-col gap-1">
-              <span className="text-gray-100">Total Resources</span>
-              <span className="text-gray-100 font-medium">
-                {totalFiles} items
-              </span>
-            </div>
-            <div className="flex flex-col gap-1">
-              <span className="text-gray-100">Storage Used</span>
-              <span className="text-[#0078D4] font-medium">
-                {formatBytes(storageUsed)}
-              </span>
-            </div>
-            <div className="flex flex-col gap-1">
-              <span className="text-gray-100">Storage Capacity</span>
-              <span className="text-gray-100">{formatBytes(storageLimit)}</span>
-            </div>
-            <div className="flex flex-col gap-1">
-              <span className="text-gray-100">Status</span>
-              <span className="text-[#107c10] font-medium flex items-center gap-1">
-                <Database size={14} /> Online
-              </span>
-            </div>
           </div>
         </div>
 
         {/* Content View */}
         {isLoading ? (
-          <div className="flex flex-col bg-black items-center justify-center py-20 gap-3">
-            <FaSpinner className="animate-spin text-white" size={24} />
-            <span className="text-[13px] text-gray-100">
-              Loading resources...
+          <div className="flex-1 flex flex-col items-center justify-center py-32 gap-4">
+            <FaSpinner className="animate-spin text-blue-500" size={32} />
+            <span className="text-sm font-medium text-gray-400">
+              Loading your files...
             </span>
           </div>
         ) : filteredFiles.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-16 bg-black border border-[#444444] rounded-xl">
-            <FaFileAlt className="text-4xl text-gray-300 mb-3" />
-            <h3 className="text-[15px] font-semibold text-gray-100 mb-1">
+          <div className="flex-1 flex flex-col items-center justify-center py-32  border border-dashed border-white/10 rounded-lg text-center px-4">
+            <div className="w-16 h-16 bg-white/5 flex items-center justify-center rounded-lg mb-4">
+              <FaCloudUploadAlt className="text-3xl text-gray-400" />
+            </div>
+            <h3 className="text-lg font-bold text-white mb-2">
               No files found
             </h3>
-            <p className="text-[13px] text-gray-100 text-center">
-              Upload documents or media to populate this directory.
+            <p className="text-sm text-gray-400 max-w-sm mb-6">
+              Your drive is empty or no files match your search. Upload
+              documents, images, or media to get started.
             </p>
+            <button
+              type="button"
+              onClick={() => fileInputRef.current?.click()}
+              className={secondaryButtonClass}
+            >
+              Select files to upload
+            </button>
           </div>
         ) : (
-          <div className="bg-black border border-[#444444] rounded-xl p-4">
-            {/* ===================== LIST VIEW ===================== */}
+          <div className="bg-[#18181b] border border-white/10 rounded-lg overflow-hidden flex flex-col">
             {viewMode === "list" ? (
               <div className="overflow-x-auto w-full">
                 <table className="w-full text-left border-collapse whitespace-nowrap">
-                  <thead className="bg-black border-b border-[#444444] text-[12px] font-semibold text-gray-100 uppercase">
+                  <thead className="bg-[#18181b] border-b border-white/10 text-xs font-semibold text-gray-400 uppercase tracking-wider">
                     <tr>
-                      <th className="px-4 py-2.5 w-12 text-center">Type</th>
-                      <th className="px-4 py-2.5">Name</th>
-                      <th className="px-4 py-2.5 w-32 hidden sm:table-cell">
+                      <th className="px-6 py-4 w-16 text-center">Type</th>
+                      <th className="px-6 py-4">Name</th>
+                      <th className="px-6 py-4 w-32 hidden sm:table-cell">
                         Extension
                       </th>
-                      <th className="px-4 py-2.5 w-20 text-center">Actions</th>
+                      <th className="px-6 py-4 w-24 text-right">Actions</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-[#444444]">
+                  <tbody className="divide-y divide-white/5">
                     {filteredFiles.map((file) => {
                       const fileName = getFileName(file.key);
                       const fileType = getFileType(fileName);
@@ -651,34 +690,36 @@ export default function DriveManager() {
                         <tr
                           key={file.key}
                           onClick={() => setSelectedFile(file)}
-                          className="hover:bg-[#252525] cursor-pointer transition-colors group"
+                          className="hover:bg-white/5 cursor-pointer transition-colors group"
                         >
-                          <td className="px-4 py-3 text-center">
+                          <td className="px-6 py-4 text-center">
                             {getFileIcon(
                               fileType,
-                              "text-[16px] text-green-500 mx-auto",
+                              "text-xl text-gray-400 group-hover:text-blue-400 transition-colors mx-auto",
                             )}
                           </td>
-                          <td className="px-4 py-3 text-[13px] text-white font-medium truncate max-w-[200px] md:max-w-md group-hover:underline">
+                          <td className="px-6 py-4 text-sm text-gray-200 font-medium truncate max-w-[200px] md:max-w-md group-hover:text-white transition-colors">
                             {fileName}
-                            <span className="block sm:hidden text-[11px] text-gray-100 mt-0.5 no-underline">
+                            <span className="block sm:hidden text-xs text-gray-500 mt-1 font-normal">
                               {ext.toUpperCase()}
                             </span>
                           </td>
-                          <td className="px-4 py-3 hidden sm:table-cell">
-                            <span className="bg-[#252525] text-gray-100 px-2 py-0.5 text-[11px] font-semibold rounded-xl">
+                          <td className="px-6 py-4 hidden sm:table-cell">
+                            <span className="bg-white/5 border border-white/10 text-gray-300 px-2.5 py-1 text-xs font-medium rounded-lg">
                               {ext.toUpperCase()}
                             </span>
                           </td>
                           <td
-                            className="px-4 py-3 text-center"
+                            className="px-6 py-4 text-right"
                             onClick={(e) => e.stopPropagation()}
                           >
-                            <ActionMenu
-                              fileKey={file.key}
-                              onDownload={handleDownload}
-                              onDelete={handleDeleteClick}
-                            />
+                            <div className="flex justify-end">
+                              <ActionMenu
+                                fileKey={file.key}
+                                onDownload={handleDownload}
+                                onDelete={handleDeleteClick}
+                              />
+                            </div>
                           </td>
                         </tr>
                       );
@@ -687,8 +728,7 @@ export default function DriveManager() {
                 </table>
               </div>
             ) : (
-              /* ===================== GRID VIEW ===================== */
-              <div className="p-4 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
+              <div className="p-4 sm:p-6 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 sm:gap-6">
                 {filteredFiles.map((file) => {
                   const fileName = getFileName(file.key);
                   const fileType = getFileType(fileName);
@@ -697,10 +737,10 @@ export default function DriveManager() {
                     <div
                       key={file.key}
                       onClick={() => setSelectedFile(file)}
-                      className="relative bg-[#121212] border border-[#444444] hover:border-[#444444] hover:shadow-sm transition-all duration-150 cursor-pointer flex flex-col group rounded-xl overflow-hidden"
+                      className="group relative bg-[#09090b] border border-white/10 hover:border-blue-500/50 hover:shadow-[0_0_20px_rgba(59,130,246,0.1)] transition-all duration-300 cursor-pointer flex flex-col rounded-lg overflow-hidden"
                     >
                       <div
-                        className="absolute top-1.5 right-1.5 z-10 bg-black/90 rounded-2xl opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity shadow-sm"
+                        className="absolute top-2 right-2 z-10 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity"
                         onClick={(e) => e.stopPropagation()}
                       >
                         <ActionMenu
@@ -709,50 +749,44 @@ export default function DriveManager() {
                           onDelete={handleDeleteClick}
                         />
                       </div>
-
-                      {/* Preview Area */}
-                      <div className="h-28 sm:h-32 bg-black border-b border-[#444444] flex items-center justify-center relative overflow-hidden">
+                      <div className="aspect-square bg-[#121214] border-b border-white/5 flex items-center justify-center relative overflow-hidden">
                         {fileType === "image" ? (
-                          // eslint-disable-next-line @next/next/no-img-element
-                          <img
+                          <Image
                             src={file.url}
                             alt={fileName}
-                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                            fill
+                            sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 20vw"
+                            className="object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
                             loading="lazy"
                           />
                         ) : fileType === "video" ? (
                           <div className="w-full h-full relative">
                             <video
                               src={file.url}
-                              className="w-full h-full object-cover opacity-80"
+                              className="w-full h-full object-cover opacity-60"
                             />
-                            <div className="absolute inset-0 bg-black/20 flex items-center justify-center">
-                              <div className="w-8 h-8 bg-white/90 rounded-full flex items-center justify-center shadow-sm">
-                                <FaPlay
-                                  className="text-[#0078D4] ml-0.5"
-                                  size={12}
-                                />
+                            <div className="absolute inset-0 flex items-center justify-center group-hover:bg-black/20 transition-colors">
+                              <div className="w-10 h-10 bg-white/10 backdrop-blur-md rounded-lg flex items-center justify-center border border-white/20">
+                                <FaPlay className="text-white ml-1" size={14} />
                               </div>
                             </div>
                           </div>
                         ) : (
                           getFileIcon(
                             fileType,
-                            "text-3xl text-gray-400 group-hover:text-[#0078D4] transition-colors",
+                            "text-4xl text-gray-500 group-hover:text-blue-500 transition-colors duration-300 scale-95 group-hover:scale-100",
                           )
                         )}
                       </div>
-
-                      {/* File Info Footer */}
-                      <div className="p-2.5 flex flex-col gap-1">
+                      <div className="p-3.5 flex flex-col gap-1">
                         <span
-                          className="text-[12px] font-semibold text-gray-100 truncate"
+                          className="text-sm font-medium text-gray-200 group-hover:text-white truncate transition-colors"
                           title={fileName}
                         >
                           {fileName}
                         </span>
-                        <span className="text-[11px] text-gray-500">
-                          {ext.toUpperCase()} file
+                        <span className="text-xs text-gray-500 font-medium">
+                          {ext.toUpperCase()}
                         </span>
                       </div>
                     </div>
@@ -761,15 +795,22 @@ export default function DriveManager() {
               </div>
             )}
 
-            {/* Load More Row */}
             {hasMore && (
-              <div className="border-t border-gray-200 bg-[#fafafa] p-3 text-center">
+              <div className="border-t border-white/10 bg-[#18181b] p-4 text-center">
                 <button
+                  type="button"
                   onClick={handleLoadMore}
                   disabled={isLoadingMore}
-                  className="text-[#0078D4] hover:text-[#005a9e] hover:underline text-[13px] font-semibold disabled:no-underline disabled:opacity-50"
+                  className={secondaryButtonClass}
                 >
-                  {isLoadingMore ? "Loading more..." : "Load more resources"}
+                  {isLoadingMore ? (
+                    <>
+                      <FaSpinner className="animate-spin" size={14} />{" "}
+                      Loading...
+                    </>
+                  ) : (
+                    "Load more files"
+                  )}
                 </button>
               </div>
             )}
@@ -780,58 +821,59 @@ export default function DriveManager() {
       {/* --- File Viewer Overlay (Modal) --- */}
       {selectedFile && (
         <div
-          className="fixed inset-0 z-[100] bg-black/80 flex flex-col backdrop-blur-sm"
+          className="fixed inset-0 z-[150] bg-black/90 flex flex-col backdrop-blur-xl animate-[fadeIn_0.2s_ease-out]"
           onClick={() => setSelectedFile(null)}
         >
-          {/* Viewer Header */}
           <div
-            className="bg-[#121212] rounded-b-2xl px-4 py-3 flex border border-[#444444] justify-between items-center shadow-sm"
+            className="bg-black/50 border-b border-white/10 px-4 py-4 flex justify-between items-center"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="flex items-center gap-2 min-w-0">
+            <div className="flex items-center gap-3 min-w-0">
               {getFileIcon(
                 getFileType(getFileName(selectedFile.key)),
-                "text-white text-lg shrink-0",
+                "text-blue-400 text-xl shrink-0",
               )}
-              <span className="text-[14px] font-semibold text-gray-100 truncate">
+              <span className="text-base font-semibold text-gray-100 truncate">
                 {getFileName(selectedFile.key)}
               </span>
             </div>
             <div className="flex items-center gap-2 shrink-0 ml-4">
               <button
+                type="button"
                 onClick={(e) => handleDownload(e, selectedFile.key)}
-                className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 bg-blue-800 cursor-pointer hover:bg-blue-800 text-white text-[13px] font-semibold rounded-xl transition-colors"
+                className="hidden sm:flex items-center gap-2 px-4 py-2 cursor-pointer bg-white text-black text-sm font-medium rounded-lg transition-all active:scale-95"
               >
-                <FaDownload size={12} /> Download
+                <FaDownload size={14} /> Download
               </button>
               <button
+                type="button"
                 onClick={(e) => handleDeleteClick(e, selectedFile.key)}
-                className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 bg-red-800  cursor-pointer text-white text-[13px] font-semibold rounded-xl transition-colors"
+                className="hidden sm:flex items-center gap-2 px-4 py-2 cursor-pointer bg-red-500 text-white text-red-500 text-sm font-medium rounded-lg transition-all active:scale-95"
               >
-                <FaTrash size={12} /> Delete
+                <FaTrash size={14} /> Delete
               </button>
-              <div className="w-px h-5 bg-gray-300 mx-1 hidden sm:block" />
+              <div className="w-px h-6 bg-white/10 mx-2 hidden sm:block" />
               <button
+                type="button"
                 onClick={() => setSelectedFile(null)}
-                className="p-1.5 text-gray-100 hover:text-gray-100 hover:bg-gray-900 rounded-xl cursor-pointer transition-colors"
+                className="p-2 text-gray-200 bg-blue-800  rounded-lg cursor-pointer transition-all active:scale-95"
                 title="Close Viewer"
               >
-                <FaTimes size={18} />
+                <FaTimes size={20} />
               </button>
             </div>
           </div>
-
-          {/* Viewer Content */}
           <div
-            className="flex-1 overflow-hidden p-4 md:p-8 flex items-center justify-center"
+            className="flex-1 overflow-hidden p-4 md:p-8 flex items-center justify-center relative" // Added 'relative' here
             onClick={(e) => e.stopPropagation()}
           >
             {getFileType(getFileName(selectedFile.key)) === "image" && (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
+              <Image
                 src={selectedFile.url}
                 alt="preview"
-                className="max-w-full max-h-full object-contain shadow-2xl rounded-xl"
+                fill
+                sizes="100vw"
+                className="object-contain p-4 md:p-8 drop-shadow-2xl"
               />
             )}
             {getFileType(getFileName(selectedFile.key)) === "video" && (
@@ -839,37 +881,38 @@ export default function DriveManager() {
                 src={selectedFile.url}
                 controls
                 autoPlay
-                className="max-w-full max-h-full object-contain shadow-2xl rounded-xl bg-black"
+                className="max-w-full max-h-full object-contain shadow-2xl rounded-lg bg-black ring-1 ring-white/10"
               />
             )}
             {getFileType(getFileName(selectedFile.key)) === "pdf" && (
               <iframe
                 src={selectedFile.url}
-                className="w-full h-full max-w-5xl bg-white shadow-2xl rounded-xl"
+                className="w-full h-full max-w-5xl bg-white rounded-lg ring-1 ring-white/10"
               />
             )}
             {!["image", "video", "pdf"].includes(
               getFileType(getFileName(selectedFile.key)),
             ) && (
-              <div className="bg-white p-8 md:p-10 shadow-xl rounded-xl text-center flex flex-col items-center max-w-sm w-full">
-                <div className="mb-4">
+              <div className="bg-[#18181b] p-8 md:p-12 border border-white/10 shadow-2xl rounded-lg text-center flex flex-col items-center max-w-md w-full">
+                <div className="mb-6 w-20 h-20 bg-white/5 rounded-lg flex items-center justify-center">
                   {getFileIcon(
                     getFileType(getFileName(selectedFile.key)),
-                    "text-5xl text-gray-300",
+                    "text-5xl text-blue-500",
                   )}
                 </div>
-                <h3 className="text-[16px] font-semibold text-gray-900 mb-1">
+                <h3 className="text-xl font-bold text-white mb-2">
                   Preview not available
                 </h3>
-                <p className="text-[13px] text-gray-500 mb-6">
+                <p className="text-sm text-gray-400 mb-8 leading-relaxed">
                   This file format requires a dedicated application to view.
-                  Please download it locally.
+                  Please download it to your device to open it.
                 </p>
                 <button
+                  type="button"
                   onClick={(e) => handleDownload(e, selectedFile.key)}
-                  className={primaryButtonClass}
+                  className={`${primaryButtonClass} w-full`}
                 >
-                  <FaDownload size={14} /> Download File
+                  <FaDownload size={16} /> Download File
                 </button>
               </div>
             )}
@@ -877,45 +920,49 @@ export default function DriveManager() {
         </div>
       )}
 
-      {/* --- Delete Confirmation Dialog (Azure Style) --- */}
+      {/* --- Delete Confirmation Dialog --- */}
       {fileToDelete && (
         <div
-          className="fixed inset-0 z-[110] bg-black/40 flex items-center justify-center p-4 backdrop-blur-sm"
+          className="fixed inset-0 z-[200] bg-black/60 flex items-center justify-center p-4 backdrop-blur-sm animate-[fadeIn_0.2s_ease-out]"
           onClick={() => setFileToDelete(null)}
         >
           <div
-            className="bg-white shadow-xl w-full max-w-md rounded-xl overflow-hidden"
+            className="bg-[#18181b] border border-white/10 shadow-2xl w-full max-w-md rounded-lg overflow-hidden animate-[slideUp_0.2s_ease-out]"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="p-6">
-              <div className="flex items-start gap-3">
-                <FaExclamationCircle
-                  size={24}
-                  className="text-[#d13438] shrink-0 mt-0.5"
-                />
-                <div>
-                  <h3 className="text-[16px] font-semibold text-gray-900 mb-2">
+              <div className="flex items-start gap-4">
+                <div className="w-10 h-10 rounded-lg bg-red-500/10 flex items-center justify-center shrink-0">
+                  <FaExclamationCircle size={20} className="text-red-500" />
+                </div>
+                <div className="pt-1">
+                  <h3 className="text-lg font-bold text-white mb-2">
                     Delete Resource
                   </h3>
-                  <p className="text-[13px] text-gray-600 leading-relaxed">
+                  <p className="text-sm text-gray-400 leading-relaxed">
                     Are you sure you want to permanently delete{" "}
-                    <span className="font-semibold text-gray-900 break-all">
-                      {getFileName(fileToDelete)}
+                    <span className="font-semibold text-gray-200 break-all">
+                      &quot;{getFileName(fileToDelete)}&quot;
                     </span>
                     ? This action cannot be undone.
                   </p>
                 </div>
               </div>
             </div>
-            <div className="bg-gray-50 px-6 py-4 border-t border-gray-200 flex justify-end gap-2">
-              <button onClick={confirmDelete} className={dangerButtonClass}>
-                Delete
-              </button>
+            <div className="bg-black/20 px-6 py-4 border-t border-white/5 flex justify-end gap-3">
               <button
+                type="button"
                 onClick={() => setFileToDelete(null)}
                 className={secondaryButtonClass}
               >
                 Cancel
+              </button>
+              <button
+                type="button"
+                onClick={confirmDelete}
+                className={dangerButtonClass}
+              >
+                Yes, delete
               </button>
             </div>
           </div>

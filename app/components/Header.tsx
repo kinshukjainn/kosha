@@ -31,17 +31,9 @@ const NAV_LINKS = [
 export default function Header() {
   const { isLoaded, userId } = useAuth();
   const [open, setOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
 
   const toggle = () => setOpen((o) => !o);
   const close = () => setOpen(false);
-
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 8);
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
 
   useEffect(() => {
     document.body.style.overflow = open ? "hidden" : "";
@@ -52,19 +44,8 @@ export default function Header() {
 
   return (
     <header
-      className={`sticky z-50 transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] mx-auto backdrop-saturate-150
-        ${
-          scrolled && !open
-            ? "top-2 w-[calc(100%-1rem)] max-w-6xl rounded-full border border-white/10 bg-[#050505]/80 backdrop-blur-xl shadow-[0_16px_40px_-10px_rgba(0,0,0,0.8)]"
-            : "top-0 w-full rounded-none border-b border-white/5 bg-[#050505]/50 backdrop-blur-lg shadow-none"
-        }`}
+      className={`sticky top-0 z-50 transition-all bg-black border-b border-[#181818] duration-500  mx-auto backdrop-saturate-150`}
     >
-      {/* Top hairline highlight - fades out when pill shaped so it doesn't bleed out the corners */}
-      <div
-        className={`pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent transition-opacity duration-300
-        ${scrolled && !open ? "opacity-0" : "opacity-100"}`}
-      />
-
       <div className="flex items-center justify-between h-14 px-4 md:px-6 max-w-screen-2xl mx-auto">
         {/* ── Logo ── */}
         <Link
@@ -79,7 +60,7 @@ export default function Header() {
             height={40}
             className="object-contain group-hover:scale-105 transition-transform duration-300"
           />
-          <span className="font-bold text-[23px] tracking-wider title-font text-gray-100">
+          <span className="font-bold text-[23px] tracking-wider  text-gray-100">
             KOSHA
           </span>
         </Link>
@@ -124,7 +105,7 @@ export default function Header() {
           {isLoaded && !userId && (
             <Link
               href="/verify-regis"
-              className="flex items-center gap-2 px-4 py-1.5 bg-white hover:bg-gray-200 text-black text-xs font-bold tracking-wide rounded-full transition-all active:scale-95 shadow-[0_0_0_1px_rgba(255,255,255,0.1),0_2px_8px_-2px_rgba(0,0,0,0.4)]"
+              className="flex items-center gap-2 px-4 py-1.5 bg-white hover:bg-gray-200 text-black text-xs font-bold tracking-wide rounded-lg transition-all active:scale-95 shadow-[0_0_0_1px_rgba(255,255,255,0.1),0_2px_8px_-2px_rgba(0,0,0,0.4)]"
             >
               <LogIn className="w-3.5 h-3.5" />
               Sign In / Up
@@ -187,9 +168,9 @@ export default function Header() {
               href="https://github.com/kinshukjainn/pvtcldstrg"
               target="_blank"
               rel="noopener noreferrer"
-              className="group relative flex items-center gap-3 px-4 py-3 rounded-2xl text-[14px] font-medium text-gray-300 hover:text-white hover:bg-white/[0.06] transition-all duration-300"
+              className="group relative flex items-center gap-3 px-4 py-3 rounded-lg text-[14px] font-medium text-gray-300 hover:text-white hover:bg-white/[0.06] transition-all duration-300"
             >
-              <div className="w-9 h-9 flex items-center justify-center rounded-full bg-blue-400  transition-all duration-300">
+              <div className="w-9 h-9 flex items-center justify-center rounded-lg bg-blue-400  transition-all duration-300">
                 <FaGithub className="w-4 h-4 text-black  transition-colors" />
               </div>
               <span className="flex-1">Open Source</span>
@@ -201,9 +182,9 @@ export default function Header() {
               href="https://clkfeedbacks.cloudkinshuk.in"
               target="_blank"
               rel="noopener noreferrer"
-              className="group relative flex items-center gap-3 px-4 py-3 rounded-2xl text-[14px] font-medium text-gray-300 hover:text-white hover:bg-white/[0.06] transition-all duration-300"
+              className="group relative flex items-center gap-3 px-4 py-3 rounded-lg text-[14px] font-medium text-gray-300 hover:text-white hover:bg-white/[0.06] transition-all duration-300"
             >
-              <div className="w-9 h-9 flex items-center justify-center rounded-full bg-blue-400  transition-all duration-300">
+              <div className="w-9 h-9 flex items-center justify-center rounded-lg bg-blue-400  transition-all duration-300">
                 <MessageSquareText className="w-4 h-4 text-black transition-colors" />
               </div>
               <span className="flex-1">Feedback</span>
@@ -217,7 +198,7 @@ export default function Header() {
                 <Link
                   href="/verify-regis"
                   onClick={close}
-                  className="relative flex items-center justify-center gap-2 w-full bg-white text-black text-sm font-bold tracking-wide py-3.5 rounded-full transition-all hover:bg-gray-200 active:scale-[0.98] shadow-lg"
+                  className="relative flex items-center justify-center gap-2 w-full bg-white text-black text-sm font-bold tracking-wide py-3.5 rounded-lg transition-all hover:bg-gray-200 active:scale-[0.98] shadow-lg"
                 >
                   <LogIn className="w-4 h-4" />
                   Sign In / Up
@@ -252,13 +233,13 @@ function NavLink({
   return (
     <Link
       href={href}
-      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[15px] font-medium text-white hover:bg-white/[0.08] hover:text-white transition-colors whitespace-nowrap ${
+      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-[15px] font-medium text-white hover:bg-[#181818] group-hover:text-green-500 transition-colors whitespace-nowrap ${
         underline
           ? "underline decoration-white/20 underline-offset-4 hover:decoration-gray-400"
           : ""
       }`}
     >
-      <Icon className="w-4 h-4 shrink-0 text-white " />
+      <Icon className="w-4 h-4 shrink-0 text-white group-hover:text-green-500 " />
       {children}
     </Link>
   );
@@ -283,7 +264,7 @@ function MobileNavLink({
       className="group relative flex items-center gap-3 px-4 py-1 text-white text-sm  hover:border-l-2 hover:border-blue-400 transition-all duration-300"
     >
       {/* Icon tile */}
-      <div className="w-9 h-9 flex items-center justify-center rounded-full bg-blue-400  transition-all duration-300">
+      <div className="w-9 h-9 flex items-center justify-center rounded-lg bg-blue-400  transition-all duration-300">
         <Icon className="w-4 h-4 text-black  transition-colors" />
       </div>
       <span className="flex-1">{children}</span>

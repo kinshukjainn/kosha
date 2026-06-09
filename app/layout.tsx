@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import {
+  DM_Sans,
   Noto_Serif,
   Plus_Jakarta_Sans,
   Supermercado_One,
@@ -23,6 +24,13 @@ import Footer from "./components/Footer";
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
+});
+
+const dmSans = DM_Sans({
+  subsets: ["latin"],
+  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
+  variable: "--font-dm-sans",
+  display: "swap",
 });
 
 const poppins = Poppins({
@@ -189,7 +197,7 @@ export default function RootLayout({
     <ClerkProvider>
       <html lang="en" data-google-analytics-opt-out="">
         <body
-          className={`${geistSans.variable} ${plusJakarta.variable} ${publicSans.variable} ${ubuntu.variable} ${notoSerif.variable} ${poppins.variable} ${roboto.variable} ${verdana.variable} ${segoeui.variable} ${geistMono.variable} ${inter.variable} ${lucideSans.variable} ${googleSans.variable} ${supermercado.variable} ${varelaRound.variable} antialiased`}
+          className={`${geistSans.variable} ${plusJakarta.variable} ${publicSans.variable} ${dmSans.variable} ${ubuntu.variable} ${notoSerif.variable} ${poppins.variable} ${roboto.variable} ${verdana.variable} ${segoeui.variable} ${geistMono.variable} ${inter.variable} ${lucideSans.variable} ${googleSans.variable} ${supermercado.variable} ${varelaRound.variable} antialiased`}
         >
           <Header />
           <main>{children}</main>

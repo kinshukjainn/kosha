@@ -21,6 +21,7 @@ const config: Config = {
         publicSans: "var(--font-public-sans) , sans-serif",
         poppins: "var(--font-poppins) , sans-serif",
         googleSans: "var(--font-google-sans) , sans-serif",
+        dmSans: "var(--font-dm-sans) , sans-serif",
         plusJakarta: "var(--font-plus-jakarta) , sans-serif",
         inter: "var(--font-inter) , sans-serif",
         notoSerif: "var(--font-noto-serif) , serif",

@@ -13,7 +13,7 @@ import { sql } from "@/lib/db";
 import { checkRateLimit } from "@/lib/rate_limit";
 
 const FILE_LIST_PAGE_SIZE = 30;
-const MAX_FILE_SIZE_BYTES = 500 * 1024 * 1024;
+const MAX_FILE_SIZE_BYTES = 2 * 1024 * 1024 * 1024; // 2 GB
 
 const ALLOWED_CONTENT_TYPES = new Set([
   "image/jpeg",
@@ -81,15 +81,16 @@ function toNum(v: unknown): number {
 }
 
 function sanitizeFilename(raw: string): string {
-  let s = raw
+  // Fixed ESLint 'prefer-const' warning
+  const sanitized = raw
     .normalize("NFKD")
     .replace(/[^a-zA-Z0-9._-]/g, "-")
     .replace(/-+/g, "-")
     .replace(/^[.\-]+/, "")
     .replace(/[.\-]+$/, "");
-  if (!s) s = "file";
-  if (s.length > 200) s = s.slice(0, 200);
-  return s;
+
+  const safeName = sanitized || "file";
+  return safeName.length > 200 ? safeName.slice(0, 200) : safeName;
 }
 
 type DbUser = {
@@ -155,14 +156,20 @@ export async function getUploadUrl(
     );
   }
 
-  if (
-    !Number.isFinite(fileSize) ||
-    fileSize <= 0 ||
-    fileSize > MAX_FILE_SIZE_BYTES
-  ) {
-    throw new Error(
-      `Invalid file size. Maximum allowed is ${MAX_FILE_SIZE_BYTES / (1024 * 1024)} MB.`,
-    );
+  // Separated validation blocks to provide precise error messages
+  if (typeof fileSize !== "number" || !Number.isFinite(fileSize)) {
+    throw new Error("Invalid file size parameter.");
+  }
+
+  if (fileSize <= 0) {
+    throw new Error("Cannot upload empty files (0 bytes).");
+  }
+
+  if (fileSize > MAX_FILE_SIZE_BYTES) {
+    const limitMB = Math.round(MAX_FILE_SIZE_BYTES / (1024 * 1024));
+    const limitText =
+      limitMB >= 1024 ? `${(limitMB / 1024).toFixed(1)} GB` : `${limitMB} MB`;
+    throw new Error(`File is too large. Maximum allowed is ${limitText}.`);
   }
 
   const user = await getDbUser(userId);
@@ -215,7 +222,9 @@ export async function confirmUploadDB(
   if (contentType && !ALLOWED_CONTENT_TYPES.has(contentType)) {
     await s3Client
       .send(new DeleteObjectCommand({ Bucket: getBucketName(), Key: key }))
-      .catch(() => {});
+      .catch((err: unknown) => {
+        console.error("S3 Cleanup failed:", err);
+      });
     throw new Error("File type not allowed.");
   }
 
@@ -236,14 +245,18 @@ export async function confirmUploadDB(
   if (actualContentType && !ALLOWED_CONTENT_TYPES.has(actualContentType)) {
     await s3Client
       .send(new DeleteObjectCommand({ Bucket: getBucketName(), Key: key }))
-      .catch(() => {});
+      .catch((err: unknown) => {
+        console.error("S3 Cleanup failed:", err);
+      });
     throw new Error("Uploaded file type not allowed. File removed.");
   }
 
   if (actualSize > MAX_FILE_SIZE_BYTES) {
-    await s3Client.send(
-      new DeleteObjectCommand({ Bucket: getBucketName(), Key: key }),
-    );
+    await s3Client
+      .send(new DeleteObjectCommand({ Bucket: getBucketName(), Key: key }))
+      .catch((err: unknown) => {
+        console.error("S3 Cleanup failed:", err);
+      });
     throw new Error("File exceeds maximum allowed size. File removed.");
   }
 
@@ -265,7 +278,9 @@ export async function confirmUploadDB(
   if (updated.length === 0) {
     await s3Client
       .send(new DeleteObjectCommand({ Bucket: getBucketName(), Key: key }))
-      .catch(() => {});
+      .catch((err: unknown) => {
+        console.error("S3 Cleanup failed:", err);
+      });
     throw new Error(
       "Upload blocked: storage or file count limit reached. File removed.",
     );
@@ -282,17 +297,23 @@ export async function confirmUploadDB(
         ${actualContentType ?? contentType ?? null}
       )
     `;
-  } catch (e) {
+  } catch (e: unknown) {
     await sql`
       UPDATE users
       SET storage_used = GREATEST(storage_used - ${actualSize}, 0),
           file_count   = GREATEST(file_count - 1, 0),
           updated_at   = NOW()
       WHERE id = ${user.id}
-    `.catch(() => {});
+    `.catch((err: unknown) => {
+      console.error("DB Rollback failed:", err);
+    });
+
     await s3Client
       .send(new DeleteObjectCommand({ Bucket: getBucketName(), Key: key }))
-      .catch(() => {});
+      .catch((err: unknown) => {
+        console.error("S3 Cleanup failed:", err);
+      });
+
     throw e;
   }
 
@@ -376,7 +397,7 @@ export async function listPhotos(page = 0) {
       total,
       hasMore: offset + files.length < total,
     };
-  } catch (error) {
+  } catch (error: unknown) {
     console.error("listPhotos Error:", error);
     return { files: [], total: 0, hasMore: false };
   }
@@ -418,7 +439,7 @@ export async function deletePhoto(key: string) {
 
   await s3Client
     .send(new DeleteObjectCommand({ Bucket: getBucketName(), Key: key }))
-    .catch((err) => {
+    .catch((err: unknown) => {
       console.error("S3 delete failed (orphan created):", key, err);
     });
 
@@ -485,7 +506,7 @@ export async function getStorageInfo() {
       currentFileCount: toNum(user.file_count),
       planId: String(user.plan_id),
     };
-  } catch (error) {
+  } catch (error: unknown) {
     console.error("getStorageInfo Error:", error);
     return {
       used: 0,

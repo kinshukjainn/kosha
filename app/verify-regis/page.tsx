@@ -13,7 +13,6 @@ import {
   Sparkles,
   LayoutDashboard,
 } from "lucide-react";
-import HeroGrid from "../components/HeroGrid";
 
 // Helper function to extract error messages safely
 function getErrorMessage(error: unknown): string {
@@ -38,7 +37,7 @@ function BenefitItem({
 }) {
   return (
     <div className="flex items-start gap-4">
-      <div className="flex-shrink-0 w-10 h-10 rounded-full bg-white flex items-center justify-center text-blue-800">
+      <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-white flex items-center justify-center text-blue-800">
         {icon}
       </div>
       <div>
@@ -277,21 +276,19 @@ export default function AuthPage() {
 
   // Styles
   const inputClass =
-    "w-full px-4 py-2 bg-[#111111] border border-[#333333] text-[16px] text-gray-100 placeholder-gray-500 focus:border-[#0078D4] focus:ring-1 focus:ring-[#0078D4] focus:outline-none rounded-md transition-all";
+    "w-full px-4 py-3 bg-[#111111] border border-[#333333] text-[18px] text-white placeholder-gray-500 outline-none  rounded-lg transition-all";
   const labelClass = "block text-[16px] font-medium text-gray-100 mb-1.5";
   const primaryButtonClass =
-    "w-full flex items-center justify-center gap-2 py-3 px-4 font-semibold text-[14px] bg-[#0078D4] hover:bg-[#006abc] text-white rounded-full shadow-lg shadow-[#0078D4]/20 cursor-pointer transition-all disabled:opacity-50 disabled:cursor-not-allowed";
+    "w-full flex items-center justify-center gap-2 py-3 px-4 font-semibold text-[17px] bg-[#0078D4] hover:bg-[#006abc] text-white rounded-lg shadow-lg shadow-[#0078D4]/20 cursor-pointer transition-all disabled:opacity-50 disabled:cursor-not-allowed";
   const secondaryButtonClass =
-    "w-full flex items-center justify-center gap-2 py-3 px-4 font-semibold text-[14px] cursor-pointer bg-transparent border border-[#333333] hover:bg-[#1a1a1a] text-gray-200 rounded-full transition-all disabled:opacity-50";
+    "w-full flex items-center justify-center gap-2 py-3 px-4 font-semibold text-[17px] cursor-pointer bg-transparent border border-[#333333] hover:bg-[#1a1a1a] text-gray-200 rounded-lg transition-all disabled:opacity-50";
 
   return (
     <div className="flex min-h-screen bg-[#050505] text-gray-100 selection:bg-[#0078D4] selection:text-white ">
       {/* LEFT PANEL: Branding & Benefits (Hidden on small screens) */}
       <div className="relative hidden lg:flex flex-col justify-between w-1/2 max-w-2xl p-12 xl:p-16 border-r border-[#1f1f1f] bg-black overflow-hidden">
         {/* Background Graphic */}
-        <div className="absolute inset-0 z-0 opacity-100">
-          <HeroGrid />
-        </div>
+        <div className="absolute inset-0 z-0 opacity-100"></div>
 
         {/* Gradient Overlay for readibility */}
         <div className="absolute inset-0 z-0 bg-black/80" />
@@ -306,9 +303,9 @@ export default function AuthPage() {
               height={44}
               className="object-contain"
             />
-            <span className="text-2xl font-bold tracking-tight   text-white">
+            <span className="text-2xl font-bold tracking-tight ">
               KOSHA /{" "}
-              <span className="text-xs  px-3 py-1 bg-blue-800/20 border-blue-400 border rounded-full">
+              <span className="text-sm  px-3 py-2 bg-[#181818] text-[#ff9100] border border-[#444444] font-mono rounded-lg">
                 Authentication
               </span>
             </span>
@@ -347,7 +344,7 @@ export default function AuthPage() {
 
         {/* Dynamic Security Badge inside the Left Panel */}
         <div className="relative z-10 flex items-center gap-2 mt-auto pt-12">
-          <div className="flex items-center gap-2 text-[13px] text-gray-400 bg-[#111111] border border-[#222222] px-4 py-2 rounded-full">
+          <div className="flex items-center gap-2 text-[13px] text-gray-400 bg-[#111111] border border-[#222222] px-4 py-2 rounded-lg">
             <LockKeyhole className="w-4 h-4 text-[#0078D4]" />
             <span>Secured infrastructure by</span>
             <div className="relative flex items-center justify-start w-[45px] h-[18px] overflow-hidden font-semibold text-gray-200">
@@ -381,7 +378,7 @@ export default function AuthPage() {
           />
           <span className="text-2xl font-bold tracking-tight text-white">
             Kosha /
-            <span className="ml-2 text-xs px-2 py-1 bg-blue-800/20  border border-blue-400 rounded-full">
+            <span className="ml-2 text-xs px-2 py-1 bg-blue-800/20  border border-blue-400 rounded-lg">
               Authentication
             </span>
           </span>
@@ -399,7 +396,7 @@ export default function AuthPage() {
             <motion.div
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
-              className="mb-6 p-4 bg-red-950/30 border border-red-900/50 flex items-start gap-3 rounded-xl"
+              className="mb-6 p-4 bg-red-950/30 border border-red-900/50 flex items-start gap-3 rounded-lg"
             >
               <div className="mt-0.5 text-red-500">
                 <Sparkles className="w-4 h-4" /> {/* Or an alert icon */}

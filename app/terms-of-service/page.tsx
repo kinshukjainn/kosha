@@ -13,13 +13,13 @@ export default function TermsOfService() {
   return (
     <div className="min-h-screen bg-[#050505] text-gray-200  selection:bg-[#0078D4] selection:text-white relative overflow-hidden">
       {/* Subtle Background Glow */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-[#0078D4] opacity-[0.03] blur-[120px] pointer-events-none rounded-full" />
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-[#0078D4] opacity-[0.03] blur-[120px] pointer-events-none rounded-lg" />
 
       <div className="max-w-4xl mx-auto px-6 sm:px-8 py-16 lg:py-24 relative z-10">
         {/* Header Section */}
         <div className="mb-16 pb-10 border-b border-[#222]">
           <div className="flex items-center gap-2 mb-6">
-            <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#0078D4]/10 border border-[#0078D4]/20 text-[#0078D4] text-xs font-bold tracking-widest uppercase">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#0078D4]/10 border border-[#0078D4]/20 text-[#0078D4] text-xs font-bold tracking-widest uppercase">
               <Scale className="w-3.5 h-3.5" />
               Legal Documentation
             </span>
@@ -86,12 +86,12 @@ export default function TermsOfService() {
           <section>
             <SectionHeading number="10" title="Limitation of Liability" />
 
-            <div className="relative mt-6 border border-[#333] bg-[#0a0a0c] rounded-2xl p-6 md:p-8 overflow-hidden group hover:border-[#444] transition-colors">
+            <div className="relative mt-6 border border-[#333] bg-[#0a0a0c] rounded-lg p-6 md:p-8 overflow-hidden group hover:border-[#444] transition-colors">
               {/* Card internal gradient */}
               <div className="absolute top-0 right-0 w-64 h-64 bg-red-500/5 blur-[100px] pointer-events-none" />
 
               <div className="relative z-10 flex items-start gap-4 mb-5">
-                <div className="mt-1 flex-shrink-0 w-10 h-10 rounded-full bg-red-500/10 flex items-center justify-center text-red-400 border border-red-500/20">
+                <div className="mt-1 flex-shrink-0 w-10 h-10 rounded-lg bg-red-500/10 flex items-center justify-center text-red-400 border border-red-500/20">
                   <ShieldAlert className="w-5 h-5" />
                 </div>
                 <div>
@@ -114,7 +114,7 @@ export default function TermsOfService() {
                     "Maximum aggregate liability for all claims relating to the service shall not exceed the amounts paid by you to Kosha in the past 12 months, or ₹500, whichever is greater.",
                   ]}
                 />
-                <div className="mt-6 p-4 bg-[#111] border border-[#222] rounded-xl text-[14px] text-gray-400 italic">
+                <div className="mt-6 p-4 bg-[#111] border border-[#222] rounded-lg text-[14px] text-gray-400 italic">
                   The Service is provided on an &quot;as is&quot; and &quot;as
                   available&quot; basis without warranties of any kind, whether
                   express or implied.
@@ -135,7 +135,7 @@ export default function TermsOfService() {
               {/* Email Card */}
               <a
                 href={`mailto:${SUPPORT_EMAIL}`}
-                className="flex flex-col p-6 rounded-2xl bg-[#0a0a0c] border border-[#222] hover:border-[#0078D4]/50 hover:bg-[#111] transition-all group"
+                className="flex flex-col p-6 rounded-lg bg-[#0a0a0c] border border-[#222] hover:border-[#0078D4]/50 hover:bg-[#111] transition-all group"
               >
                 <Mail className="w-6 h-6 text-gray-400 group-hover:text-[#0078D4] transition-colors mb-4" />
                 <span className="text-sm text-gray-500 font-medium mb-1">
@@ -151,7 +151,7 @@ export default function TermsOfService() {
                 href={PLATFORM_URL}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex flex-col p-6 rounded-2xl bg-[#0a0a0c] border border-[#222] hover:border-[#0078D4]/50 hover:bg-[#111] transition-all group"
+                className="flex flex-col p-6 rounded-lg bg-[#0a0a0c] border border-[#222] hover:border-[#0078D4]/50 hover:bg-[#111] transition-all group"
               >
                 <Globe className="w-6 h-6 text-gray-400 group-hover:text-[#0078D4] transition-colors mb-4" />
                 <span className="text-sm text-gray-500 font-medium mb-1">

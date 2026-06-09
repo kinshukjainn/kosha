@@ -1,18 +1,16 @@
 "use client";
 
-import { Check, Sparkles } from "lucide-react";
-import { IoDiamondOutline } from "react-icons/io5";
+import { Check } from "lucide-react";
 import Link from "next/link";
 import { motion, Variants } from "framer-motion";
-import HeroGrid from "../components/HeroGrid";
-
+import Image from "next/image";
 const pricingTiers = [
   {
     name: "Free",
     price: "₹0",
     description: "Perfect for personal use to get started.",
     features: [
-      "2 GB Encrypted Storage (S3 Encryption On Transit and At Rest)",
+      "2 GB Encrypted Storage (S3 Encryption)",
       "Standard File Sharing",
       "File Versioning (Up to 30 Days)",
       "Community Support",
@@ -21,13 +19,13 @@ const pricingTiers = [
     buttonHref: "/dashboard",
     isPopular: false,
     theme: {
-      cardBg: "bg-white/5",
-      glassGradient: "from-white/10 to-transparent",
-      border: "border-white/10",
-      borderHighlight: "border-t-white/20 border-l-white/10",
-      title: "text-gray-200",
-      icon: "text-gray-400",
-      button: "bg-white/5 hover:bg-white/10 text-white border border-white/10",
+      cardBg: "bg-zinc-900",
+      border: "border-zinc-800 hover:border-zinc-600",
+      title: "text-zinc-100",
+      icon: "text-zinc-500",
+      price: "text-zinc-100",
+      button:
+        "bg-zinc-800 hover:bg-zinc-700 text-zinc-100 border border-zinc-700",
       badgeBg: "",
       badgeText: "",
     },
@@ -35,112 +33,108 @@ const pricingTiers = [
   {
     name: "Gold",
     price: "₹299",
-    billingPeriod: "/Month",
-    description:
-      "For heavy users who need maximum security, space, and customizations.",
+    billingPeriod: "/mo",
+    description: "For heavy users who need maximum security and space.",
     features: [
       "2 TB Encrypted Storage",
-      "Advanced Sharing Links (Passwords & Expiration)",
-      "Public links with longer expiration (Up to 1 week)",
-      "Supports 3 devices max per account",
-      "S3 Encryption with AWS KMS Support",
-      "File Versioning & Recovery (Up to 30 days)",
-      "Average Upload and Download Speeds",
+      "Advanced Sharing Links",
+      "Public links (Up to 1 week)",
+      "Supports 3 devices max",
+      "S3 Encryption + AWS KMS",
+      "File Recovery (Up to 30 days)",
+      "Average Speeds",
     ],
     buttonText: "Upgrade to Gold",
     buttonHref: "/checkout",
     isPopular: true,
     theme: {
-      cardBg: "bg-amber-500/5",
-      glassGradient: "from-amber-500/10 to-transparent",
-      border: "border-amber-500/20",
-      borderHighlight: "border-t-amber-300/30 border-l-amber-300/20",
-      title: "text-amber-300",
-      icon: "text-amber-400",
+      cardBg: "bg-zinc-900",
+      border: "border-zinc-800 hover:border-amber-500/50",
+      title: "text-amber-500",
+      icon: "text-amber-500",
+      price: "text-amber-500",
       button:
-        "bg-amber-500/10 hover:bg-amber-500/20 text-amber-100 border border-amber-500/30",
-      badgeBg: "bg-amber-500/10 border border-amber-500/30",
-      badgeText: "text-amber-300",
+        "bg-amber-500/10 hover:bg-amber-500/20 text-amber-500 border border-amber-500/50",
+      badgeBg: "bg-amber-500",
+      badgeText: "text-zinc-950",
     },
   },
   {
     name: "Platinum",
     price: "₹399",
-    billingPeriod: "/Month",
-    description:
-      "For the ultimate power users who want bulky data backups on cloud.",
+    billingPeriod: "/mo",
+    description: "For ultimate power users needing bulky cloud backups.",
     features: [
       "8 TB Encrypted Storage",
-      "Advanced Sharing Links (Passwords & Expiration)",
-      "Public links with longer expiration (Up to 2 weeks)",
-      "Supports 5 devices max per account",
-      "S3 Encryption with AWS KMS Support + client side encryption",
-      "File Versioning & Recovery (Up to 45 days)",
-      "Fastest Upload and Download Speeds",
+      "Advanced Sharing Links",
+      "Public links (Up to 2 weeks)",
+      "Supports 5 devices max",
+      "S3 Encryption + Client Side",
+      "File Recovery (Up to 45 days)",
+      "Fastest Speeds",
     ],
     buttonText: "Upgrade to Platinum",
     buttonHref: "/checkout",
-    isPopular: true,
+    isPopular: false,
     theme: {
-      cardBg: "bg-cyan-500/5",
-      glassGradient: "from-cyan-400/10 to-transparent",
-      border: "border-cyan-400/20",
-      borderHighlight: "border-t-cyan-300/30 border-l-cyan-300/20",
-      title: "text-cyan-300",
-      icon: "text-cyan-400",
+      cardBg: "bg-zinc-900",
+      border: "border-zinc-800 hover:border-cyan-500/50",
+      title: "text-cyan-500",
+      icon: "text-cyan-500",
+      price: "text-cyan-500",
       button:
-        "bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-100 border border-cyan-400/30",
-      badgeBg: "bg-cyan-500/10 border border-cyan-400/30",
-      badgeText: "text-cyan-300",
+        "bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-500 border border-cyan-500/50",
+      badgeBg: "bg-cyan-500",
+      badgeText: "text-zinc-950",
     },
   },
 ];
 
-// Subtle, smooth animations
 const containerVariants: Variants = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
-    transition: { staggerChildren: 0.15 },
+    transition: { staggerChildren: 0.1 },
   },
 };
 
 const cardVariants: Variants = {
-  hidden: { opacity: 0, y: 20 },
+  hidden: { opacity: 0, y: 10 },
   visible: {
     opacity: 1,
     y: 0,
-    transition: { type: "tween", ease: "easeOut", duration: 0.5 },
+    transition: { type: "tween", ease: "easeOut", duration: 0.4 },
   },
 };
 
 export default function PricingPage() {
   return (
-    <div className="relative min-h-screen bg-black text-gray-100 flex items-center justify-center p-4 md:p-8 overflow-hidden">
-      {/* Background Grid - Absolutely positioned behind content */}
-      <div className="absolute inset-0 z-0 opacity-60">
-        <HeroGrid />
-      </div>
-
+    <div className="relative min-h-screen bg-[#09090b] text-zinc-300 flex items-center justify-center p-4 md:p-8  selection:bg-zinc-800 selection:text-white">
       <div className="relative z-10 w-full max-w-6xl mx-auto py-10">
         {/* Header Section */}
         <div className="flex flex-col items-center text-center mb-16">
           <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.6 }}
-            className="mb-4"
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4 }}
+            className="mb-6"
           >
-            <div className="p-4 rounded-full bg-white/5 backdrop-blur-md border border-white/10">
-              <IoDiamondOutline size={48} className="text-white" />
+            <div className="  shadow-sm">
+              <Image
+                src="/premiumlogo.png"
+                alt="Kosha"
+                width={130}
+                height={130}
+                className="object-contain group-hover:scale-105 transition-transform duration-300"
+              />
             </div>
           </motion.div>
-          <h1 className="text-3xl md:text-5xl font-semibold title-font  text-white mb-4 tracking-tight">
-            Simple, Transparent Pricing
+          <h1 className="text-3xl md:text-4xl font-bold text-zinc-100 mb-4 tracking-tight">
+            Simple, Transparent Pricing.
           </h1>
-          <p className="text-base text-gray-400 max-w-xl mx-auto leading-relaxed">
+          <p className="text-sm md:text-base text-zinc-400 max-w-xl mx-auto leading-relaxed">
             Secure your digital life with Kosha. Choose the plan that best fits
-            your storage and privacy needs.
+            your storage and privacy needs. No hidden fees.
           </p>
         </div>
 
@@ -149,40 +143,43 @@ export default function PricingPage() {
           variants={containerVariants}
           initial="hidden"
           animate="visible"
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto"
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto"
         >
           {pricingTiers.map((tier) => (
             <motion.div
               key={tier.name}
               variants={cardVariants}
-              className={`relative flex flex-col p-8 rounded-[2rem] backdrop-blur-xl transition-all duration-300 hover:-translate-y-1 ${tier.theme.cardBg} bg-gradient-to-b ${tier.theme.glassGradient} border-y ${tier.theme.border} ${tier.theme.borderHighlight}`}
+              className={`relative flex flex-col p-8 rounded-lg transition-colors duration-200 shadow-xl ${tier.theme.cardBg} border ${tier.theme.border}`}
             >
               {/* Popular Badge */}
               {tier.isPopular && (
                 <div
-                  className={`absolute -top-4 right-6 ${tier.theme.badgeBg} ${tier.theme.badgeText} backdrop-blur-md text-sm font-medium px-3 py-1.5 rounded-full flex items-center gap-1.5 shadow-none`}
+                  className={`absolute -top-3 right-6 ${tier.theme.badgeBg} ${tier.theme.badgeText} text-xs font-bold px-3 py-1 rounded-sm uppercase tracking-wider shadow-sm`}
                 >
-                  <Sparkles size={14} />
                   Most Popular
                 </div>
               )}
 
               {/* Card Header */}
-              <div className="mb-6 border-b border-white/5 pb-6">
-                <h2 className={`text-lg font-medium mb-3 ${tier.theme.title}`}>
-                  {tier.name}
+              <div className="mb-6 border-b border-zinc-800 pb-6">
+                <h2
+                  className={`text-sm  uppercase tracking-wider font-bold mb-4 ${tier.theme.title}`}
+                >
+                  [{tier.name}]
                 </h2>
                 <div className="flex items-end gap-1 mb-3">
-                  <span className="text-4xl font-semibold title-font text-white leading-none tracking-tight">
+                  <span
+                    className={`text-4xl font-bold leading-none tracking-tight  ${tier.theme.price}`}
+                  >
                     {tier.price}
                   </span>
                   {tier.billingPeriod && (
-                    <span className="text-gray-400 text-sm font-medium mb-1">
+                    <span className="text-zinc-500 text-sm font-medium mb-1 ">
                       {tier.billingPeriod}
                     </span>
                   )}
                 </div>
-                <p className="text-sm text-gray-400 leading-relaxed min-h-[40px]">
+                <p className="text-sm text-zinc-400 leading-relaxed min-h-[40px]">
                   {tier.description}
                 </p>
               </div>
@@ -192,11 +189,11 @@ export default function PricingPage() {
                 {tier.features.map((feature, i) => (
                   <li
                     key={i}
-                    className="flex items-start gap-3 text-sm text-gray-300"
+                    className="flex items-start gap-3 text-sm text-zinc-300"
                   >
                     <Check
                       size={18}
-                      strokeWidth={2.5}
+                      strokeWidth={3}
                       className={`shrink-0 mt-0.5 ${tier.theme.icon}`}
                     />
                     <span className="leading-snug">{feature}</span>
@@ -205,14 +202,14 @@ export default function PricingPage() {
               </ul>
 
               {/* Action Button */}
-              <div className="mt-auto pt-6 border-t border-white/5">
+              <div className="mt-auto pt-6">
                 <Link
                   href={tier.buttonHref}
                   className="w-full block outline-none"
                   tabIndex={-1}
                 >
                   <button
-                    className={`w-full flex items-center justify-center gap-2 py-3.5 px-4 font-medium text-base rounded-2xl transition-all duration-300 backdrop-blur-sm disabled:opacity-50 disabled:cursor-not-allowed ${tier.theme.button}`}
+                    className={`w-full flex items-center justify-center gap-2 py-3 px-4 font-bold text-sm rounded-md transition-colors duration-200 focus:ring-2 focus:ring-offset-2 focus:ring-offset-[#09090b] focus:ring-zinc-700 disabled:opacity-50 disabled:cursor-not-allowed ${tier.theme.button}`}
                   >
                     {tier.buttonText}
                   </button>

@@ -39,7 +39,7 @@ function HighlightText(props: { text: string; highlight: string }) {
           return (
             <mark
               key={i}
-              className="bg-[#fff100] text-black px-0.5 rounded-xl font-semibold"
+              className="bg-[#fff100] text-black px-0.5 rounded-lg font-semibold"
             >
               {part}
             </mark>
@@ -59,7 +59,7 @@ export default function FeedbacksList() {
   const [debouncedQuery, setDebouncedQuery] = useState("");
 
   const inputClass =
-    "w-full px-3 py-3 bg-[#252525] border border-[#3d3d3d] text-[17px] outline-none text-gray-100 placeholder-gray-500  rounded-full transition-all";
+    "w-full px-3 py-3 bg-[#252525] border border-[#3d3d3d] text-[17px] outline-none text-gray-100 placeholder-gray-500  rounded-lg transition-all";
 
   useEffect(() => {
     let cancelled = false;
@@ -120,13 +120,13 @@ export default function FeedbacksList() {
         <div className="px-6 py-4 max-w-7xl mx-auto w-full">
           <div className="flex items-center gap-4">
             <div
-              className="w-13 h-13
-             bg-[#0078D4] rounded-full flex items-center justify-center shrink-0"
+              className="w-12 h-12
+             bg-slate-700 rounded-lg flex items-center justify-center shrink-0"
             >
-              <AiOutlineIssuesClose size={30} className="text-white" />
+              <AiOutlineIssuesClose size={40} className="text-white" />
             </div>
             <div>
-              <h1 className="text-4xl font-semibold text-white title-font tracking-tight leading-tight">
+              <h1 className="text-2xl font-semibold text-white  tracking-tight leading-tight">
                 Issues & Feedbacks
               </h1>
               <p className="text-[17px] text-gray-200 mt-0.5  tracking-wide">
@@ -156,14 +156,14 @@ export default function FeedbacksList() {
       {/* Main */}
       <main className="w-full max-w-7xl mx-auto px-4 sm:px-6 py-8">
         {isLoading ? (
-          <div className=" flex flex-col items-center justify-center min-h-[40vh] gap-3 p-8 rounded-xl">
+          <div className=" flex flex-col items-center justify-center min-h-[40vh] gap-3 p-8 rounded-lg">
             <FaSpinner className="animate-spin text-[#0078D4]" size={24} />
             <span className="text-[13px] font-semibold text-gray-400">
               Fetching telemetry data...
             </span>
           </div>
         ) : filteredFeedbacks.length === 0 ? (
-          <div className=" flex flex-col items-center justify-center min-h-[40vh] p-8 text-center rounded-xl">
+          <div className=" flex flex-col items-center justify-center min-h-[40vh] p-8 text-center rounded-lg">
             <Search size={40} className="text-blue-300 mb-4" />
             <h3 className="text-[16px] font-semibold text-white mb-1">
               No Results Found
@@ -187,33 +187,33 @@ export default function FeedbacksList() {
               return (
                 <article
                   key={fb.id}
-                  className="bg-[#1e1e1e] border border-[#2d2d2d] p-5 rounded-3xl shadow-sm hover:border-[#3d3d3d] transition-colors flex flex-col"
+                  className="bg-[#18181b] border border-[#2d2d2d] p-5 rounded-lg shadow-sm hover:border-[#444444] transition-colors flex flex-col"
                 >
                   {/* Card Header */}
                   <div className="flex flex-wrap items-center justify-between gap-3 mb-4 pb-3 border-b border-[#2d2d2d]">
                     <div className="flex items-center gap-2">
-                      <span className="text-[12px] font-semibold text-[#0078D4] uppercase">
-                        KOSHA
+                      <span className="text-[13px] font-bold p-1 bg-green-500 rounded-md text-black">
+                        Kosha
                       </span>
-                      <span className="ml-2 flex items-center gap-1 text-[11px] font-semibold text-green-400 bg-green-950/40 px-1.5 py-0.5 rounded-xl border border-green-900 uppercase">
-                        <CheckCircle2 size={12} /> {fb.status}
+                      <span className="ml-2 flex items-center gap-1 text-[11px] font-semibold text-white bg-green-900 px-1.5 py-1.5 rounded-lg  uppercase">
+                        <CheckCircle2 size={14} /> {fb.status}
                       </span>
                     </div>
-                    <span className="text-gray-500 text-[12px] flex items-center gap-1.5 font-medium">
-                      <Clock size={12} className="text-blue-300" />
+                    <span className="text-gray-200 text-[13px] flex items-center gap-1.5 font-semibold">
+                      <Clock size={15} className="text-white" />
                       {dateStr}
                     </span>
                   </div>
 
                   {/* Markdown */}
-                  <div className="prose prose-sm prose-invert max-w-none mb-6 flex-grow text-gray-200 text-[13px] prose-p:leading-relaxed prose-p:text-gray-200 prose-headings:text-white prose-headings:font-semibold prose-strong:text-white prose-code:bg-[#2d2d2d] prose-code:text-[#ff8a93] prose-code:px-1 prose-code:py-0.5 prose-code:rounded-xl prose-pre:bg-[#252525] prose-pre:border prose-pre:border-[#3d3d3d] prose-pre:rounded-xl prose-pre:p-3 prose-a:text-[#0078D4] hover:prose-a:underline prose-blockquote:border-l-[#3d3d3d] prose-blockquote:text-gray-400">
+                  <div className="prose prose-sm prose-invert max-w-none mb-6 flex-grow text-gray-200 text-[13px] prose-p:leading-relaxed prose-p:text-gray-200 prose-headings:text-white prose-headings:font-semibold prose-strong:text-white prose-code:bg-[#2d2d2d] prose-code:text-[#ff8a93] prose-code:px-1 prose-code:py-0.5 prose-code:rounded-lg prose-pre:bg-[#252525] prose-pre:border prose-pre:border-[#3d3d3d] prose-pre:rounded-lg prose-pre:p-3 prose-a:text-[#0078D4] hover:prose-a:underline prose-blockquote:border-l-[#3d3d3d] prose-blockquote:text-gray-400">
                     <ReactMarkdown>{fb.feedback}</ReactMarkdown>
                   </div>
 
                   {/* Footer */}
                   <footer className="pt-3 border-t border-[#2d2d2d] flex flex-wrap items-center justify-between mt-auto gap-4">
                     <div className="flex items-center gap-2.5">
-                      <div className="w-6 h-6 rounded-full bg-blue-800 flex items-center justify-center text-white shrink-0">
+                      <div className="w-6 h-6 rounded-lg bg-blue-800 flex items-center justify-center text-white shrink-0">
                         <User size={17} />
                       </div>
                       <span className="text-[15px] font-medium text-gray-100">
@@ -231,7 +231,7 @@ export default function FeedbacksList() {
                           target="_blank"
                           rel="noreferrer"
                           title="View GitHub Profile"
-                          className="text-gray-400 hover:text-[#0078D4] hover:bg-[#2a2a2a] p-1.5 rounded-xl transition-colors"
+                          className="text-gray-400 hover:text-[#0078D4] hover:bg-[#2a2a2a] p-1.5 rounded-lg transition-colors"
                         >
                           <LuGithub size={18} />
                         </a>
@@ -239,7 +239,7 @@ export default function FeedbacksList() {
                       <a
                         href={mailHref}
                         title="Send Email"
-                        className="text-gray-400 hover:text-[#0078D4] hover:bg-[#2a2a2a] p-1.5 rounded-xl transition-colors"
+                        className="text-gray-400 hover:text-[#0078D4] hover:bg-[#2a2a2a] p-1.5 rounded-lg transition-colors"
                       >
                         <Mail size={18} />
                       </a>

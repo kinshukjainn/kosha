@@ -21,10 +21,10 @@ export default function UserProfileDropdown({
 
   /* ── Pill-shaped menu items, dark glass theme ── */
   const menuItemClass =
-    "group/item w-full flex items-center cursor-pointer gap-3 py-2.5 px-3.5 text-[13px] font-medium text-gray-300 hover:text-white hover:bg-white/[0.06] transition-all duration-200 rounded-full outline-none focus-visible:ring-1 focus-visible:ring-white/20";
+    "group/item w-full flex items-center cursor-pointer gap-3 py-2.5 px-3.5 text-[13px] font-medium text-gray-300 hover:text-white hover:bg-white/[0.06] transition-all duration-200 rounded-lg outline-none focus-visible:ring-1 focus-visible:ring-white/20";
 
   const dangerMenuItemClass =
-    "group/item w-full flex items-center cursor-pointer gap-3 py-2.5 px-3.5 text-[13px] font-medium text-rose-300/90 hover:text-rose-200 hover:bg-rose-500/10 transition-all duration-200 rounded-full outline-none focus-visible:ring-1 focus-visible:ring-rose-400/30";
+    "group/item w-full flex items-center cursor-pointer gap-3 py-2.5 px-3.5 text-[13px] font-medium text-rose-300/90 hover:text-rose-200 hover:bg-rose-500/10 transition-all duration-200 rounded-lg outline-none focus-visible:ring-1 focus-visible:ring-rose-400/30";
 
   /* ── Outside click (desktop) ── */
   useEffect(() => {
@@ -88,13 +88,13 @@ export default function UserProfileDropdown({
             width={size}
             height={size}
             unoptimized
-            className="object-cover rounded-full ring-1 ring-white/10 bg-white/5"
+            className="object-cover rounded-lg ring-1 ring-white/10 bg-white/5"
             style={{ width: size, height: size }}
             referrerPolicy="no-referrer"
           />
         ) : (
           <span
-            className="bg-gradient-to-br from-white/20 to-white/[0.04] ring-1 ring-white/10 text-white font-semibold flex items-center justify-center rounded-full backdrop-blur"
+            className="bg-gradient-to-br from-white/20 to-white/[0.04] ring-1 ring-white/10 text-white font-semibold flex items-center justify-center rounded-lg backdrop-blur"
             style={{
               width: size,
               height: size,
@@ -109,9 +109,9 @@ export default function UserProfileDropdown({
             className="absolute bottom-0 right-0 flex items-center justify-center"
             style={{ width: dotSize, height: dotSize }}
           >
-            <span className="absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-60 animate-ping" />
+            <span className="absolute inline-flex h-full w-full rounded-lg bg-emerald-400 opacity-60 animate-ping" />
             <span
-              className="relative inline-flex rounded-full bg-emerald-400 ring-2 ring-[#0f0f10]"
+              className="relative inline-flex rounded-lg bg-emerald-400 ring-2 ring-[#0f0f10]"
               style={{ width: dotSize, height: dotSize }}
             />
           </span>
@@ -126,7 +126,7 @@ export default function UserProfileDropdown({
   if (variant === "mobile") {
     return (
       <div
-        className="relative w-full rounded-3xl border border-white/10 bg-white/[0.03] backdrop-blur-xl backdrop-saturate-150 overflow-hidden shadow-[0_8px_24px_-12px_rgba(0,0,0,0.6)]"
+        className="relative w-full rounded-lg border border-white/10 bg-white/[0.03] backdrop-blur-xl backdrop-saturate-150 overflow-hidden shadow-[0_8px_24px_-12px_rgba(0,0,0,0.6)]"
         ref={dropdownRef}
       >
         {/* Glass top hairline matching header */}
@@ -150,7 +150,7 @@ export default function UserProfileDropdown({
             )}
           </div>
           <div
-            className={`w-9 h-9 flex items-center justify-center shrink-0 rounded-full border transition-all duration-200 ${
+            className={`w-9 h-9 flex items-center justify-center shrink-0 rounded-lg border transition-all duration-200 ${
               isOpen
                 ? "bg-white/[0.08] border-white/15"
                 : "bg-white/[0.03] border-white/10"
@@ -194,7 +194,7 @@ export default function UserProfileDropdown({
       {/* Pill-shaped trigger */}
       <button
         onClick={() => setIsOpen((prev) => !prev)}
-        className={`flex items-center gap-2 pl-1 pr-2.5 py-1 rounded-full border transition-all duration-200 cursor-pointer outline-none ${
+        className={`flex items-center gap-2 pl-1 pr-2.5 py-1 rounded-lg border transition-all duration-200 cursor-pointer outline-none ${
           isOpen
             ? "border-white/20 bg-white/[0.08]"
             : "border-white/10 bg-white/[0.02] hover:bg-white/[0.05] hover:border-white/15"
@@ -218,13 +218,13 @@ export default function UserProfileDropdown({
             : "opacity-0 scale-95 -translate-y-1 pointer-events-none"
         }`}
       >
-        <div className="relative rounded-3xl border border-white/10 bg-[#0f0f10]/85 backdrop-blur-xl backdrop-saturate-150 overflow-hidden shadow-[0_24px_60px_-12px_rgba(0,0,0,0.8),0_0_0_1px_rgba(255,255,255,0.04)]">
+        <div className="relative rounded-lg border border-white/10 bg-[#0f0f10]/85 backdrop-blur-xl backdrop-saturate-150 overflow-hidden shadow-[0_24px_60px_-12px_rgba(0,0,0,0.8),0_0_0_1px_rgba(255,255,255,0.04)]">
           {/* Glass top hairline matching header */}
           <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent" />
 
           {/* Decorative radial glows for depth */}
-          <div className="pointer-events-none absolute -top-24 -right-16 w-48 h-48 rounded-full bg-white/[0.05] blur-3xl" />
-          <div className="pointer-events-none absolute -bottom-24 -left-16 w-48 h-48 rounded-full bg-emerald-400/[0.04] blur-3xl" />
+          <div className="pointer-events-none absolute -top-24 -right-16 w-48 h-48 rounded-lg bg-white/[0.05] blur-3xl" />
+          <div className="pointer-events-none absolute -bottom-24 -left-16 w-48 h-48 rounded-lg bg-emerald-400/[0.04] blur-3xl" />
 
           {/* User Info Header */}
           <div className="relative flex items-start gap-3 p-4">
@@ -238,10 +238,10 @@ export default function UserProfileDropdown({
                   {email}
                 </p>
               )}
-              <div className="inline-flex items-center gap-1.5 mt-2 pl-1.5 pr-2 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-400/20">
+              <div className="inline-flex items-center gap-1.5 mt-2 pl-1.5 pr-2 py-0.5 rounded-lg bg-emerald-500/10 border border-emerald-400/20">
                 <span className="relative flex w-1.5 h-1.5">
-                  <span className="absolute inline-flex w-full h-full rounded-full bg-emerald-400 opacity-70 animate-ping" />
-                  <span className="relative inline-flex w-1.5 h-1.5 rounded-full bg-emerald-400" />
+                  <span className="absolute inline-flex w-full h-full rounded-lg bg-emerald-400 opacity-70 animate-ping" />
+                  <span className="relative inline-flex w-1.5 h-1.5 rounded-lg bg-emerald-400" />
                 </span>
                 <span className="text-[10px] font-semibold text-emerald-300 tracking-[0.08em]">
                   ONLINE

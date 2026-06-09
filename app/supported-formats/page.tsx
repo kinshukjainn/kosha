@@ -40,7 +40,7 @@ const DOC_CATEGORIES = [
 // Azure-style flat tag
 function FormatBadge({ ext }: { ext: string }) {
   return (
-    <span className="inline-block items-center px-2.5 py-1 bg-[#121212] text-blue-300 border border-[#444444] text-[13px] font-semibold rounded-full  mr-2 mb-2 select-none">
+    <span className="inline-block items-center px-2.5 py-1 bg-[#121212] text-blue-300 border border-[#444444] text-[13px] font-semibold rounded-lg  mr-2 mb-2 select-none">
       {ext}
     </span>
   );
@@ -81,7 +81,7 @@ export default function SupportedFormatsPage() {
       <main className="max-w-[1000px] mx-auto px-6 pt-12">
         {/* Hero Section */}
         <header className="pb-10 mb-10">
-          <h1 className="text-3xl title-font md:text-4xl font-semibold text-gray-100 mb-4 tracking-tight">
+          <h1 className="text-3xl  md:text-4xl font-semibold text-gray-100 mb-4 tracking-tight">
             Supported Data Formats
           </h1>
           <p className="text-[15px] text-gray-200 leading-relaxed max-w-3xl">
@@ -96,7 +96,7 @@ export default function SupportedFormatsPage() {
         {/* Table of Contents (Azure "In this article" style) */}
         <nav
           aria-label="Table of Contents"
-          className="mb-14 p-5 border border-[#444444] bg-[#1e1e1e] rounded-3xl shadow-sm"
+          className="mb-14 p-5 border border-[#444444] bg-[#1e1e1e] rounded-lg shadow-sm"
         >
           <p className="text-[16px] font-semibold text-gray-100 mb-3 flex items-center gap-2">
             <Info size={16} className="text-white" /> In this article
@@ -128,7 +128,7 @@ export default function SupportedFormatsPage() {
             preserved by default but can be stripped via user privacy settings
             prior to upload.
           </p>
-          <div className="flex flex-wrap bg-[#1e1e1e] p-5 border border-[#444444] rounded-3xl shadow-sm">
+          <div className="flex flex-wrap bg-[#1e1e1e] p-5 border border-[#444444] rounded-lg shadow-sm">
             {["JPG", "JPEG", "PNG", "GIF", "WEBP", "SVG", "HEIC"].map((e) => (
               <FormatBadge key={e} ext={e} />
             ))}
@@ -147,7 +147,7 @@ export default function SupportedFormatsPage() {
             requiring proprietary decoding pipelines may require localized
             download for optimal viewing.
           </p>
-          <div className="flex flex-wrap bg-[#1e1e1e] p-5 border border-[#444444] rounded-3xl shadow-sm">
+          <div className="flex flex-wrap bg-[#1e1e1e] p-5 border border-[#444444] rounded-lg shadow-sm">
             {["MP4", "WEBM", "OGG", "MOV", "MKV"].map((e) => (
               <FormatBadge key={e} ext={e} />
             ))}
@@ -166,7 +166,7 @@ export default function SupportedFormatsPage() {
             visualization is generated locally on the client machine to ensure
             data privacy.
           </p>
-          <div className="flex flex-wrap bg-[#1e1e1e] p-5 border border-[#444444] rounded-3xl shadow-sm">
+          <div className="flex flex-wrap bg-[#1e1e1e] p-5 border border-[#444444] rounded-lg shadow-sm">
             {["MP3", "WAV", "AAC", "FLAC", "M4A"].map((e) => (
               <FormatBadge key={e} ext={e} />
             ))}
@@ -189,7 +189,7 @@ export default function SupportedFormatsPage() {
             {DOC_CATEGORIES.map((cat) => (
               <div
                 key={cat.label}
-                className="p-5 bg-[#1e1e1e] border border-[#444444] rounded-3xl shadow-sm hover:shadow-md transition-shadow"
+                className="p-5 bg-[#1e1e1e] border border-[#444444] rounded-lg shadow-sm hover:shadow-md transition-shadow"
               >
                 <h3 className="text-[18px] font-semibold text-gray-100 mb-3">
                   {cat.label}
@@ -220,7 +220,7 @@ export default function SupportedFormatsPage() {
             (the archive&apos;s native encryption plus Kosha&apos;s
             platform-level AES-256 encryption).
           </p>
-          <div className="flex flex-wrap bg-[#1e1e1e] p-5 border border-[#444444] rounded-3xl shadow-sm mb-6">
+          <div className="flex flex-wrap bg-[#1e1e1e] p-5 border border-[#444444] rounded-lg shadow-sm mb-6">
             {["ZIP", "TAR", "TAR.GZ", "RAR", "7Z"].map((e) => (
               <FormatBadge key={e} ext={e} />
             ))}
