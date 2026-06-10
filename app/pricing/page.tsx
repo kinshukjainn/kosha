@@ -130,7 +130,7 @@ export default function PricingPage() {
             </div>
           </motion.div>
           <h1 className="text-3xl md:text-4xl font-bold text-zinc-100 mb-4 tracking-tight">
-            Simple, Transparent Pricing.
+            Simple Pricing.
           </h1>
           <p className="text-sm md:text-base text-zinc-400 max-w-xl mx-auto leading-relaxed">
             Secure your digital life with Kosha. Choose the plan that best fits
