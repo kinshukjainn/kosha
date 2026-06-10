@@ -2,7 +2,7 @@
 
 body {
   background-color: black;
-  font-family: var(--font-dm-sans), serif;
+  font-family: var(--font-dm-sans), sans-serif;
 }
 
 .special-font {

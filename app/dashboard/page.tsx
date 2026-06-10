@@ -75,10 +75,10 @@ const primaryButtonClass =
   "inline-flex items-center justify-center gap-2 py-2.5 px-5 font-semibold text-sm cursor-pointer bg-green-800 text-white hover:bg-green-700 rounded-lg transition-all duration-200 active:scale-95";
 
 const secondaryButtonClass =
-  "inline-flex items-center justify-center gap-2 py-5 px-6 font-bold text-lg bg-blue-700 text-white cursor-pointer hover:text-black rounded-lg transition-all duration-200 ";
+  "inline-flex items-center justify-center gap-2 py-2 px-6 font-semibold text-md bg-blue-700 text-white cursor-pointer cursor-pointer rounded-lg transition-all duration-200 ";
 
 const dangerButtonClass =
-  "inline-flex items-center justify-center gap-2 py-2 px-4 font-medium text-sm bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white rounded-lg transition-all duration-200 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed";
+  "inline-flex items-center justify-center gap-2 py-1 px-4 font-semibold text-md bg-red-500 text-white cursor-pointer hover:bg-red-500 hover:text-white rounded-lg transition-all duration-200 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed";
 
 const iconButtonClass =
   "p-2 text-gray-400 hover:text-white hover:bg-white/10 rounded-lg transition-colors cursor-pointer outline-none active:scale-95";
@@ -667,11 +667,11 @@ export default function DriveManager() {
             </button>
           </div>
         ) : (
-          <div className="bg-[#18181b] border border-white/10 rounded-lg overflow-hidden flex flex-col">
+          <div className=" overflow-hidden flex flex-col">
             {viewMode === "list" ? (
               <div className="overflow-x-auto w-full">
-                <table className="w-full text-left border-collapse whitespace-nowrap">
-                  <thead className="bg-[#18181b] border-b border-white/10 text-xs font-semibold text-gray-400 uppercase tracking-wider">
+                <table className="w-full text-left border-collapse  whitespace-nowrap">
+                  <thead className="bg-[#18181b] border-b border-white/10  text-sm font-semibold text-green-500  tracking-wider">
                     <tr>
                       <th className="px-6 py-4 w-16 text-center">Type</th>
                       <th className="px-6 py-4">Name</th>
@@ -695,17 +695,17 @@ export default function DriveManager() {
                           <td className="px-6 py-4 text-center">
                             {getFileIcon(
                               fileType,
-                              "text-xl text-gray-400 group-hover:text-blue-400 transition-colors mx-auto",
+                              "text-xl text-white group-hover:text-green-400 transition-colors mx-auto",
                             )}
                           </td>
                           <td className="px-6 py-4 text-sm text-gray-200 font-medium truncate max-w-[200px] md:max-w-md group-hover:text-white transition-colors">
                             {fileName}
-                            <span className="block sm:hidden text-xs text-gray-500 mt-1 font-normal">
+                            <span className="block sm:hidden text-xs text-green-500 mt-1 font-normal">
                               {ext.toUpperCase()}
                             </span>
                           </td>
                           <td className="px-6 py-4 hidden sm:table-cell">
-                            <span className="bg-white/5 border border-white/10 text-gray-300 px-2.5 py-1 text-xs font-medium rounded-lg">
+                            <span className="bg-green-700 text-white px-2.5 py-1 text-xs font-medium rounded-lg">
                               {ext.toUpperCase()}
                             </span>
                           </td>
@@ -737,7 +737,7 @@ export default function DriveManager() {
                     <div
                       key={file.key}
                       onClick={() => setSelectedFile(file)}
-                      className="group relative bg-[#09090b] border border-white/10 hover:border-blue-500/50 hover:shadow-[0_0_20px_rgba(59,130,246,0.1)] transition-all duration-300 cursor-pointer flex flex-col rounded-lg overflow-hidden"
+                      className="group relative bg-[#09090b] transition-all border-2 border-[#444444] duration-300 cursor-pointer flex flex-col rounded-xl overflow-hidden"
                     >
                       <div
                         className="absolute top-2 right-2 z-10 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity"
@@ -774,7 +774,7 @@ export default function DriveManager() {
                         ) : (
                           getFileIcon(
                             fileType,
-                            "text-4xl text-gray-500 group-hover:text-blue-500 transition-colors duration-300 scale-95 group-hover:scale-100",
+                            "text-4xl text-white group-hover:text-green-500 transition-colors duration-300 scale-95 group-hover:scale-100",
                           )
                         )}
                       </div>
