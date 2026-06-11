@@ -109,7 +109,7 @@ const cardVariants: Variants = {
 
 export default function PricingPage() {
   return (
-    <div className="relative min-h-screen bg-[#09090b] text-zinc-300 flex items-center justify-center p-4 md:p-8  selection:bg-zinc-800 selection:text-white">
+    <div className="relative min-h-screen bg-[#0b0b0b] text-zinc-300 flex items-center justify-center p-4 md:p-8  selection:bg-zinc-800 selection:text-white">
       <div className="relative z-10 w-full max-w-6xl mx-auto py-10">
         {/* Header Section */}
         <div className="flex flex-col items-center text-center mb-16">
@@ -130,7 +130,7 @@ export default function PricingPage() {
             </div>
           </motion.div>
           <h1 className="text-3xl md:text-4xl font-bold text-zinc-100 mb-4 tracking-tight">
-            Simple Pricing.
+            Premium Plans
           </h1>
           <p className="text-sm md:text-base text-zinc-400 max-w-xl mx-auto leading-relaxed">
             Secure your digital life with Kosha. Choose the plan that best fits

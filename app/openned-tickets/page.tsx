@@ -59,7 +59,7 @@ export default function FeedbacksList() {
   const [debouncedQuery, setDebouncedQuery] = useState("");
 
   const inputClass =
-    "w-full px-3 py-3 bg-[#252525] border border-[#3d3d3d] text-[17px] outline-none text-gray-100 placeholder-gray-500  rounded-lg transition-all";
+    "w-full px-3 py-1 bg-[#181818] border border-[#3d3d3d] text-[17px] outline-none text-gray-100 placeholder-gray-500  rounded-lg transition-all";
 
   useEffect(() => {
     let cancelled = false;
@@ -114,9 +114,9 @@ export default function FeedbacksList() {
   }, [feedbacks, debouncedQuery]);
 
   return (
-    <div className="w-full min-h-screen bg-black text-gray-100">
+    <div className="w-full min-h-screen bg-[#0b0b0b] text-gray-100">
       {/* Page Header */}
-      <div className="bg-black border-b border-[#2d2d2d]">
+      <div className="bg-[#0b0b0b] border-b border-[#2d2d2d]">
         <div className="px-6 py-4 max-w-7xl mx-auto w-full">
           <div className="flex items-center gap-4">
             <div
@@ -137,7 +137,7 @@ export default function FeedbacksList() {
         </div>
 
         {/* Command Bar — search only, NO category filter tabs */}
-        <div className="bg-black px-6 py-3 ">
+        <div className="bg-[#0b0b0b] px-6 py-3 ">
           <div className="max-w-7xl mx-auto w-full">
             <div className="relative flex items-center w-full md:w-96">
               <Search size={14} className="absolute left-2.5 text-gray-500" />

@@ -12,7 +12,7 @@ import {
 import { BsCloudRain } from "react-icons/bs";
 
 const primaryButtonClass =
-  "inline-flex w-fit items-center justify-center gap-2 py-2 px-5 font-semibold text-[15px] bg-blue-800 text-white rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-[#0078D4]";
+  "inline-flex w-fit items-center justify-center gap-2 py-2 px-5 font-semibold text-[15px] bg-black text-white rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-[#0078D4]";
 
 export default function AboutUs() {
   const links = [
@@ -63,10 +63,10 @@ export default function AboutUs() {
   ];
 
   return (
-    <div className="min-h-screen bg-black text-gray-100 py-10 px-4 md:px-8  selection:bg-[#cce3f5]">
+    <div className="min-h-screen bg-[#0b0b0b] text-gray-100 py-10 px-4 md:px-8  selection:bg-[#cce3f5]">
       <div className="max-w-4xl mx-auto space-y-6">
         {/* ================= PROJECT SECTION ================= */}
-        <section className=" border border-[#444444] p-6 md:p-8 shadow-sm rounded-4xl">
+        <section className=" bg-[#121212] border border-[#444444] p-6 md:p-8 shadow-sm rounded-xl">
           <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 mb-6">
             <div className="p-2 bg-blue-800 rounded-lg flex shrink-0 items-center justify-center">
               <BsCloudRain className="w-8 h-8 text-white" />
@@ -110,9 +110,9 @@ export default function AboutUs() {
         </section>
 
         {/* ================= DEVELOPER SECTION ================= */}
-        <section className="flex flex-col md:flex-row gap-6 md:gap-8 items-start  border border-[#444444] p-6 md:p-8 shadow-sm rounded-4xl">
+        <section className="flex flex-col md:flex-row gap-6 md:gap-8 items-start  bg-[#121212] border border-[#444444] p-6 md:p-8 shadow-sm rounded-xl">
           {/* Avatar (Azure square/rounded profile style) */}
-          <div className="flex-shrink-0 relative w-24 h-24 md:w-32 md:h-32  shadow-sm rounded-lg overflow-hidden">
+          <div className="flex-shrink-0 relative w-24 h-24 md:w-32 md:h-32  shadow-sm rounded-full overflow-hidden">
             <Image
               src="/profile.jpg" // Replace with your actual image path
               alt="Kinshuk Jain Avatar"
@@ -129,7 +129,7 @@ export default function AboutUs() {
               <h2 className="text-[29px] md:text-[22px] font-semibold text-gray-100 tracking-tight leading-tight">
                 Hi, I am Kinshuk Jain
               </h2>
-              <p className="text-[13px] text-blue-300 font-medium mt-0.5">
+              <p className="text-[13px] p-2 bg-blue-800 w-max rounded-full text-white font-medium mt-0.5">
                 Lead Developer & Creator
               </p>
             </div>
@@ -178,10 +178,10 @@ export default function AboutUs() {
                 href={link.href}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group flex flex-col p-6  border border-[#444444] shadow-sm hover:shadow-md transition-shadow rounded-4xl"
+                className="group flex flex-col p-6 bg-[#121212] border border-[#444444] shadow-sm hover:shadow-md transition-shadow rounded-xl"
               >
                 <div className="flex items-center gap-3.5 mb-3">
-                  <div className="p-3 bg-blue-800 rounded-lg text-white transition-colors">
+                  <div className="p-3 bg-blue-800 rounded-xl text-white transition-colors">
                     {link.icon}
                   </div>
                   <h4 className="text-[15px] font-semibold text-gray-100  transition-colors">

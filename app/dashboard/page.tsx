@@ -257,6 +257,8 @@ export default function DriveManager() {
   const [totalFiles, setTotalFiles] = useState(0);
   const [storageUsed, setStorageUsed] = useState(0);
   const [storageLimit, setStorageLimit] = useState(0);
+  const [maxFileSize, setMaxFileSize] = useState(0); // NEW
+  const [fileCountLimit, setFileCountLimit] = useState(0);
 
   const [searchQuery, setSearchQuery] = useState("");
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
@@ -287,6 +289,8 @@ export default function DriveManager() {
       if (info) {
         setStorageUsed(info.used || 0);
         setStorageLimit(info.limit || 0);
+        setMaxFileSize(info.maxFileSize || 0); // NEW
+        setFileCountLimit(info.fileCountLimit || 0); // NEW
       }
     } catch (e) {
       console.error("Failed to fetch storage info", e);
@@ -332,13 +336,45 @@ export default function DriveManager() {
     const selectedFiles = e.target.files;
     if (!selectedFiles || selectedFiles.length === 0) return;
 
+    // --- NEW: pre-validate against the dynamic plan limits ---
+    const incoming = Array.from(selectedFiles);
+    const accepted: File[] = [];
+    let projectedUsed = storageUsed;
+    let projectedCount = totalFiles;
+
+    for (const file of incoming) {
+      if (maxFileSize > 0 && file.size > maxFileSize) {
+        showToast(
+          `${file.name} — over the ${formatBytes(maxFileSize)} per-file limit.`,
+          "error",
+        );
+      } else if (fileCountLimit > 0 && projectedCount + 1 > fileCountLimit) {
+        showToast(
+          `${file.name} — file count limit reached (${fileCountLimit}).`,
+          "error",
+        );
+      } else if (storageLimit > 0 && projectedUsed + file.size > storageLimit) {
+        showToast(`${file.name} — not enough storage remaining.`, "error");
+      } else {
+        accepted.push(file);
+        projectedUsed += file.size;
+        projectedCount += 1;
+      }
+    }
+
+    if (accepted.length === 0) {
+      if (fileInputRef.current) fileInputRef.current.value = "";
+      return;
+    }
+    // --- end new block ---
+
     setIsUploading(true);
 
     let successCount = 0;
     const failedItems: { name: string; reason: string }[] = [];
 
     try {
-      const uploadPromises = Array.from(selectedFiles).map(async (file) => {
+      const uploadPromises = accepted.map(async (file) => {
         try {
           const { url, fields, key } = await getUploadUrl(
             file.name,
@@ -763,6 +799,9 @@ export default function DriveManager() {
                           <div className="w-full h-full relative">
                             <video
                               src={file.url}
+                              preload="none"
+                              muted
+                              playsInline
                               className="w-full h-full object-cover opacity-60"
                             />
                             <div className="absolute inset-0 flex items-center justify-center group-hover:bg-black/20 transition-colors">

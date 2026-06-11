@@ -13,7 +13,6 @@ import { sql } from "@/lib/db";
 import { checkRateLimit } from "@/lib/rate_limit";
 
 const FILE_LIST_PAGE_SIZE = 30;
-const MAX_FILE_SIZE_BYTES = 2 * 1024 * 1024 * 1024; // 2 GB
 
 const ALLOWED_CONTENT_TYPES = new Set([
   "image/jpeg",
@@ -92,7 +91,6 @@ function sanitizeFilename(raw: string): string {
   const safeName = sanitized || "file";
   return safeName.length > 200 ? safeName.slice(0, 200) : safeName;
 }
-
 type DbUser = {
   id: string;
   storage_used: string | number | bigint;
@@ -100,6 +98,7 @@ type DbUser = {
   plan_id: string;
   plan_storage_limit: string | number | bigint;
   plan_file_count_limit: string | number | bigint;
+  plan_max_file_size: string | number | bigint; // NEW
 };
 
 const selectUser = (clerkId: string) => sql`
@@ -109,12 +108,12 @@ const selectUser = (clerkId: string) => sql`
     u.file_count,
     u.plan_id,
     p.storage_limit    AS plan_storage_limit,
-    p.file_count_limit AS plan_file_count_limit
+    p.file_count_limit AS plan_file_count_limit,
+    p.max_file_size    AS plan_max_file_size
   FROM users u
   JOIN plans p ON u.plan_id = p.id
   WHERE u.clerk_id = ${clerkId}
 `;
-
 async function getDbUser(clerkId: string): Promise<DbUser> {
   const rows = await selectUser(clerkId);
   if (rows.length > 0) return rows[0] as DbUser;
@@ -139,7 +138,6 @@ async function getDbUser(clerkId: string): Promise<DbUser> {
   return retry[0] as DbUser;
 }
 
-// 1. Presigned POST URL
 export async function getUploadUrl(
   fileName: string,
   contentType: string,
@@ -155,34 +153,34 @@ export async function getUploadUrl(
       "File type not allowed. Supported: images, documents, spreadsheets, presentations, archives, audio, and video.",
     );
   }
-
-  // Separated validation blocks to provide precise error messages
   if (typeof fileSize !== "number" || !Number.isFinite(fileSize)) {
     throw new Error("Invalid file size parameter.");
   }
-
   if (fileSize <= 0) {
     throw new Error("Cannot upload empty files (0 bytes).");
   }
 
-  if (fileSize > MAX_FILE_SIZE_BYTES) {
-    const limitMB = Math.round(MAX_FILE_SIZE_BYTES / (1024 * 1024));
+  // Plan drives every limit — nothing hardcoded
+  const user = await getDbUser(userId);
+  const planStorageLimit = toNum(user.plan_storage_limit);
+  const planFileLimit = toNum(user.plan_file_count_limit);
+  const maxFileSize = toNum(user.plan_max_file_size);
+  const storageUsed = toNum(user.storage_used);
+
+  if (fileSize > maxFileSize) {
+    const limitMB = Math.round(maxFileSize / (1024 * 1024));
     const limitText =
       limitMB >= 1024 ? `${(limitMB / 1024).toFixed(1)} GB` : `${limitMB} MB`;
-    throw new Error(`File is too large. Maximum allowed is ${limitText}.`);
+    throw new Error(
+      `File is too large. Your ${user.plan_id} plan allows ${limitText} per file.`,
+    );
   }
-
-  const user = await getDbUser(userId);
-
-  const planFileLimit = toNum(user.plan_file_count_limit);
   if (toNum(user.file_count) >= planFileLimit) {
     throw new Error(
       `Upload blocked. Your ${user.plan_id} plan is limited to ${planFileLimit} files.`,
     );
   }
-
-  const planStorageLimit = toNum(user.plan_storage_limit);
-  if (toNum(user.storage_used) + fileSize > planStorageLimit) {
+  if (storageUsed + fileSize > planStorageLimit) {
     const limitInGb = Math.round(planStorageLimit / (1024 * 1024 * 1024));
     throw new Error(
       `Storage limit exceeded. Your ${user.plan_id} plan allows ${limitInGb} GB max.`,
@@ -192,21 +190,25 @@ export async function getUploadUrl(
   const sanitized = sanitizeFilename(fileName);
   const key = `uploads/${userId}/${Date.now()}-${sanitized}`;
 
+  // Reject at S3's edge anything bigger than the per-file cap OR the
+  // remaining quota — whichever is smaller.
+  const remaining = Math.max(0, planStorageLimit - storageUsed);
+  const effectiveMax = Math.min(maxFileSize, remaining);
+
   const { url, fields } = await createPresignedPost(s3Client, {
     Bucket: getBucketName(),
     Key: key,
     Conditions: [
-      ["content-length-range", 1, MAX_FILE_SIZE_BYTES],
+      ["content-length-range", 1, effectiveMax],
       ["eq", "$Content-Type", contentType],
     ],
     Fields: { "Content-Type": contentType },
-    Expires: 60,
+    Expires: 600, // 60s is too short for a multi-GB upload to finish — tune to your max size
   });
 
   return { url, fields, key };
 }
 
-// 2. Confirm Upload (atomic enforcement of both limits)
 export async function confirmUploadDB(
   key: string,
   fileName: string,
@@ -219,12 +221,13 @@ export async function confirmUploadDB(
 
   await checkRateLimit(userId, "confirm");
 
-  if (contentType && !ALLOWED_CONTENT_TYPES.has(contentType)) {
-    await s3Client
+  const cleanup = () =>
+    s3Client
       .send(new DeleteObjectCommand({ Bucket: getBucketName(), Key: key }))
-      .catch((err: unknown) => {
-        console.error("S3 Cleanup failed:", err);
-      });
+      .catch((err: unknown) => console.error("S3 Cleanup failed:", err));
+
+  if (contentType && !ALLOWED_CONTENT_TYPES.has(contentType)) {
+    await cleanup();
     throw new Error("File type not allowed.");
   }
 
@@ -243,26 +246,21 @@ export async function confirmUploadDB(
   }
 
   if (actualContentType && !ALLOWED_CONTENT_TYPES.has(actualContentType)) {
-    await s3Client
-      .send(new DeleteObjectCommand({ Bucket: getBucketName(), Key: key }))
-      .catch((err: unknown) => {
-        console.error("S3 Cleanup failed:", err);
-      });
+    await cleanup();
     throw new Error("Uploaded file type not allowed. File removed.");
-  }
-
-  if (actualSize > MAX_FILE_SIZE_BYTES) {
-    await s3Client
-      .send(new DeleteObjectCommand({ Bucket: getBucketName(), Key: key }))
-      .catch((err: unknown) => {
-        console.error("S3 Cleanup failed:", err);
-      });
-    throw new Error("File exceeds maximum allowed size. File removed.");
   }
 
   const user = await getDbUser(userId);
   const planStorageLimit = toNum(user.plan_storage_limit);
   const planFileLimit = toNum(user.plan_file_count_limit);
+  const planMaxFileSize = toNum(user.plan_max_file_size);
+
+  if (actualSize > planMaxFileSize) {
+    await cleanup();
+    throw new Error(
+      "File exceeds the maximum size for your plan. File removed.",
+    );
+  }
 
   const updated = await sql`
     UPDATE users
@@ -276,11 +274,7 @@ export async function confirmUploadDB(
   `;
 
   if (updated.length === 0) {
-    await s3Client
-      .send(new DeleteObjectCommand({ Bucket: getBucketName(), Key: key }))
-      .catch((err: unknown) => {
-        console.error("S3 Cleanup failed:", err);
-      });
+    await cleanup();
     throw new Error(
       "Upload blocked: storage or file count limit reached. File removed.",
     );
@@ -290,10 +284,7 @@ export async function confirmUploadDB(
     await sql`
       INSERT INTO files (user_id, file_key, original_name, file_size, content_type)
       VALUES (
-        ${user.id},
-        ${key},
-        ${fileName},
-        ${actualSize},
+        ${user.id}, ${key}, ${fileName}, ${actualSize},
         ${actualContentType ?? contentType ?? null}
       )
     `;
@@ -304,22 +295,13 @@ export async function confirmUploadDB(
           file_count   = GREATEST(file_count - 1, 0),
           updated_at   = NOW()
       WHERE id = ${user.id}
-    `.catch((err: unknown) => {
-      console.error("DB Rollback failed:", err);
-    });
-
-    await s3Client
-      .send(new DeleteObjectCommand({ Bucket: getBucketName(), Key: key }))
-      .catch((err: unknown) => {
-        console.error("S3 Cleanup failed:", err);
-      });
-
+    `.catch((err: unknown) => console.error("DB Rollback failed:", err));
+    await cleanup();
     throw e;
   }
 
   return { success: true };
 }
-
 // 3. List Files
 export async function listPhotos(page = 0) {
   try {
@@ -490,6 +472,7 @@ export async function getStorageInfo() {
       return {
         used: 0,
         limit: 0,
+        maxFileSize: 0, // NEW
         fileCountLimit: 0,
         currentFileCount: 0,
         planId: "free",
@@ -502,6 +485,7 @@ export async function getStorageInfo() {
     return {
       used: toNum(user.storage_used),
       limit: toNum(user.plan_storage_limit),
+      maxFileSize: toNum(user.plan_max_file_size), // NEW
       fileCountLimit: toNum(user.plan_file_count_limit),
       currentFileCount: toNum(user.file_count),
       planId: String(user.plan_id),
@@ -511,6 +495,7 @@ export async function getStorageInfo() {
     return {
       used: 0,
       limit: 0,
+      maxFileSize: 0, // NEW
       fileCountLimit: 0,
       currentFileCount: 0,
       planId: "free",

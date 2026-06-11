@@ -75,7 +75,7 @@ function SystemNotice({ children }: { children: ReactNode }) {
 
 export default function SupportedFormatsPage() {
   return (
-    <div className="min-h-screen text-gray-900 pb-24 bg-black  selection:bg-[#cce3f5]">
+    <div className="min-h-screen text-gray-900 pb-24 bg-[#0b0b0b]  selection:bg-[#cce3f5]">
       {/* Header / Command Bar */}
 
       <main className="max-w-[1000px] mx-auto px-6 pt-12">
