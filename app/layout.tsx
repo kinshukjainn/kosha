@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import {
   DM_Sans,
   Noto_Serif,
+  Open_Sans,
   Plus_Jakarta_Sans,
   Supermercado_One,
 } from "next/font/google";
@@ -37,6 +38,13 @@ const poppins = Poppins({
   subsets: ["latin"],
   weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
   variable: "--font-poppins",
+});
+
+export const openSans = Open_Sans({
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700", "800"],
+  display: "swap",
+  variable: "--font-open-sans",
 });
 
 const roboto = Roboto({
@@ -197,7 +205,7 @@ export default function RootLayout({
     <ClerkProvider>
       <html lang="en" data-google-analytics-opt-out="">
         <body
-          className={`${geistSans.variable} ${plusJakarta.variable} ${publicSans.variable} ${dmSans.variable} ${ubuntu.variable} ${notoSerif.variable} ${poppins.variable} ${roboto.variable} ${verdana.variable} ${segoeui.variable} ${geistMono.variable} ${inter.variable} ${lucideSans.variable} ${googleSans.variable} ${supermercado.variable} ${varelaRound.variable} antialiased`}
+          className={`${geistSans.variable} ${plusJakarta.variable} ${publicSans.variable} ${dmSans.variable} ${ubuntu.variable} ${notoSerif.variable} ${openSans.variable} ${poppins.variable} ${roboto.variable} ${verdana.variable} ${segoeui.variable} ${geistMono.variable} ${inter.variable} ${lucideSans.variable} ${googleSans.variable} ${supermercado.variable} ${varelaRound.variable} antialiased`}
         >
           <Header />
           <main>{children}</main>

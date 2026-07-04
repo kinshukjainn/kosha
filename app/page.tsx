@@ -32,51 +32,92 @@ import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 
-/* ── Words that cycle in the headline ── */
+/* ── Constants & Helpers ── */
 const WORDS = ["simple", "open source", "private"] as const;
-
-// "A simple" vs "An open-source" — pick the right article for the word.
 const articleFor = (word: string) => (/^[aeiou]/i.test(word) ? "An" : "A");
 
-/* ── Design tokens ── */
 const INK = "#111827";
 const INK_3 = "#6b7280";
 const BLUE = "#2563eb";
 const BLUE_SOFT = "#eff6ff";
 
-/* ── Types ── */
+const getGreeting = () => {
+  const h = new Date().getHours();
+  if (h >= 5 && h < 12) return "Good morning";
+  if (h >= 12 && h < 17) return "Good afternoon";
+  if (h >= 17 && h < 21) return "Good evening";
+  return "Its Night time";
+};
+
 type IconType = ComponentType<SVGProps<SVGSVGElement>>;
 
-interface RevealProps {
+const FEATURES: { id: string; title: string; body: string; icon: IconType }[] =
+  [
+    {
+      id: "01",
+      title: "20 GB Free Forever",
+      body: "Generous AWS backed storage for everyone. Drop your files without worrying about space.",
+      icon: HardDrive,
+    },
+    {
+      id: "02",
+      title: "Absolute Privacy",
+      body: "Amazon S3 Encryption. We can't see your files or sell your habits.",
+      icon: ShieldCheck,
+    },
+    {
+      id: "03",
+      title: "Zero Bloat",
+      body: "No unnecessary features. A clean interface designed to get out of your way.",
+      icon: Layout,
+    },
+    {
+      id: "04",
+      title: "Lightning Fast",
+      body: "Optimized for speed. Uploads and downloads in the blink of an eye.",
+      icon: Zap,
+    },
+    {
+      id: "05",
+      title: "No AI Training",
+      body: "We do not use your data to train AI models. Your files are yours alone.",
+      icon: BrainCircuit,
+    },
+    {
+      id: "06",
+      title: "No Bloated AI",
+      body: "We do not offer any AI features. We focus on secure, private storage without distractions.",
+      icon: BrickWallShield,
+    },
+    {
+      id: "07",
+      title: "Multiple Formats",
+      body: "We support a wide range of file formats including documents, images, videos, and more.",
+      icon: FileCog,
+    },
+    {
+      id: "08",
+      title: "You Control Your Data",
+      body: "We do not collect any data about your files or usage. Full control over what you share.",
+      icon: Cog,
+    },
+  ];
+
+/* ── Essential Logic Components (Kept separate to prevent re-render bugs) ── */
+
+// Reusable scroll reveal animation
+const Reveal = ({
+  children,
+  delay = 0,
+  className = "",
+}: {
   children: ReactNode;
   delay?: number;
   className?: string;
-}
-interface Feature {
-  id: string;
-  title: string;
-  body: string;
-  icon: IconType;
-}
-interface OnboardingStepProps {
-  icon: IconType;
-  step: number;
-  title: string;
-  description: string;
-  delay: number;
-}
-interface QuickActionProps {
-  icon: IconType;
-  title: string;
-  description: string;
-  href: string;
-  delay: number;
-}
-
-/* ── Fade-in on scroll ── */
-const useInView = () => {
+}) => {
   const ref = useRef<HTMLDivElement>(null);
   const [inView, setInView] = useState(false);
+
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
@@ -92,11 +133,7 @@ const useInView = () => {
     obs.observe(el);
     return () => obs.disconnect();
   }, []);
-  return [ref, inView] as const;
-};
 
-const Reveal = ({ children, delay = 0, className = "" }: RevealProps) => {
-  const [ref, inView] = useInView();
   return (
     <div
       ref={ref}
@@ -112,276 +149,29 @@ const Reveal = ({ children, delay = 0, className = "" }: RevealProps) => {
   );
 };
 
-/* ── Greeting helper ── */
-const getGreeting = () => {
-  const h = new Date().getHours();
-  if (h >= 5 && h < 12) return "Good morning";
-  if (h >= 12 && h < 17) return "Good afternoon";
-  if (h >= 17 && h < 21) return "Good evening ";
-  if (h >= 21 && h < 24) return "Its Night time";
-};
-
-/* ── New-user flag ── */
-const useIsNewUser = () => {
-  const searchParams = useSearchParams();
-  return searchParams.get("new") === "true";
-};
-
-/* ── Buttons ── */
-const PrimaryLink = ({
-  children,
-  href,
-  className = "",
-}: {
-  children: ReactNode;
-  href: string;
-  className?: string;
-}) => (
-  <Link
-    href={href}
-    className={`inline-flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-medium bg-blue-800 text-white transition hover:opacity-90 ${className}`}
-  >
-    {children}
-  </Link>
-);
-
-const SecondaryLink = ({
-  children,
-  href,
-  className = "",
-}: {
-  children: ReactNode;
-  href: string;
-  className?: string;
-}) => (
-  <Link
-    href={href}
-    className={`inline-flex items-center gap-2 px-5 py-3 rounded-lg bg-[#121212] border border-[#444444] text-white text-sm font-medium ${className}`}
-  >
-    {children}
-  </Link>
-);
-
-/* ── Onboarding step ── */
-const OnboardingStep = ({
-  icon: Icon,
-  step,
-  title,
-  description,
-  delay,
-}: OnboardingStepProps) => (
-  <Reveal delay={delay}>
-    <div className="flex items-start gap-4 p-5 rounded-lg border border-gray-100 bg-white hover:bg-gray-50 transition-colors">
-      <span className="shrink-0 w-7 h-7 rounded-lg flex items-center justify-center text-xs font-semibold text-gray-400 bg-gray-100">
-        {step.toString().padStart(2, "0")}
-      </span>
-      <div
-        className="w-9 h-9 rounded-lg flex items-center justify-center shrink-0"
-        style={{ background: BLUE_SOFT }}
-      >
-        <Icon className="w-4 h-4" style={{ color: BLUE }} />
-      </div>
-      <div className="min-w-0 flex-1">
-        <h3 className="text-sm font-semibold mb-0.5" style={{ color: INK }}>
-          {title}
-        </h3>
-        <p className="text-sm leading-relaxed" style={{ color: INK_3 }}>
-          {description}
-        </p>
-      </div>
-    </div>
-  </Reveal>
-);
-
-/* ── Quick action ── */
-const QuickAction = ({
-  icon: Icon,
-  title,
-  description,
-  href,
-  delay,
-}: QuickActionProps) => (
-  <Reveal delay={delay}>
-    <Link
-      href={href}
-      className="group flex items-center gap-4 p-4 rounded-xl border border-[#444444] bg-[#121212] transition-colors"
-    >
-      <div className="w-10 h-10 rounded-lg bg-[#242424]  border   flex items-center justify-center shrink-0">
-        <Icon className="w-6 h-6   text-white" />
-      </div>
-      <div className="min-w-0 flex-1">
-        <h3 className="text-md font-semibold text-white transition-colors">
-          {title}
-        </h3>
-        <p className="text-sm" style={{ color: INK_3 }}>
-          {description}
-        </p>
-      </div>
-      <div className="w-9 h-9 rounded-xl border bg-[#141414] border-[#444444] group-hover:border-2   flex items-center justify-center ">
-        <ChevronRight className="w-4 h-4 shrink-0 text-gray-100  group-hover:translate-x-0.5 transition-transform" />
-      </div>
-    </Link>
-  </Reveal>
-);
-
-/* ── Hero — new user ── */
-const NewUserHero = ({ firstName }: { firstName: string }) => (
-  <div className="max-w-2xl mx-auto px-6 pt-20 pb-16">
-    <Reveal>
-      <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-medium bg-amber-50 text-amber-700 border border-amber-100 mb-6">
-        <PartyPopper className="w-3 h-3" /> Account provisioned
-      </span>
-    </Reveal>
-
-    <Reveal delay={80}>
-      <h1
-        className="text-4xl sm:text-5xl font-bold tracking-tight mb-6"
-        style={{ color: INK }}
-      >
-        Welcome, {firstName}.
-      </h1>
-    </Reveal>
-
-    <Reveal delay={160}>
-      <p className="text-base leading-relaxed text-gray-600 mb-4 pl-4 border-l-2 border-blue-500">
-        Your workspace is ready. You have{" "}
-        <strong className="text-blue-600">5 GB</strong> of encrypted storage on{" "}
-        <strong className="text-blue-600">AWS S3</strong> — private by default,
-        yours forever. No credit card, no trial.
-      </p>
-    </Reveal>
-
-    <Reveal delay={240}>
-      <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-green-50 text-green-700 border border-green-100 mb-10">
-        <Check className="w-3.5 h-3.5" /> All systems go. You&apos;re in.
-      </div>
-    </Reveal>
-
-    <Reveal delay={300}>
-      <h2 className="text-xl font-semibold mb-4" style={{ color: INK }}>
-        Quick start
-      </h2>
-    </Reveal>
-
-    <div className="space-y-2.5 mb-10">
-      <OnboardingStep
-        icon={Upload}
-        step={1}
-        title="Upload your first file"
-        description="Drag and drop any file into your dashboard — we support PDFs, images, documents, videos, and more."
-        delay={360}
-      />
-      <OnboardingStep
-        icon={FolderOpen}
-        step={2}
-        title="Organize with folders"
-        description="Create folders to keep everything tidy. Your files, your structure."
-        delay={420}
-      />
-      <OnboardingStep
-        icon={ShieldCheck}
-        step={3}
-        title="Enjoy total privacy"
-        description="Your files are encrypted and only accessible by you. No tracking, no ads, no compromises."
-        delay={480}
-      />
-    </div>
-
-    <Reveal delay={540}>
-      <div className="flex flex-wrap items-center gap-4">
-        <PrimaryLink href="/dashboard">
-          <Rocket className="w-4 h-4" /> Go to Dashboard{" "}
-          <ArrowRight className="w-3.5 h-3.5" />
-        </PrimaryLink>
-        <div className="flex items-center gap-4 text-xs text-gray-500">
-          <span className="flex items-center gap-1">
-            <Check className="w-3 h-3 text-green-600" /> 5 GB Free
-          </span>
-          <span className="flex items-center gap-1">
-            <Check className="w-3 h-3 text-green-600" /> Secure
-          </span>
-        </div>
-      </div>
-    </Reveal>
-  </div>
-);
-
-/* ── Hero — returning user ── */
-const ReturningUserHero = ({ firstName }: { firstName: string }) => (
-  <div className="max-w-2xl mx-auto px-6 pt-20 pb-16">
-    <Reveal>
-      <h1 className="text-4xl sm:text-5xl font-bold tracking-tight mb-6 text-white">
-        {getGreeting()},{" "}
-        <span className="text-green-500 font-semibold">{firstName}</span> .
-      </h1>
-    </Reveal>
-
-    <Reveal delay={100}>
-      <p className="text-base leading-relaxed text-gray-100 mb-10 pl-4 border-l-4 border-blue-500">
-        System <strong className="text-blue-200">operational</strong>. Pick up
-        where you left off.
-      </p>
-    </Reveal>
-
-    <Reveal delay={200}>
-      <p className="text-xs font-semibold uppercase tracking-widest text-gray-200 mb-3">
-        Jump back in
-      </p>
-    </Reveal>
-
-    <div className="space-y-2.5">
-      <QuickAction
-        icon={FolderOpen}
-        title="Open Dashboard"
-        description="View and manage all your stored files"
-        href="/dashboard"
-        delay={260}
-      />
-      <QuickAction
-        icon={Upload}
-        title="Upload Files"
-        description="Add new documents to your storage"
-        href="/dashboard"
-        delay={320}
-      />
-    </div>
-  </div>
-);
-
-/* ── Animated headline ──
-   Cycles "simple" → "open-source" → "private" with a smooth
-   blur + slide + width-morph effect. All hooks live inside here. */
+// Animated cycling text component
 const AnimatedHeadline = () => {
   const [index, setIndex] = useState(0);
   const reduce = useReducedMotion();
 
-  // Swap word every 3s to let the smooth morphing animation breathe.
   useEffect(() => {
     if (reduce) return;
-    const id = setInterval(() => {
-      setIndex((i) => (i + 1) % WORDS.length);
-    }, 3000);
+    const id = setInterval(() => setIndex((i) => (i + 1) % WORDS.length), 3000);
     return () => clearInterval(id);
   }, [reduce]);
 
   const current = WORDS[index];
   const article = articleFor(current);
-
-  // Slower, fluid spring for a professional "morphing" width adjustment.
-  // Lower stiffness + higher damping removes all "bounciness".
   const layoutSpring = {
     type: "spring" as const,
     stiffness: 150,
     damping: 24,
     mass: 1,
   };
-
-  // Custom ease-out curve for a luxurious, slow-tail finish
   const premiumEase = [0.16, 1, 0.3, 1] as const;
 
   return (
-    <h1 className="text-3xl sm:text-5xl text-white font-bold tracking-tight leading-tight mb-6">
-      {/* Article (A / An) — animates smoothly so grammar stays correct */}
+    <h1 className="text-3xl sm:text-5xl text-white font-semibold tracking-tight leading-tight mb-6">
       <motion.span
         layout
         transition={{ layout: layoutSpring }}
@@ -400,7 +190,6 @@ const AnimatedHeadline = () => {
           </motion.span>
         </AnimatePresence>
       </motion.span>{" "}
-      {/* The cycling word */}
       <motion.span
         layout
         transition={{ layout: layoutSpring }}
@@ -409,13 +198,11 @@ const AnimatedHeadline = () => {
         <AnimatePresence mode="popLayout" initial={false}>
           <motion.span
             key={current}
-            // Subtle scale (depth) and blur create a "focus/defocus" morph
-            // instead of a harsh vertical slide. Minimal Y travel adds direction without bouncing.
             initial={{ opacity: 0, scale: 0.95, filter: "blur(12px)", y: 4 }}
             animate={{ opacity: 1, scale: 1, filter: "blur(0px)", y: 0 }}
             exit={{ opacity: 0, scale: 1.05, filter: "blur(12px)", y: -4 }}
             transition={{ duration: 0.7, ease: premiumEase }}
-            className="inline-block whitespace-nowrap bg-gradient-to-r  from-[#0078D4] via-[#3aa8ff] to-cyan-300 bg-clip-text text-transparent pr-[0.04em]"
+            className="inline-block whitespace-nowrap bg-gradient-to-r from-[#0078D4] via-[#3aa8ff] to-cyan-300 bg-clip-text text-transparent pr-[0.04em]"
           >
             {current}
           </motion.span>
@@ -428,308 +215,425 @@ const AnimatedHeadline = () => {
   );
 };
 
-/* ── Hero — logged-out ── */
-const LoggedOutHero = () => (
-  <section className="max-w-3xl mx-auto px-6 pt-24 pb-16 text-center">
-    <Reveal>
-      <span className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg border border-[#444444] text-md font-medium bg-[#121212]/10 backdrop-blur-xs text-gray-100 mb-8">
-        <LockKeyhole className="w-5 h-5 text-blue-300" /> Secured by{" "}
-        <span className="font-bold text-blue-400">AWS Cloud</span>
-      </span>
-    </Reveal>
+/* ── Main Page Structure ── */
 
-    <Reveal delay={80}>
-      <AnimatedHeadline />
-    </Reveal>
-
-    <Reveal delay={160}>
-      <p className="text-base sm:text-lg leading-relaxed text-gray-200 max-w-xl mx-auto mb-10">
-        A cloud storage platform stripped of the noise. No bloatware, no
-        complicated settings, and zero compromises on your privacy.
-      </p>
-    </Reveal>
-
-    <Reveal delay={240}>
-      <div className="flex flex-wrap items-center justify-center gap-3 mb-8">
-        <Link
-          href="/verify-regis"
-          className="inline-flex items-center gap-2 px-5 py-3 rounded-lg bg-blue-700 text-white text-sm font-medium transition-all duration-300"
-        >
-          Start for free
-          <ArrowRight className="w-4 h-4" />
-        </Link>
-        <SecondaryLink href="/supported-formats">
-          Supported Formats
-        </SecondaryLink>
-      </div>
-    </Reveal>
-
-    <Reveal delay={300}>
-      <div className="flex flex-wrap items-center justify-center gap-6 font-semibold text-sm text-white">
-        <span className="flex items-center gap-1.5">
-          <p className="p-1 bg-blue-400 rounded-lg">
-            <Check className="w-5 h-5 text-black" />
-          </p>
-          No credit card
-        </span>
-        <span className="flex items-center gap-1.5">
-          <p className="p-1 bg-blue-400 rounded-lg">
-            <Check className="w-5 h-5 text-black" />
-          </p>{" "}
-          Encrypted
-        </span>
-        <span className="flex items-center gap-1.5">
-          <p className="p-1 bg-blue-400 rounded-lg">
-            <Check className="w-5 h-5 text-black" />
-          </p>
-          Zero AI training
-        </span>
-      </div>
-    </Reveal>
-  </section>
-);
-
-/* ── Preview section ── */
-const PreviewSection = () => (
-  <section className="max-w-5xl mx-auto px-6 pb-16">
-    <Reveal>
-      <div className="text-center mb-8">
-        <span className="inline-flex items-center gap-1.5 px-2.5 py-2 rounded-lg text-md font-medium bg-red-700 text-white mb-3">
-          <span className="w-3 h-3 rounded-lg bg-white animate-pulse" /> LIVE
-          PREVIEW
-        </span>
-        <h2 className="text-3xl  font-bold tracking-tight text-white">
-          See it in action.
-        </h2>
-        <p className="mt-1.5 text-sm text-gray-200">
-          A dashboard that respects your time and your data.
-        </p>
-      </div>
-    </Reveal>
-
-    <Reveal delay={80}>
-      <div className="rounded-4xl overflow-hidden shadow-lg">
-        <div className="flex items-center gap-2.5 px-4 py-2.5 bg-[#232323]">
-          <div className="flex gap-1.5">
-            {[0, 1, 2].map((i) => (
-              <span key={i} className="w-2.5 h-2.5 rounded-lg bg-blue-500" />
-            ))}
-          </div>
-          <div className="flex-1 mx-3 px-3 py-1 rounded-lg border border-[#444444] bg-[#1e1e1e] text-sm text-center text-gray-200 truncate">
-            kosha.cloudkinshuk.in/dashboard
-          </div>
-        </div>
-        <video
-          autoPlay
-          loop
-          muted
-          playsInline
-          preload="metadata"
-          className="w-full h-auto block aspect-video object-cover bg-gray-50"
-        >
-          <source src="/videos/brandy.mp4" type="video/mp4" />
-        </video>
-      </div>
-    </Reveal>
-  </section>
-);
-
-/* ── Features grid ── */
-const FEATURES: Feature[] = [
-  {
-    id: "01",
-    title: "5 GB Free Forever",
-    body: "Generous AWS backed storage for everyone. Drop your files without worrying about space.",
-    icon: HardDrive,
-  },
-  {
-    id: "02",
-    title: "Absolute Privacy",
-    body: "Amazon S3 Encryption. We can't see your files or sell your habits.",
-    icon: ShieldCheck,
-  },
-  {
-    id: "03",
-    title: "Zero Bloat",
-    body: "No unnecessary features. A clean interface designed to get out of your way.",
-    icon: Layout,
-  },
-  {
-    id: "04",
-    title: "Lightning Fast",
-    body: "Optimized for speed. Uploads and downloads in the blink of an eye.",
-    icon: Zap,
-  },
-  {
-    id: "05",
-    title: "No AI Training",
-    body: "We do not use your data to train AI models. Your files are yours alone.",
-    icon: BrainCircuit,
-  },
-  {
-    id: "06",
-    title: "No Bloated AI",
-    body: "We do not offer any AI features. We focus on secure, private storage without distractions.",
-    icon: BrickWallShield,
-  },
-  {
-    id: "07",
-    title: "Multiple Formats",
-    body: "We support a wide range of file formats including documents, images, videos, and more.",
-    icon: FileCog,
-  },
-  {
-    id: "08",
-    title: "You Control Your Data",
-    body: "We do not collect any data about your files or usage. Full control over what you share.",
-    icon: Cog,
-  },
-];
-
-const FeaturesGrid = () => (
-  <section id="features" className="max-w-6xl mx-auto px-6 py-20 ">
-    <Reveal>
-      <div className="text-center mb-12">
-        <h2 className="text-3xl sm:text-4xl  font-bold tracking-tight mb-3 text-white">
-          Brilliantly simple.
-        </h2>
-        <p className="text-base text-gray-200">
-          Everything you need. Nothing you don&apos;t.
-        </p>
-      </div>
-    </Reveal>
-
-    <div className="grid grid-cols-1 sm:grid-cols-2 rounded-lg lg:grid-cols-4  overflow-hidden ">
-      {FEATURES.map((f, i) => {
-        const Icon = f.icon;
-        return (
-          <Reveal key={f.id} delay={i * 40}>
-            <div className="group h-full p-6 hover:bg-[#181818] rounded-lg transition-colors relative">
-              <div className="flex items-start justify-between mb-4">
-                <div className="w-12 h-12 rounded-md flex items-center justify-center bg-[#181818] border-[#444444] border">
-                  <Icon className="w-7 h-7 text-white" />
-                </div>
-                <span className="text-md text-blue-300 font-mono">{f.id}</span>
-              </div>
-              <h3 className="text-md font-semibold mb-1.5 text-white">
-                {f.title}
-              </h3>
-              <p className="text-sm leading-relaxed text-gray-200">{f.body}</p>
-              <div
-                className="absolute bottom-0 left-0 h-0.5 w-0 group-hover:w-full rounded-full transition-all duration-500"
-                style={{ background: BLUE }}
-              />
-            </div>
-          </Reveal>
-        );
-      })}
-    </div>
-  </section>
-);
-
-/* ── CTA ── */
-const CTA = ({ isLoggedIn }: { isLoggedIn: boolean }) => (
-  <section id="pricing" className="max-w-6xl mx-auto px-6 py-20">
-    <Reveal>
-      <div className="  p-8 sm:p-14">
-        {isLoggedIn ? (
-          <div className="max-w-xl">
-            <h2 className="text-3xl sm:text-4xl  font-bold tracking-tight mb-4 text-white">
-              Your files are waiting.
-            </h2>
-            <p className="text-base text-gray-200 mb-8">
-              Jump back into your dashboard and keep your workflow going.
-            </p>
-            <PrimaryLink href="/dashboard">
-              View Dashboard <ArrowRight className="w-3.5 h-3.5" />
-            </PrimaryLink>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
-            <div className="lg:col-span-7">
-              <h2 className="text-3xl sm:text-4xl  font-bold tracking-tight mb-4 text-white">
-                Ready to take back your data?
-              </h2>
-              <p className="text-base text-gray-200 mb-8 max-w-lg">
-                Join thousands who have migrated to a simpler, more secure way
-                to store their digital life.
-              </p>
-              <div className="flex flex-wrap gap-3">
-                <PrimaryLink href="/verify-regis">
-                  Create Free Account <ArrowRight className="w-3.5 h-3.5" />
-                </PrimaryLink>
-                <SecondaryLink href="/supported-formats">
-                  Learn more
-                </SecondaryLink>
-              </div>
-            </div>
-
-            <div className="lg:col-span-5">
-              <div className="rounded-lg border border-slate-400 bg-[#090909] p-6">
-                <p className="text-sm font-semibold uppercase tracking-widest text-slate-300 mb-2">
-                  Free plan
-                </p>
-                <div className="flex items-baseline gap-1.5 mb-5">
-                  <span className="text-4xl font-bold text-white">Free</span>
-                  <span className="text-md text-gray-300">/ forever</span>
-                </div>
-                <ul className="space-y-2.5 text-sm text-gray-200">
-                  {[
-                    "2 GB encrypted storage",
-                    "Unlimited file types",
-                    "Private by default",
-                    "Fast downloads, anywhere",
-                    "No AI training, ever",
-                  ].map((x) => (
-                    <li key={x} className="flex items-start gap-2">
-                      <Check className="w-4 h-4 mt-0.5 shrink-0 text-blue-300" />
-                      {x}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </div>
-          </div>
-        )}
-      </div>
-    </Reveal>
-  </section>
-);
-
-/* ── Root ── */
 export default function Home() {
   return (
-    <Suspense fallback={<div className="min-h-screen bg-[#181818]" />}>
-      <HomeContent />
+    <Suspense fallback={<div className="min-h-screen bg-black" />}>
+      <MainContent />
     </Suspense>
   );
 }
 
-/* ── HomeContent — clerk auth + variant routing ── */
-function HomeContent() {
+function MainContent() {
   const { isLoaded, userId } = useAuth();
   const { user } = useUser();
-  const isNewUser = useIsNewUser();
+  const searchParams = useSearchParams();
 
   const isLoggedIn = isLoaded && !!userId;
+  const isNewUser = searchParams.get("new") === "true";
   const firstName = user?.firstName || "there";
 
   return (
     <div className="min-h-screen bg-[#0b0b0b]" style={{ color: INK }}>
+      {/* ── HEADER / HERO SECTION ── */}
       <main>
         {isLoggedIn && isNewUser ? (
-          <NewUserHero firstName={firstName} />
+          /* --- NEW USER HERO --- */
+          <div className="max-w-2xl mx-auto px-6 pt-20 pb-16">
+            <Reveal>
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-medium bg-amber-50 text-amber-700 border border-amber-100 mb-6">
+                <PartyPopper className="w-3 h-3" /> Account provisioned
+              </span>
+            </Reveal>
+
+            <Reveal delay={80}>
+              <h1
+                className="text-4xl sm:text-5xl font-bold tracking-tight mb-6"
+                style={{ color: INK }}
+              >
+                Welcome, {firstName}.
+              </h1>
+            </Reveal>
+
+            <Reveal delay={160}>
+              <p className="text-base leading-relaxed text-gray-600 mb-4 pl-4 border-l-2 border-blue-500">
+                Your workspace is ready. You have{" "}
+                <strong className="text-blue-600">5 GB</strong> of encrypted
+                storage on <strong className="text-blue-600">AWS S3</strong> —
+                private by default, yours forever. No credit card, no trial.
+              </p>
+            </Reveal>
+
+            <Reveal delay={240}>
+              <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-green-50 text-green-700 border border-green-100 mb-10">
+                <Check className="w-3.5 h-3.5" /> All systems go. You&apos;re
+                in.
+              </div>
+            </Reveal>
+
+            <Reveal delay={300}>
+              <h2 className="text-xl font-semibold mb-4" style={{ color: INK }}>
+                Quick start
+              </h2>
+            </Reveal>
+
+            <div className="space-y-2.5 mb-10">
+              {/* Onboarding Steps array mapped inline */}
+              {[
+                {
+                  icon: Upload,
+                  title: "Upload your first file",
+                  desc: "Drag and drop any file into your dashboard — we support PDFs, images, documents, videos, and more.",
+                  delay: 360,
+                },
+                {
+                  icon: FolderOpen,
+                  title: "Organize with folders",
+                  desc: "Create folders to keep everything tidy. Your files, your structure.",
+                  delay: 420,
+                },
+                {
+                  icon: ShieldCheck,
+                  title: "Enjoy total privacy",
+                  desc: "Your files are encrypted and only accessible by you. No tracking, no ads, no compromises.",
+                  delay: 480,
+                },
+              ].map((step, idx) => (
+                <Reveal key={idx} delay={step.delay}>
+                  <div className="flex items-start gap-4 p-5 rounded-lg border border-gray-100 bg-white hover:bg-gray-50 transition-colors">
+                    <span className="shrink-0 w-7 h-7 rounded-lg flex items-center justify-center text-xs font-semibold text-gray-400 bg-gray-100">
+                      {(idx + 1).toString().padStart(2, "0")}
+                    </span>
+                    <div
+                      className="w-9 h-9 rounded-lg flex items-center justify-center shrink-0"
+                      style={{ background: BLUE_SOFT }}
+                    >
+                      <step.icon className="w-4 h-4" style={{ color: BLUE }} />
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <h3
+                        className="text-sm font-semibold mb-0.5"
+                        style={{ color: INK }}
+                      >
+                        {step.title}
+                      </h3>
+                      <p
+                        className="text-sm leading-relaxed"
+                        style={{ color: INK_3 }}
+                      >
+                        {step.desc}
+                      </p>
+                    </div>
+                  </div>
+                </Reveal>
+              ))}
+            </div>
+
+            <Reveal delay={540}>
+              <div className="flex flex-wrap items-center gap-4">
+                <Link
+                  href="/dashboard"
+                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-medium bg-blue-800 text-white transition hover:opacity-90"
+                >
+                  <Rocket className="w-4 h-4" /> Go to Dashboard{" "}
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </Link>
+                <div className="flex items-center gap-4 text-xs text-gray-500">
+                  <span className="flex items-center gap-1">
+                    <Check className="w-3 h-3 text-green-600" /> 5 GB Free
+                  </span>
+                  <span className="flex items-center gap-1">
+                    <Check className="w-3 h-3 text-green-600" /> Secure
+                  </span>
+                </div>
+              </div>
+            </Reveal>
+          </div>
         ) : isLoggedIn ? (
-          <ReturningUserHero firstName={firstName} />
+          /* --- RETURNING USER HERO --- */
+          <div className="max-w-2xl mx-auto px-6 pt-20 pb-16">
+            <Reveal>
+              <h1 className="text-4xl sm:text-5xl font-bold tracking-tight mb-6 text-white">
+                {getGreeting()},{" "}
+                <span className="text-green-500 font-semibold">
+                  {firstName}
+                </span>{" "}
+                .
+              </h1>
+            </Reveal>
+
+            <Reveal delay={100}>
+              <p className="text-base leading-relaxed text-gray-100 mb-10 pl-4 border-l-4 border-blue-500">
+                System <strong className="text-blue-200">operational</strong>.
+                Pick up where you left off.
+              </p>
+            </Reveal>
+
+            <Reveal delay={200}>
+              <p className="text-md font-normal uppercase tracking-widest text-gray-500 mb-3">
+                Jump back in
+              </p>
+            </Reveal>
+
+            <div className="space-y-3.5">
+              {[
+                {
+                  icon: FolderOpen,
+                  title: "Open Dashboard",
+                  desc: "View and manage all your stored files",
+                  delay: 260,
+                },
+                {
+                  icon: Upload,
+                  title: "Upload Files",
+                  desc: "Add new documents to your storage",
+                  delay: 320,
+                },
+              ].map((action, idx) => (
+                <Reveal key={idx} delay={action.delay}>
+                  <Link
+                    href="/dashboard"
+                    className="group flex items-center gap-4 p-4 rounded-2xl hover:border-green-400 border border-[#444444] bg-[#121212] transition-colors"
+                  >
+                    <div className="w-10 h-10 rounded-2xl bg-green-400 border flex items-center justify-center shrink-0">
+                      <action.icon className="w-6 h-6 text-black" />
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <h3 className="text-md font-semibold text-white transition-colors">
+                        {action.title}
+                      </h3>
+                      <p className="text-sm" style={{ color: INK_3 }}>
+                        {action.desc}
+                      </p>
+                    </div>
+                    <div className="w-9 h-9 rounded-xl border bg-[#141414] border-[#444444] group-hover:border-2 flex items-center justify-center">
+                      <ChevronRight className="w-4 h-4 shrink-0 text-gray-100 group-hover:translate-x-0.5 transition-transform" />
+                    </div>
+                  </Link>
+                </Reveal>
+              ))}
+            </div>
+          </div>
         ) : (
-          <LoggedOutHero />
+          /* --- LOGGED OUT HERO --- */
+          <section className="max-w-3xl mx-auto px-6 pt-24 pb-16 text-center">
+            <Reveal>
+              <span className="inline-flex items-center gap-1.5 px-3 py-2 rounded-full border border-[#444444] text-md font-normal bg-[#252525] text-gray-100 mb-8">
+                <LockKeyhole className="w-5 h-5 text-blue-300" /> Secured by{" "}
+                <span className="font-semibold text-green-500">AWS Cloud</span>
+              </span>
+            </Reveal>
+
+            <Reveal delay={80}>
+              <AnimatedHeadline />
+            </Reveal>
+
+            <Reveal delay={160}>
+              <p className="text-base sm:text-lg leading-relaxed text-gray-200 max-w-xl mx-auto mb-10">
+                A cloud storage platform stripped of the noise. No bloatware, no
+                complicated settings, and zero compromises on your privacy.
+              </p>
+            </Reveal>
+
+            <Reveal delay={240}>
+              <div className="flex flex-wrap items-center justify-center gap-3 mb-8">
+                <Link
+                  href="/verify-regis"
+                  className="inline-flex items-center gap-2 px-5 py-3 rounded-lg bg-blue-700 text-white text-sm font-medium transition-all duration-300"
+                >
+                  Start for free <ArrowRight className="w-4 h-4" />
+                </Link>
+                <Link
+                  href="/supported-formats"
+                  className="inline-flex items-center gap-2 px-5 py-3 rounded-lg bg-[#121212] border border-[#444444] text-white text-sm font-medium"
+                >
+                  Supported Formats
+                </Link>
+              </div>
+            </Reveal>
+
+            <Reveal delay={300}>
+              <div className="flex flex-wrap items-center justify-center gap-6 font-semibold text-sm text-white">
+                {["No credit card", "Encrypted", "Zero AI training"].map(
+                  (text) => (
+                    <span key={text} className="flex items-center gap-1.5">
+                      <p className="p-1 bg-blue-400 rounded-full">
+                        <Check className="w-5 h-5 text-black" />
+                      </p>
+                      {text}
+                    </span>
+                  ),
+                )}
+              </div>
+            </Reveal>
+          </section>
         )}
 
-        {isLoaded && !userId && <PreviewSection />}
+        {/* --- LIVE PREVIEW (Only for logged-out users) --- */}
+        {isLoaded && !userId && (
+          <section className="max-w-5xl mx-auto px-6 pb-16">
+            <Reveal>
+              <div className="text-center mb-8">
+                <span className="inline-flex items-center gap-1.5 px-2.5 py-2 rounded-full text-md font-bold bg-red-700 text-white mb-3">
+                  <span className="w-3 h-3 rounded-full bg-white animate-pulse" />{" "}
+                  Live Preview
+                </span>
+                <h2 className="text-3xl font-bold tracking-tight text-white">
+                  See it in action.
+                </h2>
+                <p className="mt-1.5 text-sm text-gray-200">
+                  A dashboard that respects your time and your data.
+                </p>
+              </div>
+            </Reveal>
+            <Reveal delay={80}>
+              <div className="rounded-4xl overflow-hidden shadow-lg">
+                <div className="flex items-center gap-2.5 px-4 py-2.5 bg-[#232323]">
+                  <div className="flex gap-1.5">
+                    {[0, 1, 2].map((i) => (
+                      <span
+                        key={i}
+                        className="w-2.5 h-2.5 rounded-lg bg-blue-500"
+                      />
+                    ))}
+                  </div>
+                  <div className="flex-1 mx-3 px-3 py-1 rounded-lg border border-[#444444] bg-[#1e1e1e] text-sm text-center text-gray-200 truncate">
+                    kosha.cloudkinshuk.in/dashboard
+                  </div>
+                </div>
+                <video
+                  autoPlay
+                  loop
+                  muted
+                  playsInline
+                  preload="metadata"
+                  className="w-full h-auto block aspect-video object-cover bg-gray-50"
+                >
+                  <source src="/videos/brandy.mp4" type="video/mp4" />
+                </video>
+              </div>
+            </Reveal>
+          </section>
+        )}
       </main>
 
-      <FeaturesGrid />
-      <CTA isLoggedIn={isLoggedIn} />
+      {/* ── FEATURES GRID ── */}
+      <section id="features" className="max-w-6xl mx-auto px-6 py-20">
+        <Reveal>
+          <div className="text-center mb-12">
+            <h2 className="text-3xl sm:text-4xl font-bold tracking-tight mb-3 text-white">
+              Brilliantly simple.
+            </h2>
+            <p className="text-base text-gray-200">
+              Everything you need. Nothing you don&apos;t.
+            </p>
+          </div>
+        </Reveal>
+        <div className="grid grid-cols-1 sm:grid-cols-2 rounded-lg lg:grid-cols-4 overflow-hidden">
+          {FEATURES.map((f, i) => (
+            <Reveal key={f.id} delay={i * 40}>
+              <div className="group h-full p-6 hover:bg-[#181818] rounded-lg transition-colors relative">
+                <div className="flex items-start justify-between mb-4">
+                  <div className="w-12 h-12 rounded-md flex items-center justify-center bg-[#181818] border-[#444444] border">
+                    <f.icon className="w-7 h-7 text-white" />
+                  </div>
+                  <span className="text-md text-blue-300 font-mono">
+                    {f.id}
+                  </span>
+                </div>
+                <h3 className="text-md font-semibold mb-1.5 text-white">
+                  {f.title}
+                </h3>
+                <p className="text-sm leading-relaxed text-gray-200">
+                  {f.body}
+                </p>
+                <div
+                  className="absolute bottom-0 left-0 h-0.5 w-0 group-hover:w-full rounded-full transition-all duration-500"
+                  style={{ background: BLUE }}
+                />
+              </div>
+            </Reveal>
+          ))}
+        </div>
+      </section>
+
+      {/* ── CTA SECTION ── */}
+      <section id="pricing" className="max-w-6xl mx-auto px-6 py-20">
+        <Reveal>
+          <div className="p-8 sm:p-14">
+            {isLoggedIn ? (
+              <div className="max-w-xl">
+                <h2 className="text-3xl sm:text-4xl font-bold tracking-tight mb-4 text-white">
+                  Your files are waiting.
+                </h2>
+                <p className="text-base text-gray-200 mb-8">
+                  Jump back into your dashboard and keep your workflow going.
+                </p>
+                <Link
+                  href="/dashboard"
+                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-medium bg-blue-800 text-white transition hover:opacity-90"
+                >
+                  View Dashboard <ArrowRight className="w-3.5 h-3.5" />
+                </Link>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+                <div className="lg:col-span-7">
+                  <h2 className="text-3xl sm:text-4xl font-bold tracking-tight mb-4 text-white">
+                    Ready to take back your data?
+                  </h2>
+                  <p className="text-base text-gray-200 mb-8 max-w-lg">
+                    Join thousands who have migrated to a simpler, more secure
+                    way to store their digital life.
+                  </p>
+                  <div className="flex flex-wrap gap-3">
+                    <Link
+                      href="/verify-regis"
+                      className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-medium bg-blue-800 text-white transition hover:opacity-90"
+                    >
+                      Create Free Account <ArrowRight className="w-3.5 h-3.5" />
+                    </Link>
+                    <Link
+                      href="/supported-formats"
+                      className="inline-flex items-center gap-2 px-5 py-3 rounded-lg bg-[#121212] border border-[#444444] text-white text-sm font-medium"
+                    >
+                      Learn more
+                    </Link>
+                  </div>
+                </div>
+                <div className="lg:col-span-5">
+                  <div className="rounded-lg border border-slate-400 bg-[#090909] p-6">
+                    <p className="text-sm font-semibold uppercase tracking-widest text-slate-300 mb-2">
+                      Free plan
+                    </p>
+                    <div className="flex items-baseline gap-1.5 mb-5">
+                      <span className="text-4xl font-bold text-white">
+                        Free
+                      </span>
+                      <span className="text-md text-gray-300">/ forever</span>
+                    </div>
+                    <ul className="space-y-2.5 text-sm text-gray-200">
+                      {[
+                        "2 GB encrypted storage",
+                        "Unlimited file types",
+                        "Private by default",
+                        "Fast downloads, anywhere",
+                        "No AI training, ever",
+                      ].map((x) => (
+                        <li key={x} className="flex items-start gap-2">
+                          <Check className="w-4 h-4 mt-0.5 shrink-0 text-blue-300" />{" "}
+                          {x}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        </Reveal>
+      </section>
     </div>
   );
 }

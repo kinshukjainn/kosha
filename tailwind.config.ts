@@ -13,7 +13,6 @@ const config: Config = {
         // Add your custom font here
         lucida: "var(--font-lucida) , sans-serif",
         segoeui: "var(--font-segoeui) , sans-serif",
-        ubuntu: "var(--font-ubuntu) , sans-serif",
         supermercado: "var(--font-supermercado) , sans-serif",
         varelaRound: "var(--font-varela-round) , sans-serif",
         geist: "var(--font-geist-mono) , monospaced",
@@ -22,7 +21,9 @@ const config: Config = {
         poppins: "var(--font-poppins) , sans-serif",
         googleSans: "var(--font-google-sans) , sans-serif",
         dmSans: "var(--font-dm-sans) , sans-serif",
+        ubuntu: "var(--font-ubuntu) , sans-serif",
         plusJakarta: "var(--font-plus-jakarta) , sans-serif",
+        openSans: "var(--font-open-sans) , sans-serif",
         inter: "var(--font-inter) , sans-serif",
         notoSerif: "var(--font-noto-serif) , serif",
         verdana: "var(--font-verdana) , sans-serif",
