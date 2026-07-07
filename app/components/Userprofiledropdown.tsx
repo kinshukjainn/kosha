@@ -21,10 +21,10 @@ export default function UserProfileDropdown({
 
   /* ── Utilitarian menu items, no transitions ── */
   const menuItemClass =
-    "w-full flex items-center cursor-pointer gap-3 py-2 px-3 text-sm  text-gray-300 hover:text-white hover:bg-zinc-800 outline-none focus-visible:bg-zinc-800 border-l-2 border-transparent hover:border-gray-400";
+    "w-full flex items-center cursor-pointer gap-3 py-2 px-3 text-sm  text-white hover:font-bold";
 
   const dangerMenuItemClass =
-    "w-full flex items-center cursor-pointer gap-3 py-2 px-3 text-sm  text-red-400 hover:text-red-200 hover:bg-red-950/50 outline-none focus-visible:bg-red-950/50 border-l-2 border-transparent hover:border-red-500";
+    "w-full flex items-center cursor-pointer gap-3 py-2 px-3 text-sm  text-white hover:font-bold";
 
   /* ── Outside click (desktop) ── */
   useEffect(() => {
@@ -87,13 +87,13 @@ export default function UserProfileDropdown({
             width={size}
             height={size}
             unoptimized
-            className="object-cover border border-gray-600 grayscale hover:grayscale-0"
+            className="object-cover border border-gray-600 rounded-lg grayscale hover:grayscale-0"
             style={{ width: size, height: size }}
             referrerPolicy="no-referrer"
           />
         ) : (
           <span
-            className="bg-zinc-900 border border-gray-600 rounded-lg text-gray-300  flex items-center justify-center"
+            className="bg-zinc-900 border border-gray-600 rounded-full text-gray-300  flex items-center justify-center"
             style={{
               width: size,
               height: size,
@@ -105,7 +105,7 @@ export default function UserProfileDropdown({
         )}
         {showStatus && (
           <span
-            className="absolute -bottom-1 -right-1 w-2.5 h-2.5 bg-green-500 border border-black"
+            className="absolute -bottom-1 -right-1 w-3 h-3 bg-green-500 rounded-full border border-black"
             title="Online"
           />
         )}
@@ -119,32 +119,32 @@ export default function UserProfileDropdown({
   if (variant === "mobile") {
     return (
       <div
-        className="relative w-full border border-gray-700 rounded-lg bg-black "
+        className="relative w-full border border-gray-700 rounded-lg bg-[#161923] "
         ref={dropdownRef}
       >
         <button
           onClick={() => setIsOpen((prev) => !prev)}
-          className="w-full flex items-center gap-3 p-3 hover:bg-zinc-900 cursor-pointer outline-none focus-visible:bg-zinc-900"
+          className="w-full flex items-center gap-3 p-3 "
           aria-expanded={isOpen}
           aria-haspopup="true"
         >
           {renderAvatar(36, true)}
           <div className="min-w-0 flex-1 text-left">
-            <p className="text-sm text-gray-200 truncate">~/{displayName}</p>
+            <p className="text-sm text-green-500 truncate">~/{displayName}</p>
           </div>
           <FiChevronDown
-            className={`w-4 h-4 text-gray-500 ${isOpen ? "rotate-180" : ""}`}
+            className={`w-4 h-4 text-white ${isOpen ? "rotate-180" : ""}`}
           />
         </button>
 
         {isOpen && (
-          <div className="border-t border-gray-700 rounded-lg bg-black pb-1">
+          <div className="rounded-xl bg-[#161923] pb-1">
             <button onClick={handleManage} className={menuItemClass}>
-              <FiSettings className="w-4 h-4 shrink-0 text-gray-500" />
+              <FiSettings className="w-5 h-5 shrink-0 text-white" />
               <span>settings</span>
             </button>
             <button onClick={handleSignOut} className={dangerMenuItemClass}>
-              <FiLogOut className="w-4 h-4 shrink-0" />
+              <FiLogOut className="w-5 h-5 shrink-0" />
               <span>Logout</span>
             </button>
           </div>
@@ -161,10 +161,8 @@ export default function UserProfileDropdown({
       {/* Trigger */}
       <button
         onClick={() => setIsOpen((prev) => !prev)}
-        className={`flex items-center gap-2 pl-1 pr-2 py-2 px-3 rounded-full  border cursor-pointer outline-none ${
-          isOpen
-            ? "border-gray-500 bg-zinc-900"
-            : "border-transparent hover:border-gray-600 hover:bg-zinc-900"
+        className={`flex items-center gap-2 pl-1 pr-2 py-2 px-4   border cursor-pointer outline-none ${
+          isOpen ? "border-gray-500 " : "border hover:border-gray-600 "
         }`}
         aria-expanded={isOpen}
         aria-haspopup="true"
@@ -175,9 +173,9 @@ export default function UserProfileDropdown({
 
       {/* Dropdown panel */}
       {isOpen && (
-        <div className="absolute right-0 top-[calc(100%+4px)] w-[280px] border border-gray-600 rounded-lg bg-black shadow-[4px_4px_0px_rgba(255,255,255,0.1)] z-50">
+        <div className="absolute right-0   rounded-xl bg-[#161923] border border-gray-700  z-50">
           {/* User Info Header */}
-          <div className="p-4 flex items-start gap-3 bg-zinc-900/50">
+          <div className="p-4 flex items-start gap-3 ">
             {renderAvatar(40, false)}
             <div className="min-w-0 flex-1">
               <p className="text-sm font-bold text-gray-200 truncate">
@@ -199,13 +197,13 @@ export default function UserProfileDropdown({
           {/* Action Buttons */}
           <div className="py-1 flex flex-col">
             <button onClick={handleManage} className={menuItemClass}>
-              <FiSettings className="w-4 h-4 shrink-0 text-gray-500" />
-              <span className="flex-1 text-left">Preferences</span>
+              <FiSettings className="w-4 h-4 shrink-0 text-white" />
+              <span className="flex-1 text-left">Settings </span>
             </button>
 
             <button onClick={handleSignOut} className={dangerMenuItemClass}>
               <FiLogOut className="w-4 h-4 shrink-0" />
-              <span className="flex-1 text-left">Terminate Session</span>
+              <span className="flex-1 text-left">Log out</span>
             </button>
           </div>
         </div>

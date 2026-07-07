@@ -4,7 +4,7 @@ export default function Footer() {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="bg-[#121212] rounded-t-3xl border-t border-[#444444] pt-10 pb-6 mt-auto ">
+    <footer className="bg-[#161923]  pt-10 pb-6 mt-auto ">
       <div className="max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-8">
         {/* Main Grid Area */}
 
@@ -30,18 +30,18 @@ export default function Footer() {
 
           {/* Navigation - Platform */}
           <div className="flex flex-col gap-2.5">
-            <h3 className="text-[15px] uppercase font-bold text-blue-400 mb-1">
+            <h3 className="text-[15px]  font-bold text-green-400 mb-1">
               Platform
             </h3>
             <Link
               href="/dashboard"
-              className="text-[13px] text-gray-200 hover:text-blue-300 hover:underline transition-colors w-fit"
+              className="text-[15px] text-gray-200 hover:text-blue-300 hover:underline transition-colors w-fit"
             >
               Dashboard
             </Link>
             <Link
               href="/supported-formats"
-              className="text-[13px] text-gray-200 hover:text-blue-300 hover:underline transition-colors w-fit"
+              className="text-[15px] text-gray-200 hover:text-blue-300 hover:underline transition-colors w-fit"
             >
               Supported Formats
             </Link>
@@ -49,24 +49,24 @@ export default function Footer() {
 
           {/* Navigation - Resources */}
           <div className="flex flex-col gap-2.5">
-            <h3 className="text-[15px] uppercase font-bold text-blue-400  mb-1">
+            <h3 className="text-[15px]  font-bold text-green-400  mb-1">
               Resources
             </h3>
             <Link
               href="/git-track"
-              className="text-[13px] text-gray-200 hover:text-blue-300 hover:underline transition-colors w-fit"
+              className="text-[15px] text-gray-200 hover:text-blue-300 hover:underline transition-colors w-fit"
             >
               Project Logs
             </Link>
             <Link
               href="/openned-tickets"
-              className="text-[13px] text-gray-200 hover:text-blue-300 hover:underline transition-colors w-fit"
+              className="text-[15px] text-gray-200 hover:text-blue-300 hover:underline transition-colors w-fit"
             >
               Opened Tickets
             </Link>
             <Link
               href="/about-us"
-              className="text-[13px] text-gray-200 hover:text-blue-300 hover:underline transition-colors w-fit"
+              className="text-[15px] text-gray-200 hover:text-blue-300 hover:underline transition-colors w-fit"
             >
               About Us
             </Link>
@@ -74,18 +74,18 @@ export default function Footer() {
 
           {/* Navigation - Legal */}
           <div className="flex flex-col gap-2.5">
-            <h3 className="text-[15px] uppercase font-bold text-blue-400  mb-1">
+            <h3 className="text-[15px]  font-bold text-green-400  mb-1">
               Legal
             </h3>
             <Link
               href="/privacy-policy"
-              className="text-[13px] text-gray-200 hover:text-blue-300 hover:underline transition-colors w-fit"
+              className="text-[15px] text-gray-200 hover:text-blue-300 hover:underline transition-colors w-fit"
             >
               Privacy Policy
             </Link>
             <Link
               href="/terms-of-service"
-              className="text-[13px] text-gray-200 hover:text-blue-300 hover:underline transition-colors w-fit"
+              className="text-[15px] text-gray-200 hover:text-blue-300 hover:underline transition-colors w-fit"
             >
               Terms of Service
             </Link>

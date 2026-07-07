@@ -19,7 +19,7 @@ const pricingTiers = [
     buttonHref: "/dashboard",
     isPopular: false,
     theme: {
-      cardBg: "bg-zinc-900",
+      cardBg: "bg-transparent",
       border: "border-zinc-800 hover:border-zinc-600",
       title: "text-zinc-100",
       icon: "text-zinc-500",
@@ -48,7 +48,7 @@ const pricingTiers = [
     buttonHref: "/checkout",
     isPopular: true,
     theme: {
-      cardBg: "bg-zinc-900",
+      cardBg: "bg-transparent",
       border: "border-zinc-800 hover:border-amber-500/50",
       title: "text-amber-500",
       icon: "text-amber-500",
@@ -77,11 +77,11 @@ const pricingTiers = [
     buttonHref: "/checkout",
     isPopular: false,
     theme: {
-      cardBg: "bg-zinc-900",
+      cardBg: "bg-transparent",
       border: "border-zinc-800 hover:border-cyan-500/50",
-      title: "text-cyan-500",
-      icon: "text-cyan-500",
-      price: "text-cyan-500",
+      title: "text-green-500",
+      icon: "text-green-500",
+      price: "text-green-500",
       button:
         "bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-500 border border-cyan-500/50",
       badgeBg: "bg-cyan-500",
@@ -109,7 +109,7 @@ const cardVariants: Variants = {
 
 export default function PricingPage() {
   return (
-    <div className="relative min-h-screen bg-[#0b0b0b] text-zinc-300 flex items-center justify-center p-4 md:p-8  selection:bg-zinc-800 selection:text-white">
+    <div className="relative min-h-screen bg-[#161923] text-zinc-100 flex items-center justify-center p-4 md:p-8  selection:bg-zinc-800 selection:text-white">
       <div className="relative z-10 w-full max-w-6xl mx-auto py-10">
         {/* Header Section */}
         <div className="flex flex-col items-center text-center mb-16">
@@ -132,7 +132,7 @@ export default function PricingPage() {
           <h1 className="text-3xl md:text-4xl font-bold text-zinc-100 mb-4 tracking-tight">
             Premium Plans
           </h1>
-          <p className="text-sm md:text-base text-zinc-400 max-w-xl mx-auto leading-relaxed">
+          <p className="text-sm md:text-base text-zinc-200 max-w-xl mx-auto leading-relaxed">
             Secure your digital life with Kosha. Choose the plan that best fits
             your storage and privacy needs. No hidden fees.
           </p>

@@ -276,22 +276,20 @@ export default function AuthPage() {
 
   // Styles
   const inputClass =
-    "w-full px-4 py-3 bg-[#111111] border border-[#333333] text-[18px] text-white placeholder-gray-500 outline-none  rounded-lg transition-all";
+    "w-full px-4 py-3 bg-gray-900 border border-[#333333] text-[18px] text-white placeholder-gray-500 outline-none  rounded-lg transition-all";
   const labelClass = "block text-[16px] font-medium text-gray-100 mb-1.5";
   const primaryButtonClass =
-    "w-full flex items-center justify-center gap-2 py-3 px-4 font-semibold text-[17px] bg-[#0078D4] hover:bg-[#006abc] text-white rounded-lg shadow-lg shadow-[#0078D4]/20 cursor-pointer transition-all disabled:opacity-50 disabled:cursor-not-allowed";
+    "w-full flex items-center justify-center gap-2 py-3 px-4 font-normal text-[17px] bg-blue-800 text-white rounded-lg  cursor-pointer transition-all disabled:opacity-50 disabled:cursor-not-allowed";
   const secondaryButtonClass =
-    "w-full flex items-center justify-center gap-2 py-3 px-4 font-semibold text-[17px] cursor-pointer bg-transparent border border-[#333333] hover:bg-[#1a1a1a] text-gray-200 rounded-lg transition-all disabled:opacity-50";
+    "w-full flex items-center justify-center gap-2 py-3 px-4 font-semibold text-[17px] cursor-pointer bg-transparent hover:text-green-500 border-2 border-[#444444] hover:border-2 hover:border-green-500 text-gray-200 rounded-lg transition-all disabled:opacity-50";
 
   return (
-    <div className="flex min-h-screen bg-[#050505] text-gray-100 selection:bg-[#0078D4] selection:text-white ">
+    <div className="flex min-h-screen bg-[#161923] text-gray-100 selection:bg-[#0078D4] selection:text-white ">
       {/* LEFT PANEL: Branding & Benefits (Hidden on small screens) */}
-      <div className="relative hidden lg:flex flex-col justify-between w-1/2 max-w-2xl p-12 xl:p-16 border-r border-[#1f1f1f] bg-black overflow-hidden">
+      <div className="relative hidden lg:flex flex-col justify-between w-1/2 max-w-2xl p-12 xl:p-16 border-r border-[#1f1f1f] bg-[#161923] overflow-hidden">
         {/* Background Graphic */}
-        <div className="absolute inset-0 z-0 opacity-100"></div>
 
         {/* Gradient Overlay for readibility */}
-        <div className="absolute inset-0 z-0 bg-black/80" />
 
         <div className="relative z-10 flex flex-col gap-12">
           {/* Logo */}
@@ -305,7 +303,7 @@ export default function AuthPage() {
             />
             <span className="text-2xl font-bold tracking-tight ">
               KOSHA /{" "}
-              <span className="text-sm  px-3 py-2 bg-[#181818] text-[#ff9100] border border-[#444444] font-mono rounded-lg">
+              <span className="text-sm  px-3 py-2  text-[#ff9100] border border-[#444444] font-mono rounded-lg">
                 Authentication
               </span>
             </span>
@@ -366,7 +364,7 @@ export default function AuthPage() {
       </div>
 
       {/* RIGHT PANEL: Authentication Form */}
-      <div className="flex-1 flex flex-col justify-center px-6 py-12 sm:px-12 lg:px-16 xl:px-24 bg-[#050505]">
+      <div className="flex-1 flex flex-col justify-center px-6 py-12 sm:px-12 lg:px-16 xl:px-24 bg-[#161923]">
         {/* Mobile Logo (Visible only on small screens) */}
         <div className="lg:hidden flex items-center justify-center gap-3 mb-10">
           <Image
@@ -396,12 +394,12 @@ export default function AuthPage() {
             <motion.div
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
-              className="mb-6 p-4 bg-red-950/30 border border-red-900/50 flex items-start gap-3 rounded-lg"
+              className="mb-6 p-4  flex items-start gap-3 rounded-lg"
             >
               <div className="mt-0.5 text-red-500">
-                <Sparkles className="w-4 h-4" /> {/* Or an alert icon */}
+                <Sparkles className="w-6 h-6" /> {/* Or an alert icon */}
               </div>
-              <p className="text-[13.5px] font-medium text-red-200 leading-snug">
+              <p className="text-[15px] font-medium text-red-200 leading-snug">
                 {authError}
               </p>
             </motion.div>
@@ -476,7 +474,7 @@ export default function AuthPage() {
                         value={firstName}
                         onChange={(e) => setFirstName(e.target.value)}
                         className={inputClass}
-                        placeholder="Jane"
+                        placeholder="First Name"
                       />
                     </div>
                     <div>
@@ -486,7 +484,7 @@ export default function AuthPage() {
                         value={lastName}
                         onChange={(e) => setLastName(e.target.value)}
                         className={inputClass}
-                        placeholder="Doe"
+                        placeholder="Last Name"
                       />
                     </div>
                   </div>
@@ -500,7 +498,7 @@ export default function AuthPage() {
                     onChange={(e) => setEmail(e.target.value)}
                     autoComplete="email"
                     className={inputClass}
-                    placeholder="you@company.com"
+                    placeholder="you@gmail/yahoo/outlook/company.com"
                   />
                 </div>
 
@@ -517,7 +515,7 @@ export default function AuthPage() {
                       e.key === "Enter" && canSubmit && handleSubmit()
                     }
                     className={inputClass}
-                    placeholder="••••••••"
+                    placeholder="*******"
                   />
                 </div>
 
@@ -548,7 +546,7 @@ export default function AuthPage() {
                     <div className="absolute inset-0 flex items-center">
                       <div className="w-full border-t border-[#222]"></div>
                     </div>
-                    <div className="relative bg-[#050505] px-4 text-[12px] font-semibold text-gray-200 uppercase tracking-wider">
+                    <div className="relative  px-4 text-[12px] font-semibold text-gray-200 uppercase tracking-wider">
                       or continue with
                     </div>
                   </div>

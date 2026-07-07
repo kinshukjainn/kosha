@@ -19,6 +19,7 @@ import {
   LogIn,
   MessageSquareText,
 } from "lucide-react";
+import { FaMessage } from "react-icons/fa6";
 
 const NAV_LINKS = [
   { href: "/supported-formats", label: "Supported Formats", icon: FileStack },
@@ -44,14 +45,14 @@ export default function Header() {
 
   return (
     <header
-      className={`sticky top-0 z-50 transition-all bg-black border-b border-[#181818] duration-500  mx-auto backdrop-saturate-150`}
+      className={`sticky top-0 z-50 transition-all bg-[#161923] border-b border-[#181818] duration-500  mx-auto backdrop-saturate-150`}
     >
       <div className="flex items-center justify-between h-14 px-4 md:px-6 max-w-screen-2xl mx-auto">
         {/* ── Logo ── */}
         <Link
           href="/"
           onClick={close}
-          className="flex items-center gap-2.5 py-1.5 rounded-lg hover:bg-white/5 transition-all shrink-0 group"
+          className="flex items-center gap-2.5 py-1.5  transition-all shrink-0 group"
         >
           <Image
             src="/anylogo.png"
@@ -60,8 +61,8 @@ export default function Header() {
             height={40}
             className="object-contain group-hover:scale-105 transition-transform duration-300"
           />
-          <span className="font-bold text-[23px] tracking-wider  text-gray-100">
-            KOSHA
+          <span className="font-normal text-[33px] tracking-wider  text-gray-100">
+            Kosha
           </span>
         </Link>
 
@@ -81,6 +82,33 @@ export default function Header() {
 
         {/* ── Desktop Right Actions ── */}
         <div className="hidden md:flex items-center gap-3 shrink-0">
+          <a
+            href="https://opaque.cloudkinshuk.in/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="
+    inline-flex items-center gap-3
+    px-2 sm:px-5 py-1
+    rounded-xl
+    bg-green-800 backdrop-blur-md
+    border border-white/10
+    text-white
+    font-medium
+    text-xs sm:text-base
+    w-fit
+  "
+            aria-label="Kosha"
+          >
+            <Image
+              src="/logog.png"
+              alt="Kosha"
+              width={28}
+              height={28}
+              className="rounded-md object-cover"
+            />
+
+            <span className="whitespace-nowrap">Open Opaque</span>
+          </a>
           <a
             href="https://github.com/kinshukjainn/pvtcldstrg"
             target="_blank"
@@ -136,7 +164,7 @@ export default function Header() {
       {/* ── Mobile Menu — FIXED Reliable Glassmorphism ── */}
       <div
         className={`md:hidden absolute top-full left-0 right-0
-          bg-[#050505]/95 backdrop-blur-xl
+          bg-[#161923] backdrop-blur-xl
           border-x border-b border-white/10
           rounded-b-3xl overflow-hidden
           shadow-[0_40px_80px_-15px_rgba(0,0,0,0.9),inset_0_1px_0_rgba(255,255,255,0.05)]
@@ -165,13 +193,40 @@ export default function Header() {
             ))}
 
             <a
+              href="https://opaque.cloudkinshuk.in/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="
+    inline-flex items-center gap-3
+    px-2 sm:px-5 py-2
+    rounded-xl flex justify-center
+    bg-green-800 backdrop-blur-md
+    border border-white/10
+    text-white
+    font-medium
+    text-xs sm:text-base
+    w-full
+  "
+              aria-label="Kosha"
+            >
+              <Image
+                src="/logog.png"
+                alt="Kosha"
+                width={28}
+                height={28}
+                className="rounded-md object-cover"
+              />
+
+              <span className="whitespace-nowrap">Open Opaque</span>
+            </a>
+            <a
               href="https://github.com/kinshukjainn/pvtcldstrg"
               target="_blank"
               rel="noopener noreferrer"
-              className="group relative flex items-center gap-3 px-4 py-3 rounded-lg text-[14px] font-medium text-gray-300 hover:text-white hover:bg-white/[0.06] transition-all duration-300"
+              className="group relative flex items-center gap-3 px-4 py-3 rounded-lg text-[16px] font-medium text-gray-300 hover:text-white  transition-all duration-300"
             >
-              <div className="w-9 h-9 flex items-center justify-center rounded-lg bg-blue-400  transition-all duration-300">
-                <FaGithub className="w-4 h-4 text-black  transition-colors" />
+              <div className="w-9 h-9 flex items-center justify-center   transition-all duration-300">
+                <FaGithub className="w-6 h-6 text-white  transition-colors" />
               </div>
               <span className="flex-1">Open Source</span>
               <span className="text-[11px] text-gray-500 group-hover:text-gray-300 transition-colors">
@@ -179,15 +234,15 @@ export default function Header() {
               </span>
             </a>
             <a
-              href="https://clkfeedbacks.cloudkinshuk.in"
+              href="https://github.com/kinshukjainn/pvtcldstrg"
               target="_blank"
               rel="noopener noreferrer"
-              className="group relative flex items-center gap-3 px-4 py-3 rounded-lg text-[14px] font-medium text-gray-300 hover:text-white hover:bg-white/[0.06] transition-all duration-300"
+              className="group relative flex items-center gap-3 px-4 py-3 rounded-lg text-[16px] font-medium text-gray-300 hover:text-white  transition-all duration-300"
             >
-              <div className="w-9 h-9 flex items-center justify-center rounded-lg bg-blue-400  transition-all duration-300">
-                <MessageSquareText className="w-4 h-4 text-black transition-colors" />
+              <div className="w-9 h-9 flex items-center justify-center   transition-all duration-300">
+                <FaMessage className="w-6 h-6 text-white  transition-colors" />
               </div>
-              <span className="flex-1">Feedback</span>
+              <span className="flex-1">Feedbacks</span>
               <span className="text-[11px] text-gray-500 group-hover:text-gray-300 transition-colors">
                 ↗
               </span>
@@ -233,7 +288,7 @@ function NavLink({
   return (
     <Link
       href={href}
-      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-[15px] font-medium text-white hover:bg-[#181818] group-hover:text-green-500 transition-colors whitespace-nowrap ${
+      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-[15px] font-medium text-white hover:underline group-hover:text-green-500 transition-colors whitespace-nowrap ${
         underline
           ? "underline decoration-white/20 underline-offset-4 hover:decoration-gray-400"
           : ""
@@ -261,11 +316,11 @@ function MobileNavLink({
     <Link
       href={href}
       onClick={onClick}
-      className="group relative flex items-center gap-3 px-4 py-1 text-white text-sm  hover:border-l-2 hover:border-blue-400 transition-all duration-300"
+      className="group relative flex items-center gap-2 px-4  text-white text-md  hover:border-l-3 hover:border-blue-400 transition-all duration-300"
     >
       {/* Icon tile */}
-      <div className="w-9 h-9 flex items-center justify-center rounded-lg bg-blue-400  transition-all duration-300">
-        <Icon className="w-4 h-4 text-black  transition-colors" />
+      <div className="w-9 h-9 flex items-center justify-center   transition-all duration-300">
+        <Icon className="w-6 h-6 text-white  transition-colors" />
       </div>
       <span className="flex-1">{children}</span>
       {/* Reveal arrow on hover */}

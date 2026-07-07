@@ -215,13 +215,13 @@ export default function RepositoryViewer() {
   }, [treeData, currentPath, viewMode]);
 
   return (
-    <div className="min-h-screen bg-black text-gray-100 ">
+    <div className="min-h-screen bg-[#191623] text-gray-100 ">
       {/* PAGE HEADER */}
-      <div className="bg-black border-b border-gray-200">
+      <div className="bg-[#191623]">
         <div className="px-4 sm:px-6 py-4">
           {/* Breadcrumbs */}
           <div className="flex items-center gap-4">
-            <div className="w-12 h-12 bg-blue-800 rounded-lg flex items-center justify-center shrink-0">
+            <div className="w-12 h-12 bg-green-800 rounded-xl flex items-center justify-center shrink-0">
               <Code2 size={30} className="text-white" />
             </div>
             <div>
@@ -278,15 +278,15 @@ export default function RepositoryViewer() {
 
         {/* ERROR DISPLAY */}
         {error && (
-          <div className="mb-6 p-4 bg-[#1e1e1e] border border-[#1e1e1e] text-white text-[13px] font-medium rounded-lg">
+          <div className="mb-6 p-4 bg-gray-900 border  text-white text-[13px] font-medium rounded-lg">
             Error: {error}
           </div>
         )}
 
         {/* CONTENT AREA */}
-        <div className="bg-[#1e1e1e] border border-[#444444] shadow-sm rounded-lg overflow-hidden">
+        <div className="bg-transparent border border-[#444444] shadow-sm rounded-lg overflow-hidden">
           {/* Section Header */}
-          <div className="bg-[#121212] border-b border-[#444444] px-4 py-3 flex items-center justify-between text-[13px] font-semibold text-gray-100">
+          <div className="bg-gray-900  px-4 py-3 flex items-center justify-between text-[13px] font-semibold text-gray-100">
             <div className="flex items-center gap-2">
               {viewMode === "tree" ? (
                 <Folder size={16} />
@@ -319,7 +319,7 @@ export default function RepositoryViewer() {
                   {currentPath !== "" && (
                     <div
                       onClick={navigateUp}
-                      className="flex items-center px-4 py-2.5 hover:bg-[#1e1e1e] transition-colors gap-3 cursor-pointer group"
+                      className="flex items-center px-4 py-2.5 hover:bg-gray-900 transition-colors gap-3 cursor-pointer group"
                     >
                       <FileSymlink size={16} className="text-white shrink-0" />
                       <span className="text-white group-hover:underline text-[13px] font-medium select-none">
@@ -348,7 +348,7 @@ export default function RepositoryViewer() {
                       <div
                         key={item.sha}
                         onClick={() => handleNavigate(item.path, item.type)}
-                        className="flex flex-col sm:flex-row sm:items-center px-4 py-2.5 hover:bg-[#252525] transition-colors gap-2 sm:gap-4 cursor-pointer"
+                        className="flex flex-col sm:flex-row sm:items-center px-4 py-2.5 hover:bg-gray-900 transition-colors gap-2 sm:gap-4 cursor-pointer"
                       >
                         <div className="flex-1 min-w-0 flex items-center gap-3">
                           {icon}
@@ -378,7 +378,7 @@ export default function RepositoryViewer() {
           {viewMode === "blob" && (
             <div className="w-full">
               {isFileLoading ? (
-                <div className="p-8 flex items-center justify-center gap-2 text-gray-500 text-[13px] bg-[#1e1e1e]">
+                <div className="p-8 flex items-center justify-center gap-2 text-gray-500 text-[13px] bg-gray-900">
                   <RefreshCw size={16} className="animate-spin text-white" />
                   Loading file contents...
                 </div>
