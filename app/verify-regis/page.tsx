@@ -37,7 +37,7 @@ function BenefitItem({
 }) {
   return (
     <div className="flex items-start gap-4">
-      <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-white flex items-center justify-center text-blue-800">
+      <div className="flex-shrink-0 w-10 h-10 rounded-2xl bg-white flex items-center justify-center text-blue-800">
         {icon}
       </div>
       <div>
@@ -276,12 +276,12 @@ export default function AuthPage() {
 
   // Styles
   const inputClass =
-    "w-full px-4 py-3 bg-gray-900 border border-[#333333] text-[18px] text-white placeholder-gray-500 outline-none  rounded-lg transition-all";
+    "w-full px-4 py-3 bg-gray-900 border border-[#333333] text-[18px] text-white placeholder-gray-500 outline-none  rounded-2xl transition-all";
   const labelClass = "block text-[16px] font-medium text-gray-100 mb-1.5";
   const primaryButtonClass =
-    "w-full flex items-center justify-center gap-2 py-3 px-4 font-normal text-[17px] bg-blue-800 text-white rounded-lg  cursor-pointer transition-all disabled:opacity-50 disabled:cursor-not-allowed";
+    "w-full flex items-center justify-center gap-2 py-3 px-4 font-normal text-[17px] bg-blue-800 text-white rounded-2xl  cursor-pointer transition-all disabled:opacity-50 disabled:cursor-not-allowed";
   const secondaryButtonClass =
-    "w-full flex items-center justify-center gap-2 py-3 px-4 font-semibold text-[17px] cursor-pointer bg-transparent hover:text-green-500 border-2 border-[#444444] hover:border-2 hover:border-green-500 text-gray-200 rounded-lg transition-all disabled:opacity-50";
+    "w-full flex items-center justify-center gap-2 py-3 px-4 font-semibold text-[17px] cursor-pointer bg-transparent hover:text-green-500 border-2 border-[#444444] hover:border-2 hover:border-green-500 text-gray-200 rounded-2xl transition-all disabled:opacity-50";
 
   return (
     <div className="flex min-h-screen bg-[#161923] text-gray-100 selection:bg-[#0078D4] selection:text-white ">
@@ -301,9 +301,9 @@ export default function AuthPage() {
               height={44}
               className="object-contain"
             />
-            <span className="text-2xl font-bold tracking-tight ">
-              KOSHA /{" "}
-              <span className="text-sm  px-3 py-2  text-[#ff9100] border border-[#444444] font-mono rounded-lg">
+            <span className="text-2xl font-normal tracking-tight ">
+              KOSHA <span className="font-bold text-gray-500">{"/"}</span>{" "}
+              <span className="text-sm  px-3 py-2  text-[#ff9100] border border-[#444444] font-medium font-mono rounded-2xl">
                 Authentication
               </span>
             </span>
@@ -342,7 +342,7 @@ export default function AuthPage() {
 
         {/* Dynamic Security Badge inside the Left Panel */}
         <div className="relative z-10 flex items-center gap-2 mt-auto pt-12">
-          <div className="flex items-center gap-2 text-[13px] text-gray-400 bg-[#111111] border border-[#222222] px-4 py-2 rounded-lg">
+          <div className="flex items-center gap-2 text-[13px] text-gray-400 bg-[#111111] border border-[#222222] px-4 py-2 rounded-full">
             <LockKeyhole className="w-4 h-4 text-[#0078D4]" />
             <span>Secured infrastructure by</span>
             <div className="relative flex items-center justify-start w-[45px] h-[18px] overflow-hidden font-semibold text-gray-200">
@@ -376,7 +376,7 @@ export default function AuthPage() {
           />
           <span className="text-2xl font-bold tracking-tight text-white">
             Kosha /
-            <span className="ml-2 text-xs px-2 py-1 bg-blue-800/20  border border-blue-400 rounded-lg">
+            <span className="ml-2 text-xs px-2 py-1 bg-blue-800/20  border border-blue-400 rounded-2xl">
               Authentication
             </span>
           </span>
@@ -385,7 +385,7 @@ export default function AuthPage() {
         <div className="w-full max-w-[420px] mx-auto">
           {/* Header */}
           <div className="mb-8">
-            <h2 className="text-3xl font-bold text-white mb-2">{heading}</h2>
+            <h2 className="text-4xl font-normal text-white mb-2">{heading}</h2>
             <p className="text-[15px] text-gray-400">{subtext}</p>
           </div>
 
@@ -394,7 +394,7 @@ export default function AuthPage() {
             <motion.div
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
-              className="mb-6 p-4  flex items-start gap-3 rounded-lg"
+              className="mb-6 p-4  flex items-start gap-3 rounded-2xl"
             >
               <div className="mt-0.5 text-red-500">
                 <Sparkles className="w-6 h-6" /> {/* Or an alert icon */}

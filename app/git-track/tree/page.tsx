@@ -221,7 +221,7 @@ export default function RepositoryViewer() {
         <div className="px-4 sm:px-6 py-4">
           {/* Breadcrumbs */}
           <div className="flex items-center gap-4">
-            <div className="w-12 h-12 bg-green-800 rounded-xl flex items-center justify-center shrink-0">
+            <div className="w-12 h-12 bg-green-800 rounded-2xl flex items-center justify-center shrink-0">
               <Code2 size={30} className="text-white" />
             </div>
             <div>
@@ -278,13 +278,13 @@ export default function RepositoryViewer() {
 
         {/* ERROR DISPLAY */}
         {error && (
-          <div className="mb-6 p-4 bg-gray-900 border  text-white text-[13px] font-medium rounded-lg">
+          <div className="mb-6 p-4 bg-gray-900 border  text-white text-[13px] font-medium rounded-2xl">
             Error: {error}
           </div>
         )}
 
         {/* CONTENT AREA */}
-        <div className="bg-transparent border border-[#444444] shadow-sm rounded-lg overflow-hidden">
+        <div className="bg-transparent border border-[#444444] shadow-sm rounded-2xl overflow-hidden">
           {/* Section Header */}
           <div className="bg-gray-900  px-4 py-3 flex items-center justify-between text-[13px] font-semibold text-gray-100">
             <div className="flex items-center gap-2">

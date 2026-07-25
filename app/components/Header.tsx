@@ -6,6 +6,7 @@ import Image from "next/image";
 import { useAuth } from "@clerk/nextjs";
 
 import { FaGithub } from "react-icons/fa";
+import { FaMessage } from "react-icons/fa6";
 import UserProfileDropdown from "./Userprofiledropdown";
 import {
   PanelBottomClose,
@@ -19,7 +20,6 @@ import {
   LogIn,
   MessageSquareText,
 } from "lucide-react";
-import { FaMessage } from "react-icons/fa6";
 
 const NAV_LINKS = [
   { href: "/supported-formats", label: "Supported Formats", icon: FileStack },
@@ -36,6 +36,7 @@ export default function Header() {
   const toggle = () => setOpen((o) => !o);
   const close = () => setOpen(false);
 
+  // Lock body scroll when mobile menu is open
   useEffect(() => {
     document.body.style.overflow = open ? "hidden" : "";
     return () => {
@@ -44,30 +45,28 @@ export default function Header() {
   }, [open]);
 
   return (
-    <header
-      className={`sticky top-0 z-50 transition-all bg-[#161923] border-b border-[#181818] duration-500  mx-auto backdrop-saturate-150`}
-    >
-      <div className="flex items-center justify-between h-14 px-4 md:px-6 max-w-screen-2xl mx-auto">
+    <header className="sticky top-0 z-50 w-full bg-[#161923]/95 backdrop-blur-xl border-b border-white/10 transition-colors duration-300">
+      <div className="flex items-center justify-between h-16 px-4 md:px-6 max-w-screen-2xl mx-auto">
         {/* ── Logo ── */}
         <Link
           href="/"
           onClick={close}
-          className="flex items-center gap-2.5 py-1.5  transition-all shrink-0 group"
+          className="flex items-center gap-2 shrink-0 group"
         >
           <Image
             src="/anylogo.png"
             alt="Kosha"
-            width={40}
-            height={40}
+            width={36}
+            height={36}
             className="object-contain group-hover:scale-105 transition-transform duration-300"
           />
-          <span className="font-normal text-[33px] tracking-wider  text-gray-100">
+          <span className="font-normal text-[24px] md:text-[28px] tracking-wider text-gray-100">
             Kosha
           </span>
         </Link>
 
         {/* ── Desktop Nav ── */}
-        <nav className="hidden md:flex items-center gap-1 flex-1 px-8 overflow-x-auto no-scrollbar mask-fade-edges">
+        <nav className="hidden lg:flex items-center gap-2 flex-1 justify-center px-4">
           {isLoaded && userId && (
             <NavLink href="/dashboard" icon={LayoutDashboard}>
               Dashboard
@@ -81,66 +80,57 @@ export default function Header() {
         </nav>
 
         {/* ── Desktop Right Actions ── */}
-        <div className="hidden md:flex items-center gap-3 shrink-0">
+        <div className="hidden md:flex items-center gap-4 shrink-0">
           <a
             href="https://opaque.cloudkinshuk.in/"
             target="_blank"
             rel="noopener noreferrer"
-            className="
-    inline-flex items-center gap-3
-    px-2 sm:px-5 py-1
-    rounded-xl
-    bg-green-800 backdrop-blur-md
-    border border-white/10
-    text-white
-    font-medium
-    text-xs sm:text-base
-    w-fit
-  "
-            aria-label="Kosha"
+            className="flex items-center gap-2 px-4 py-1.5 rounded-full bg-green-800/80 hover:bg-green-700 backdrop-blur-md border border-white/10 text-white font-medium text-sm transition-all shadow-sm"
           >
             <Image
               src="/logog.png"
-              alt="Kosha"
-              width={28}
-              height={28}
-              className="rounded-md object-cover"
+              alt="Opaque"
+              width={20}
+              height={20}
+              className="rounded-[4px] object-cover"
             />
-
-            <span className="whitespace-nowrap">Open Opaque</span>
-          </a>
-          <a
-            href="https://github.com/kinshukjainn/pvtcldstrg"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="p-2 rounded-lg text-gray-400 hover:text-white hover:bg-white/5 transition-all"
-            aria-label="GitHub"
-          >
-            <FaGithub className="w-4 h-4" />
-          </a>
-          <a
-            href="https://clkfeedbacks.cloudkinshuk.in/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="p-2 rounded-lg text-gray-400 hover:text-white hover:bg-white/5 transition-all"
-            aria-label="Feedback"
-          >
-            <MessageSquareText className="w-4 h-4" />
+            <span>Open Opaque</span>
           </a>
 
-          <div className="w-px h-5 bg-white/10" />
+          <div className="flex items-center gap-1">
+            <a
+              href="https://github.com/kinshukjainn/pvtcldstrg"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="p-2 rounded-full text-gray-400 hover:text-white hover:bg-white/10 transition-all"
+              aria-label="GitHub"
+            >
+              <FaGithub className="w-[18px] h-[18px]" />
+            </a>
+            <a
+              href="https://clkfeedbacks.cloudkinshuk.in/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="p-2 rounded-full text-gray-400 hover:text-white hover:bg-white/10 transition-all"
+              aria-label="Feedback"
+            >
+              <MessageSquareText className="w-[18px] h-[18px]" />
+            </a>
+          </div>
+
+          <div className="w-px h-6 bg-white/10" />
 
           {isLoaded && !userId && (
             <Link
               href="/verify-regis"
-              className="flex items-center gap-2 px-4 py-1.5 bg-white hover:bg-gray-200 text-black text-xs font-bold tracking-wide rounded-lg transition-all active:scale-95 shadow-[0_0_0_1px_rgba(255,255,255,0.1),0_2px_8px_-2px_rgba(0,0,0,0.4)]"
+              className="flex items-center gap-2 px-5 py-2 bg-white hover:bg-gray-200 text-black text-sm font-bold rounded-full transition-all active:scale-95 shadow-[0_0_0_1px_rgba(255,255,255,0.1)]"
             >
-              <LogIn className="w-3.5 h-3.5" />
-              Sign In / Up
+              <LogIn className="w-4 h-4" />
+              Sign In
             </Link>
           )}
           {isLoaded && userId && (
-            <div className="p-1 rounded-lg hover:bg-white/5 transition-colors">
+            <div className="hover:opacity-80 transition-opacity">
               <UserProfileDropdown variant="desktop" />
             </div>
           )}
@@ -148,7 +138,7 @@ export default function Header() {
 
         {/* ── Mobile Toggle ── */}
         <button
-          className="md:hidden p-2 cursor-pointer rounded-lg text-white hover:bg-white/5 transition-all active:scale-95"
+          className="md:hidden p-2 -mr-2 rounded-lg text-gray-300 hover:text-white hover:bg-white/10 transition-all active:scale-95"
           onClick={toggle}
           aria-label="Toggle menu"
           aria-expanded={open}
@@ -161,112 +151,100 @@ export default function Header() {
         </button>
       </div>
 
-      {/* ── Mobile Menu — FIXED Reliable Glassmorphism ── */}
+      {/* ── Mobile Menu ── */}
       <div
-        className={`md:hidden absolute top-full left-0 right-0
-          bg-[#161923] backdrop-blur-xl
-          border-x border-b border-white/10
-          rounded-b-3xl overflow-hidden
-          shadow-[0_40px_80px_-15px_rgba(0,0,0,0.9),inset_0_1px_0_rgba(255,255,255,0.05)]
-          transition-all duration-400 ease-[cubic-bezier(0.22,1,0.36,1)] origin-top
-          ${
-            open
-              ? "max-h-[calc(100vh-3.5rem)] opacity-100 translate-y-0 visible"
-              : "max-h-0 opacity-0 -translate-y-1 invisible pointer-events-none"
-          }`}
+        className={`md:hidden absolute top-full left-0 right-0 bg-[#161923]/98 backdrop-blur-2xl border-b border-white/10 shadow-2xl transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] ${
+          open
+            ? "opacity-100 visible"
+            : "opacity-0 invisible pointer-events-none"
+        }`}
       >
-        <div className="relative overflow-y-auto max-h-[calc(100vh-3.5rem)] pb-6">
-          <nav className="flex flex-col p-1.5 gap-1">
-            {isLoaded && userId && (
-              <MobileNavLink
-                href="/dashboard"
-                icon={LayoutDashboard}
-                onClick={close}
+        {/* Using grid transition for buttery smooth height animation */}
+        <div
+          className={`grid transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] ${
+            open ? "grid-rows-[1fr]" : "grid-rows-[0fr]"
+          }`}
+        >
+          <div className="overflow-hidden">
+            <div className="flex flex-col gap-2 p-4 max-h-[calc(100vh-4rem)] overflow-y-auto no-scrollbar">
+              {isLoaded && userId && (
+                <MobileNavLink
+                  href="/dashboard"
+                  icon={LayoutDashboard}
+                  onClick={close}
+                >
+                  Dashboard
+                </MobileNavLink>
+              )}
+              {NAV_LINKS.map(({ href, label, icon }) => (
+                <MobileNavLink
+                  key={href}
+                  href={href}
+                  icon={icon}
+                  onClick={close}
+                >
+                  {label}
+                </MobileNavLink>
+              ))}
+
+              <hr className="my-2 border-white/10" />
+
+              <a
+                href="https://opaque.cloudkinshuk.in/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center justify-center gap-2 w-full px-4 py-3 rounded-xl bg-green-800/90 border border-white/10 text-white font-medium text-sm active:scale-[0.98] transition-all"
               >
-                Dashboard
-              </MobileNavLink>
-            )}
-            {NAV_LINKS.map(({ href, label, icon }) => (
-              <MobileNavLink key={href} href={href} icon={icon} onClick={close}>
-                {label}
-              </MobileNavLink>
-            ))}
+                <Image
+                  src="/logog.png"
+                  alt="Kosha"
+                  width={20}
+                  height={20}
+                  className="rounded-sm"
+                />
+                Open Opaque
+              </a>
 
-            <a
-              href="https://opaque.cloudkinshuk.in/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="
-    inline-flex items-center gap-3
-    px-2 sm:px-5 py-2
-    rounded-xl flex justify-center
-    bg-green-800 backdrop-blur-md
-    border border-white/10
-    text-white
-    font-medium
-    text-xs sm:text-base
-    w-full
-  "
-              aria-label="Kosha"
-            >
-              <Image
-                src="/logog.png"
-                alt="Kosha"
-                width={28}
-                height={28}
-                className="rounded-md object-cover"
-              />
+              <a
+                href="https://github.com/kinshukjainn/pvtcldstrg"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-300 hover:bg-white/5 transition-colors"
+              >
+                <FaGithub className="w-5 h-5 text-gray-400" />
+                <span className="flex-1 font-medium">Open Source</span>
+                <span className="text-gray-500 text-xs">↗</span>
+              </a>
 
-              <span className="whitespace-nowrap">Open Opaque</span>
-            </a>
-            <a
-              href="https://github.com/kinshukjainn/pvtcldstrg"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="group relative flex items-center gap-3 px-4 py-3 rounded-lg text-[16px] font-medium text-gray-300 hover:text-white  transition-all duration-300"
-            >
-              <div className="w-9 h-9 flex items-center justify-center   transition-all duration-300">
-                <FaGithub className="w-6 h-6 text-white  transition-colors" />
-              </div>
-              <span className="flex-1">Open Source</span>
-              <span className="text-[11px] text-gray-500 group-hover:text-gray-300 transition-colors">
-                ↗
-              </span>
-            </a>
-            <a
-              href="https://github.com/kinshukjainn/pvtcldstrg"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="group relative flex items-center gap-3 px-4 py-3 rounded-lg text-[16px] font-medium text-gray-300 hover:text-white  transition-all duration-300"
-            >
-              <div className="w-9 h-9 flex items-center justify-center   transition-all duration-300">
-                <FaMessage className="w-6 h-6 text-white  transition-colors" />
-              </div>
-              <span className="flex-1">Feedbacks</span>
-              <span className="text-[11px] text-gray-500 group-hover:text-gray-300 transition-colors">
-                ↗
-              </span>
-            </a>
+              <a
+                href="https://clkfeedbacks.cloudkinshuk.in/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-300 hover:bg-white/5 transition-colors"
+              >
+                <FaMessage className="w-5 h-5 text-gray-400" />
+                <span className="flex-1 font-medium">Feedbacks</span>
+                <span className="text-gray-500 text-xs">↗</span>
+              </a>
 
-            {isLoaded && !userId && (
-              <div className="px-2 pt-4">
+              {isLoaded && !userId && (
                 <Link
                   href="/verify-regis"
                   onClick={close}
-                  className="relative flex items-center justify-center gap-2 w-full bg-white text-black text-sm font-bold tracking-wide py-3.5 rounded-lg transition-all hover:bg-gray-200 active:scale-[0.98] shadow-lg"
+                  className="flex items-center justify-center gap-2 w-full mt-2 bg-white text-black text-sm font-bold py-3.5 rounded-xl transition-all active:scale-[0.98]"
                 >
                   <LogIn className="w-4 h-4" />
                   Sign In / Up
                 </Link>
-              </div>
-            )}
+              )}
 
-            {isLoaded && userId && (
-              <div className="mt-2 pt-3 border-t border-white/5">
-                <UserProfileDropdown variant="mobile" onAction={close} />
-              </div>
-            )}
-          </nav>
+              {isLoaded && userId && (
+                <div className="mt-4 pt-4 border-t border-white/10 flex justify-center">
+                  <UserProfileDropdown variant="mobile" onAction={close} />
+                </div>
+              )}
+            </div>
+          </div>
         </div>
       </div>
     </header>
@@ -278,29 +256,23 @@ function NavLink({
   href,
   icon: Icon,
   children,
-  underline = false,
 }: {
   href: string;
-  icon: React.ComponentType<{ className?: string }>;
+  icon: React.ElementType;
   children: React.ReactNode;
-  underline?: boolean;
 }) {
   return (
     <Link
       href={href}
-      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-[15px] font-medium text-white hover:underline group-hover:text-green-500 transition-colors whitespace-nowrap ${
-        underline
-          ? "underline decoration-white/20 underline-offset-4 hover:decoration-gray-400"
-          : ""
-      }`}
+      className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium text-gray-300 hover:text-white hover:bg-white/5 transition-all group whitespace-nowrap"
     >
-      <Icon className="w-4 h-4 shrink-0 text-white group-hover:text-green-500 " />
+      <Icon className="w-[18px] h-[18px] text-gray-400 group-hover:text-green-400 transition-colors" />
       {children}
     </Link>
   );
 }
 
-/* ── Mobile NavLink — refined glass pill ── */
+/* ── Mobile NavLink ── */
 function MobileNavLink({
   href,
   icon: Icon,
@@ -308,7 +280,7 @@ function MobileNavLink({
   onClick,
 }: {
   href: string;
-  icon: React.ComponentType<{ className?: string }>;
+  icon: React.ElementType;
   children: React.ReactNode;
   onClick: () => void;
 }) {
@@ -316,15 +288,13 @@ function MobileNavLink({
     <Link
       href={href}
       onClick={onClick}
-      className="group relative flex items-center gap-2 px-4  text-white text-md  hover:border-l-3 hover:border-blue-400 transition-all duration-300"
+      className="group flex items-center gap-3 px-4 py-3 rounded-xl text-gray-300 text-sm font-medium border-l-[3px] border-transparent hover:border-blue-400 hover:bg-white/5 transition-all"
     >
-      {/* Icon tile */}
-      <div className="w-9 h-9 flex items-center justify-center   transition-all duration-300">
-        <Icon className="w-6 h-6 text-white  transition-colors" />
-      </div>
-      <span className="flex-1">{children}</span>
-      {/* Reveal arrow on hover */}
-      <span className="text-gray-500 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300">
+      <Icon className="w-5 h-5 text-gray-400 group-hover:text-white transition-colors" />
+      <span className="flex-1 group-hover:text-white transition-colors">
+        {children}
+      </span>
+      <span className="text-gray-500 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all">
         →
       </span>
     </Link>

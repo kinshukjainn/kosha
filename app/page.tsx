@@ -1,14 +1,6 @@
 "use client";
 
-import React, {
-  useState,
-  useEffect,
-  useRef,
-  Suspense,
-  type ReactNode,
-  type ComponentType,
-  type SVGProps,
-} from "react";
+import React, { Suspense, useEffect, useState } from "react";
 import {
   ShieldCheck,
   Zap,
@@ -20,206 +12,117 @@ import {
   Check,
   FolderOpen,
   Upload,
-  PartyPopper,
-  Rocket,
-  ChevronRight,
   BrickWallShield,
   FileCog,
   Cog,
+  Server,
 } from "lucide-react";
 import { useAuth, useUser } from "@clerk/nextjs";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
+import { motion } from "framer-motion";
 
-/* ── Constants & Helpers ── */
-const WORDS = ["simple", "open source", "private"] as const;
-const articleFor = (word: string) => (/^[aeiou]/i.test(word) ? "An" : "A");
+// IMPORT YOUR SERVER ACTION HERE
+// Adjust the path "@/_actions/fileActions" to wherever you saved the server action file
+import { getStorageInfo } from "@/actions/drive";
 
-const INK = "#111827";
-const INK_3 = "#6b7280";
-const BLUE = "#2563eb";
-const BLUE_SOFT = "#eff6ff";
+/* ── Constants & Utilities ── */
+const BG_COLOR = "#161923";
 
-const getGreeting = () => {
-  const h = new Date().getHours();
-  if (h >= 5 && h < 12) return "Good morning";
-  if (h >= 12 && h < 17) return "Good afternoon";
-  if (h >= 17 && h < 21) return "Good evening";
-  return "Its Night time";
-};
+function formatBytes(bytes: number, decimals = 2) {
+  if (!+bytes) return "0 Bytes";
+  const k = 1024;
+  const dm = decimals < 0 ? 0 : decimals;
+  const sizes = ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`;
+}
 
-type IconType = ComponentType<SVGProps<SVGSVGElement>>;
+const FEATURES = [
+  {
+    id: "01",
+    title: "20 GB Free Forever",
+    body: "Generous AWS backed storage for everyone. Drop your files without worrying about space.",
+    icon: HardDrive,
+    category: "Infrastructure",
+  },
+  {
+    id: "02",
+    title: "Absolute Privacy",
+    body: "Amazon S3 Encryption. We can't see your files or sell your habits.",
+    icon: ShieldCheck,
+    category: "Security",
+  },
+  {
+    id: "03",
+    title: "Zero Bloat",
+    body: "No unnecessary features. A clean interface designed to get out of your way.",
+    icon: Layout,
+    category: "Experience",
+  },
+  {
+    id: "04",
+    title: "Lightning Fast",
+    body: "Optimized for speed. Uploads and downloads in the blink of an eye.",
+    icon: Zap,
+    category: "Infrastructure",
+  },
+  {
+    id: "05",
+    title: "No AI Training",
+    body: "We do not use your data to train AI models. Your files are yours alone.",
+    icon: BrainCircuit,
+    category: "Security",
+  },
+  {
+    id: "06",
+    title: "No Bloated AI",
+    body: "We do not offer any AI features. We focus on secure, private storage without distractions.",
+    icon: BrickWallShield,
+    category: "Experience",
+  },
+  {
+    id: "07",
+    title: "Multiple Formats",
+    body: "We support a wide range of file formats including documents, images, videos, and more.",
+    icon: FileCog,
+    category: "Infrastructure",
+  },
+  {
+    id: "08",
+    title: "You Control Your Data",
+    body: "We do not collect any data about your files or usage. Full control over what you share.",
+    icon: Cog,
+    category: "Security",
+  },
+];
 
-const FEATURES: { id: string; title: string; body: string; icon: IconType }[] =
-  [
-    {
-      id: "01",
-      title: "20 GB Free Forever",
-      body: "Generous AWS backed storage for everyone. Drop your files without worrying about space.",
-      icon: HardDrive,
-    },
-    {
-      id: "02",
-      title: "Absolute Privacy",
-      body: "Amazon S3 Encryption. We can't see your files or sell your habits.",
-      icon: ShieldCheck,
-    },
-    {
-      id: "03",
-      title: "Zero Bloat",
-      body: "No unnecessary features. A clean interface designed to get out of your way.",
-      icon: Layout,
-    },
-    {
-      id: "04",
-      title: "Lightning Fast",
-      body: "Optimized for speed. Uploads and downloads in the blink of an eye.",
-      icon: Zap,
-    },
-    {
-      id: "05",
-      title: "No AI Training",
-      body: "We do not use your data to train AI models. Your files are yours alone.",
-      icon: BrainCircuit,
-    },
-    {
-      id: "06",
-      title: "No Bloated AI",
-      body: "We do not offer any AI features. We focus on secure, private storage without distractions.",
-      icon: BrickWallShield,
-    },
-    {
-      id: "07",
-      title: "Multiple Formats",
-      body: "We support a wide range of file formats including documents, images, videos, and more.",
-      icon: FileCog,
-    },
-    {
-      id: "08",
-      title: "You Control Your Data",
-      body: "We do not collect any data about your files or usage. Full control over what you share.",
-      icon: Cog,
-    },
-  ];
-
-/* ── Essential Logic Components (Kept separate to prevent re-render bugs) ── */
-
-// Reusable scroll reveal animation
-const Reveal = ({
+/* ── Minimal Animation Component ── */
+const FadeIn = ({
   children,
   delay = 0,
-  className = "",
 }: {
-  children: ReactNode;
+  children: React.ReactNode;
   delay?: number;
-  className?: string;
-}) => {
-  const ref = useRef<HTMLDivElement>(null);
-  const [inView, setInView] = useState(false);
+}) => (
+  <motion.div
+    initial={{ opacity: 0, y: 10 }}
+    whileInView={{ opacity: 1, y: 0 }}
+    viewport={{ once: true, margin: "-50px" }}
+    transition={{ duration: 0.4, ease: "easeOut", delay }}
+  >
+    {children}
+  </motion.div>
+);
 
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const obs = new IntersectionObserver(
-      ([e]) => {
-        if (e.isIntersecting) {
-          setInView(true);
-          obs.disconnect();
-        }
-      },
-      { threshold: 0.1 },
-    );
-    obs.observe(el);
-    return () => obs.disconnect();
-  }, []);
-
-  return (
-    <div
-      ref={ref}
-      className={className}
-      style={{
-        opacity: inView ? 1 : 0,
-        transform: inView ? "translateY(0)" : "translateY(8px)",
-        transition: `opacity .5s ease ${delay}ms, transform .5s ease ${delay}ms`,
-      }}
-    >
-      {children}
-    </div>
-  );
-};
-
-// Animated cycling text component
-const AnimatedHeadline = () => {
-  const [index, setIndex] = useState(0);
-  const reduce = useReducedMotion();
-
-  useEffect(() => {
-    if (reduce) return;
-    const id = setInterval(() => setIndex((i) => (i + 1) % WORDS.length), 3000);
-    return () => clearInterval(id);
-  }, [reduce]);
-
-  const current = WORDS[index];
-  const article = articleFor(current);
-  const layoutSpring = {
-    type: "spring" as const,
-    stiffness: 150,
-    damping: 24,
-    mass: 1,
-  };
-  const premiumEase = [0.16, 1, 0.3, 1] as const;
-
-  return (
-    <h1 className="text-3xl sm:text-5xl text-white font-semibold tracking-tight leading-tight mb-6">
-      <motion.span
-        layout
-        transition={{ layout: layoutSpring }}
-        className="inline-block"
-      >
-        <AnimatePresence mode="popLayout" initial={false}>
-          <motion.span
-            key={article}
-            initial={{ opacity: 0, filter: "blur(4px)" }}
-            animate={{ opacity: 1, filter: "blur(0px)" }}
-            exit={{ opacity: 0, filter: "blur(4px)" }}
-            transition={{ duration: 0.5, ease: premiumEase }}
-            className="inline-block"
-          >
-            {article}
-          </motion.span>
-        </AnimatePresence>
-      </motion.span>{" "}
-      <motion.span
-        layout
-        transition={{ layout: layoutSpring }}
-        className="inline-block align-baseline"
-      >
-        <AnimatePresence mode="popLayout" initial={false}>
-          <motion.span
-            key={current}
-            initial={{ opacity: 0, scale: 0.95, filter: "blur(12px)", y: 4 }}
-            animate={{ opacity: 1, scale: 1, filter: "blur(0px)", y: 0 }}
-            exit={{ opacity: 0, scale: 1.05, filter: "blur(12px)", y: -4 }}
-            transition={{ duration: 0.7, ease: premiumEase }}
-            className="inline-block whitespace-nowrap bg-gradient-to-r from-[#0078D4] via-[#3aa8ff] to-cyan-300 bg-clip-text text-transparent pr-[0.04em]"
-          >
-            {current}
-          </motion.span>
-        </AnimatePresence>
-      </motion.span>{" "}
-      cloud storage
-      <br />
-      solution
-    </h1>
-  );
-};
-
-/* ── Main Page Structure ── */
-
+/* ── Page Entry ── */
 export default function Home() {
   return (
-    <Suspense fallback={<div className="min-h-screen bg-black" />}>
+    <Suspense
+      fallback={
+        <div className="min-h-screen" style={{ backgroundColor: BG_COLOR }} />
+      }
+    >
       <MainContent />
     </Suspense>
   );
@@ -232,408 +135,328 @@ function MainContent() {
 
   const isLoggedIn = isLoaded && !!userId;
   const isNewUser = searchParams.get("new") === "true";
-  const firstName = user?.firstName || "there";
+  const firstName = user?.firstName || "User";
+
+  // State to hold dynamic storage info
+  const [storageData, setStorageData] = useState<{
+    used: number;
+    limit: number;
+    currentFileCount: number;
+    maxFileSize: number;
+  } | null>(null);
+
+  // Fetch storage info on mount if user is logged in
+  useEffect(() => {
+    if (isLoggedIn) {
+      getStorageInfo()
+        .then((data) => setStorageData(data))
+        .catch((err) => console.error("Failed to fetch storage info:", err));
+    }
+  }, [isLoggedIn]);
+
+  // Calculate percentages for the UI
+  const usagePercentage = storageData?.limit
+    ? Math.min(100, (storageData.used / storageData.limit) * 100)
+    : 0;
 
   return (
-    <div className="min-h-screen bg-[#161923]" style={{ color: INK }}>
-      {/* ── HEADER / HERO SECTION ── */}
-      <main>
-        {isLoggedIn && isNewUser ? (
-          /* --- NEW USER HERO --- */
-          <div className="max-w-2xl mx-auto px-6 pt-20 pb-16">
-            <Reveal>
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-medium bg-amber-50 text-amber-700 border border-amber-100 mb-6">
-                <PartyPopper className="w-3 h-3" /> Account provisioned
-              </span>
-            </Reveal>
-
-            <Reveal delay={80}>
-              <h1
-                className="text-4xl sm:text-5xl font-bold tracking-tight mb-6"
-                style={{ color: INK }}
-              >
-                Welcome, {firstName}.
-              </h1>
-            </Reveal>
-
-            <Reveal delay={160}>
-              <p className="text-base leading-relaxed text-gray-600 mb-4 pl-4 border-l-2 border-blue-500">
-                Your workspace is ready. You have{" "}
-                <strong className="text-blue-600">5 GB</strong> of encrypted
-                storage on <strong className="text-blue-600">AWS S3</strong> —
-                private by default, yours forever. No credit card, no trial.
-              </p>
-            </Reveal>
-
-            <Reveal delay={240}>
-              <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-green-50 text-green-700 border border-green-100 mb-10">
-                <Check className="w-3.5 h-3.5" /> All systems go. You&apos;re
-                in.
-              </div>
-            </Reveal>
-
-            <Reveal delay={300}>
-              <h2 className="text-xl font-semibold mb-4" style={{ color: INK }}>
-                Quick start
-              </h2>
-            </Reveal>
-
-            <div className="space-y-2.5 mb-10">
-              {/* Onboarding Steps array mapped inline */}
-              {[
-                {
-                  icon: Upload,
-                  title: "Upload your first file",
-                  desc: "Drag and drop any file into your dashboard — we support PDFs, images, documents, videos, and more.",
-                  delay: 360,
-                },
-                {
-                  icon: FolderOpen,
-                  title: "Organize with folders",
-                  desc: "Create folders to keep everything tidy. Your files, your structure.",
-                  delay: 420,
-                },
-                {
-                  icon: ShieldCheck,
-                  title: "Enjoy total privacy",
-                  desc: "Your files are encrypted and only accessible by you. No tracking, no ads, no compromises.",
-                  delay: 480,
-                },
-              ].map((step, idx) => (
-                <Reveal key={idx} delay={step.delay}>
-                  <div className="flex items-start gap-4 p-5 rounded-lg border border-gray-100 bg-white hover:bg-gray-50 transition-colors">
-                    <span className="shrink-0 w-7 h-7 rounded-lg flex items-center justify-center text-xs font-semibold text-gray-400 bg-gray-100">
-                      {(idx + 1).toString().padStart(2, "0")}
-                    </span>
-                    <div
-                      className="w-9 h-9 rounded-lg flex items-center justify-center shrink-0"
-                      style={{ background: BLUE_SOFT }}
-                    >
-                      <step.icon className="w-4 h-4" style={{ color: BLUE }} />
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      <h3
-                        className="text-sm font-semibold mb-0.5"
-                        style={{ color: INK }}
-                      >
-                        {step.title}
-                      </h3>
-                      <p
-                        className="text-sm leading-relaxed"
-                        style={{ color: INK_3 }}
-                      >
-                        {step.desc}
-                      </p>
-                    </div>
-                  </div>
-                </Reveal>
-              ))}
-            </div>
-
-            <Reveal delay={540}>
-              <div className="flex flex-wrap items-center gap-4">
-                <Link
-                  href="/dashboard"
-                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-medium bg-blue-800 text-white transition hover:opacity-90"
-                >
-                  <Rocket className="w-4 h-4" /> Go to Dashboard{" "}
-                  <ArrowRight className="w-3.5 h-3.5" />
-                </Link>
-                <div className="flex items-center gap-4 text-xs text-gray-500">
-                  <span className="flex items-center gap-1">
-                    <Check className="w-3 h-3 text-green-600" /> 5 GB Free
-                  </span>
-                  <span className="flex items-center gap-1">
-                    <Check className="w-3 h-3 text-green-600" /> Secure
-                  </span>
-                </div>
-              </div>
-            </Reveal>
-          </div>
-        ) : isLoggedIn ? (
-          /* --- RETURNING USER HERO --- */
-          <div className="max-w-2xl mx-auto px-6 pt-20 pb-16">
-            <Reveal>
-              <h1 className="text-4xl sm:text-5xl font-bold tracking-tight mb-6 text-white">
-                {getGreeting()},{" "}
-                <span className="text-green-500 font-semibold">
+    <div
+      className="min-h-screen text-gray-300 rounded-2xl selection:bg-blue-900 selection:text-white"
+      style={{ backgroundColor: BG_COLOR }}
+    >
+      {/* ── LOGGED IN: CONSOLE VIEW ── */}
+      {isLoggedIn ? (
+        <main className="max-w-6xl mx-auto px-6 pt-24 pb-20">
+          <FadeIn>
+            <div className="border-b border-gray-800 pb-8 mb-12">
+              <h1 className="text-4xl font-semibold text-white tracking-tight mb-2">
+                Console <span className="text-gray-500">|</span>{" "}
+                <span>
+                  <span className="text-green-500">@</span>
                   {firstName}
-                </span>{" "}
-                .
+                </span>
               </h1>
-            </Reveal>
+            </div>
+          </FadeIn>
 
-            <Reveal delay={100}>
-              <p className="text-base leading-relaxed text-gray-100 mb-10 pl-4 border-l-4 border-blue-500">
-                System <strong className="text-yellow-400">operational</strong>.
-                Pick up where you left off.
-              </p>
-            </Reveal>
-
-            <Reveal delay={200}>
-              <p className="text-md font-normal uppercase tracking-widest text-gray-500 mb-3">
-                Jump back in
-              </p>
-            </Reveal>
-
-            <div className="space-y-3.5">
-              {[
-                {
-                  icon: FolderOpen,
-                  title: "Open Dashboard",
-                  desc: "View and manage all your stored files",
-                  delay: 260,
-                },
-                {
-                  icon: Upload,
-                  title: "Upload Files",
-                  desc: "Add new documents to your storage",
-                  delay: 320,
-                },
-              ].map((action, idx) => (
-                <Reveal key={idx} delay={action.delay}>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {/* Left Column: Actions */}
+            <div className="md:col-span-2 space-y-6">
+              <FadeIn delay={0.1}>
+                <h2 className="text-md font-bold uppercase tracking-wider text-green-500 mb-4">
+                  Workspace Actions
+                </h2>
+                <div className="grid sm:grid-cols-2 gap-4">
                   <Link
                     href="/dashboard"
-                    className="group flex items-center gap-4 p-4 rounded-2xl hover:border-green-400 border-2 border-[#444444]  transition-colors"
+                    className="block p-5 border-2 hover:border-green-500 border-[#444444] rounded-3xl hover:bg-green-800/20 transition-colors"
                   >
-                    <div className="w-10 h-10 rounded-2xl bg-green-400 border flex items-center justify-center shrink-0">
-                      <action.icon className="w-6 h-6 text-black" />
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      <h3 className="text-md font-semibold text-white transition-colors">
-                        {action.title}
-                      </h3>
-                      <p className="text-sm" style={{ color: INK_3 }}>
-                        {action.desc}
+                    <FolderOpen className="w-6 h-6 text-green-500 mb-3" />
+                    <h3 className="text-white font-medium mb-1">
+                      Open Dashboard
+                    </h3>
+                    <p className="text-md text-gray-400">
+                      Manage and organize your files securely.
+                    </p>
+                  </Link>
+                  <Link
+                    href="/dashboard"
+                    className="block p-5 border-2 hover:border-green-500 border-[#444444]  rounded-3xl hover:bg-green-800/20 transition-colors"
+                  >
+                    <Upload className="w-6 h-6 text-green-500 mb-3" />
+                    <h3 className="text-white font-medium mb-1">
+                      Upload Files
+                    </h3>
+                    <p className="text-md text-gray-400">
+                      Transfer documents to encrypted storage.
+                    </p>
+                  </Link>
+                </div>
+              </FadeIn>
+
+              {isNewUser && (
+                <FadeIn delay={0.2}>
+                  <div className="mt-8 p-5 bg-blue-900/10 border border-blue-900/30 rounded-2xl">
+                    <h3 className="text-md font-medium text-blue-400 mb-3 flex items-center gap-2">
+                      <Check className="w-4 h-4" /> Quick Start Guide
+                    </h3>
+                    <ul className="space-y-3 text-md text-gray-400">
+                      <li className="flex items-start gap-2">
+                        <span className="text-gray-600">01</span> Drag and drop
+                        files directly into your dashboard.
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <span className="text-gray-600">02</span> Create folders
+                        to maintain structural hierarchy.
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <span className="text-gray-600">03</span> Your files are
+                        encrypted locally before upload.
+                      </li>
+                    </ul>
+                  </div>
+                </FadeIn>
+              )}
+            </div>
+
+            {/* Right Column: Status Panel */}
+            <div className="space-y-6">
+              <FadeIn delay={0.15}>
+                <h2 className="text-md font-bold uppercase tracking-wider text-green-500 mb-4">
+                  Account Status
+                </h2>
+
+                <div className="p-5 border-2 hover:border-green-500  border-[#444444] rounded-3xl ">
+                  <div className="mb-6">
+                    <p className="text-md text-gray-400 mb-1">User Profile</p>
+                    <p className="text-md text-white font-medium">
+                      <span className="text-green-500">{"@"}</span>
+                      {firstName}
+                    </p>
+                  </div>
+
+                  <div className="mb-6">
+                    <div className="flex justify-between items-end mb-2">
+                      <p className="text-md text-gray-400">Storage Quota</p>
+                      <p className="text-[14px] font-medium text-[#ff9100] ">
+                        {storageData
+                          ? `${usagePercentage.toFixed(4)}% Consumed`
+                          : "FETCHING..."}
                       </p>
                     </div>
-                    <div className="w-9 h-9 rounded-xl border  border-[#444444] group-hover:border-2 flex items-center justify-center">
-                      <ChevronRight className="w-4 h-4 shrink-0 text-white group-hover:translate-x-0.5 transition-transform" />
+
+                    <div className="flex items-end gap-2 mb-3">
+                      <span className="text-2xl font-normal text-white">
+                        {storageData ? formatBytes(storageData.used) : "—"}
+                      </span>
+                      <span className="text-md text-green-500 font-bold  mb-1">
+                        / {storageData ? formatBytes(storageData.limit) : "—"}
+                      </span>
                     </div>
-                  </Link>
-                </Reveal>
-              ))}
+
+                    {/* AWS-style Progress Bar */}
+                    <div className="w-full border-2 border-green-500 rounded-full h-4 overflow-hidden">
+                      <div
+                        className="bg-green-500 h-full transition-all duration-1000 ease-out"
+                        style={{ width: `${usagePercentage}%` }}
+                      />
+                    </div>
+                  </div>
+
+                  {storageData && (
+                    <div className="flex justify-between items-center py-3 border-t border-gray-800">
+                      <p className="text-md text-gray-400">
+                        Total Files Stored
+                      </p>
+                      <p className="text-md font-medium text-white">
+                        {storageData.currentFileCount}
+                      </p>
+                    </div>
+                  )}
+                </div>
+              </FadeIn>
             </div>
           </div>
-        ) : (
-          /* --- LOGGED OUT HERO --- */
-          <section className="max-w-3xl mx-auto px-6 pt-24 pb-16 text-center">
-            <Reveal>
-              <span className="inline-flex items-center gap-1.5 px-3 py-2 rounded-full  text-md font-normal bg-black text-gray-100 mb-8">
-                <LockKeyhole className="w-5 h-5 text-blue-300" /> Secured by{" "}
-                <span className="font-semibold text-green-500">AWS Cloud</span>
+        </main>
+      ) : (
+        /* ── LOGGED OUT: MARKETING / PRODUCT PAGE ── */
+        <main>
+          {/* Trust Banner */}
+          <div className=" border-2 rounded-full bg-gray-800/20 backdrop-blur-xs border-[#444444] mr-2 ml-2 mt-3">
+            <div className="max-w-6xl mx-auto px-6 py-3 flex items-center gap-4 text-md font-medium text-gray-400">
+              <span className="flex items-center gap-1.5">
+                <LockKeyhole className="w-3.5 h-3.5" /> End-to-End Encrypted
               </span>
-            </Reveal>
+              <span className="w-1 h-1 rounded-full bg-gray-700" />
+              <span className="flex items-center gap-1.5">
+                <Server className="w-3.5 h-3.5" /> AWS Infrastructure
+              </span>
+            </div>
+          </div>
 
-            <Reveal delay={80}>
-              <AnimatedHeadline />
-            </Reveal>
-
-            <Reveal delay={160}>
-              <p className="text-base sm:text-lg leading-relaxed text-gray-200 max-w-xl mx-auto mb-10">
-                A cloud storage platform stripped of the noise. No bloatware, no
-                complicated settings, and zero compromises on your privacy.
+          {/* Hero Section */}
+          <section className="max-w-6xl mx-auto px-6 pt-24 pb-16">
+            <FadeIn>
+              <h1 className="text-4xl sm:text-6xl font-normal tracking-tight text-white mb-6 max-w-3xl leading-tight">
+                Secure cloud storage. <br />
+                <span className="text-green-500 font-bold">
+                  Without the complexity.
+                </span>
+              </h1>
+              <p className="text-lg text-gray-200 mb-10 max-w-2xl leading-relaxed">
+                A simple, open-source, private cloud storage solution. No
+                bloatware, no AI data harvesting, and absolute control over your
+                digital assets.
               </p>
-            </Reveal>
 
-            <Reveal delay={240}>
-              <div className="flex flex-wrap items-center justify-center gap-3 mb-8">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
                 <Link
                   href="/verify-regis"
-                  className="inline-flex items-center gap-2 px-5 py-3 rounded-lg bg-green-700 text-white text-sm font-medium transition-all duration-300"
+                  className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white text-md font-medium rounded-2xl transition-colors flex items-center gap-2"
                 >
-                  Start for free <ArrowRight className="w-4 h-4" />
+                  Create free account <ArrowRight className="w-4 h-4" />
                 </Link>
                 <Link
                   href="/supported-formats"
-                  className="inline-flex items-center gap-2 px-5 py-3 rounded-lg bg-black  text-white text-sm font-medium"
+                  className="px-6 py-3 bg-transparent border border-gray-600 hover:border-gray-400 text-white text-md font-medium rounded-2xl transition-colors"
                 >
-                  Supported Formats
+                  View supported formats
                 </Link>
               </div>
-            </Reveal>
-
-            <Reveal delay={300}>
-              <div className="flex flex-wrap items-center justify-center gap-6 font-semibold text-sm text-white">
-                {["No credit card", "Encrypted", "Zero AI training"].map(
-                  (text) => (
-                    <span key={text} className="flex items-center gap-1.5">
-                      <p className="p-1 bg-green-400 rounded-full">
-                        <Check className="w-5 h-5 text-black" />
-                      </p>
-                      {text}
-                    </span>
-                  ),
-                )}
-              </div>
-            </Reveal>
+            </FadeIn>
           </section>
-        )}
 
-        {/* --- LIVE PREVIEW (Only for logged-out users) --- */}
-        {isLoaded && !userId && (
-          <section className="max-w-5xl mx-auto px-6 pb-16">
-            <Reveal>
-              <div className="text-center mb-8">
-                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-md font-normal bg-red-700 text-white mb-3">
-                  <span className="w-3 h-3 rounded-full bg-white animate-pulse" />{" "}
-                  Live Preview
-                </span>
-                <h2 className="text-3xl font-bold tracking-tight text-white">
-                  See it in action.
-                </h2>
-                <p className="mt-1.5 text-sm text-gray-200">
-                  A dashboard that respects your time and your data.
-                </p>
-              </div>
-            </Reveal>
-            <Reveal delay={80}>
-              <div className="rounded-4xl overflow-hidden shadow-lg">
-                <div className="flex items-center gap-2.5 px-4 py-2.5 bg-black">
-                  <div className="flex gap-1.5">
-                    {[0, 1, 2].map((i) => (
-                      <span
-                        key={i}
-                        className="w-2.5 h-2.5 rounded-lg bg-white"
-                      />
-                    ))}
-                  </div>
-                  <div className="flex-1 mx-3 px-3 py-1 rounded-lg border border-[#444444]  text-sm text-center text-gray-200 truncate">
-                    kosha.cloudkinshuk.in/dashboard
-                  </div>
-                </div>
-                <video
-                  autoPlay
-                  loop
-                  muted
-                  playsInline
-                  preload="metadata"
-                  className="w-full h-auto block aspect-video object-cover bg-gray-50"
-                >
-                  <source src="/videos/brandy.mp4" type="video/mp4" />
-                </video>
-              </div>
-            </Reveal>
-          </section>
-        )}
-      </main>
-
-      {/* ── FEATURES GRID ── */}
-      <section id="features" className="max-w-6xl mx-auto px-6 py-20">
-        <Reveal>
-          <div className="text-center mb-12">
-            <h2 className="text-3xl sm:text-4xl font-bold tracking-tight mb-3 text-white">
-              Brilliantly simple.
-            </h2>
-            <p className="text-base text-gray-200">
-              Everything you need. Nothing you don&apos;t.
-            </p>
-          </div>
-        </Reveal>
-        <div className="grid grid-cols-1 sm:grid-cols-2 rounded-lg lg:grid-cols-4 overflow-hidden">
-          {FEATURES.map((f, i) => (
-            <Reveal key={f.id} delay={i * 40}>
-              <div className="group h-full p-6 hover:bg-gray-800 rounded-lg transition-colors relative">
-                <div className="flex items-start justify-between mb-4">
-                  <div className="w-12 h-12 rounded-lg flex items-center justify-center bg-green-800 ">
-                    <f.icon className="w-7 h-7 text-white" />
-                  </div>
-                  <span className="text-md text-green-500 font-mono">
-                    {f.id}
-                  </span>
-                </div>
-                <h3 className="text-md font-semibold mb-1.5 text-white">
-                  {f.title}
-                </h3>
-                <p className="text-sm leading-relaxed text-gray-200">
-                  {f.body}
-                </p>
-                <div
-                  className="absolute bottom-0 left-0 h-0.5 w-0 group-hover:w-full rounded-full transition-all duration-500"
-                  style={{ background: BLUE }}
-                />
-              </div>
-            </Reveal>
-          ))}
-        </div>
-      </section>
-
-      {/* ── CTA SECTION ── */}
-      <section id="pricing" className="max-w-6xl mx-auto px-6 py-20">
-        <Reveal>
-          <div className="p-8 sm:p-14">
-            {isLoggedIn ? (
-              <div className="max-w-xl">
-                <h2 className="text-3xl sm:text-4xl font-bold tracking-tight mb-4 text-white">
-                  Your files are waiting.
-                </h2>
-                <p className="text-base text-gray-200 mb-8">
-                  Jump back into your dashboard and keep your workflow going.
-                </p>
-                <Link
-                  href="/dashboard"
-                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-medium bg-green-800 text-white transition hover:opacity-90"
-                >
-                  View Dashboard <ArrowRight className="w-3.5 h-3.5" />
-                </Link>
-              </div>
-            ) : (
-              <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
-                <div className="lg:col-span-7">
-                  <h2 className="text-3xl sm:text-4xl font-bold tracking-tight mb-4 text-white">
-                    Ready to take back your data?
+          {/* Video Preview */}
+          {isLoaded && !userId && (
+            <section className="max-w-6xl mx-auto px-6 py-12">
+              <FadeIn delay={0.1}>
+                <div className="mb-6">
+                  <h2 className="text-xl font-semibold uppercase tracking-wider text-green-500">
+                    Interface Preview
                   </h2>
-                  <p className="text-base text-gray-200 mb-8 max-w-lg">
-                    Join thousands who have migrated to a simpler, more secure
-                    way to store their digital life.
-                  </p>
-                  <div className="flex flex-wrap gap-3">
-                    <Link
-                      href="/verify-regis"
-                      className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-medium bg-green-800 text-white transition hover:opacity-90"
-                    >
-                      Create Free Account <ArrowRight className="w-3.5 h-3.5" />
-                    </Link>
-                    <Link
-                      href="/supported-formats"
-                      className="inline-flex items-center gap-2 px-5 py-3 rounded-lg bg-black  text-white text-sm font-medium"
-                    >
-                      Learn more
-                    </Link>
-                  </div>
                 </div>
-                <div className="lg:col-span-5">
-                  <div>
-                    <p className="text-sm font-semibold uppercase tracking-widest text-slate-300 mb-2">
-                      Free plan
-                    </p>
-                    <div className="flex items-baseline gap-1.5 mb-5">
-                      <span className="text-4xl font-bold text-white">
-                        Free
-                      </span>
-                      <span className="text-md text-gray-300">/ forever</span>
+                <div className="rounded-2xl border border-gray-700 bg-[#1a1d27] shadow-2xl overflow-hidden">
+                  <div className="flex items-center px-4 py-2 border-b border-gray-700 bg-[#161923]">
+                    <div className="text-md font-mono text-gray-500">
+                      kosha.cloudkinshuk.in/dashboard
                     </div>
-                    <ul className="space-y-2.5 text-sm text-gray-200">
-                      {[
-                        "2 GB encrypted storage",
-                        "Unlimited file types",
-                        "Private by default",
-                        "Fast downloads, anywhere",
-                        "No AI training, ever",
-                      ].map((x) => (
-                        <li key={x} className="flex items-start gap-2">
-                          <Check className="w-4 h-4 mt-0.5 shrink-0 text-blue-300" />{" "}
-                          {x}
-                        </li>
-                      ))}
-                    </ul>
                   </div>
+                  <video
+                    autoPlay
+                    loop
+                    muted
+                    playsInline
+                    preload="metadata"
+                    className="w-full h-auto block aspect-video object-cover"
+                  >
+                    <source src="/videos/brandy.mp4" type="video/mp4" />
+                  </video>
                 </div>
+              </FadeIn>
+            </section>
+          )}
+
+          {/* Features */}
+          <section className="max-w-6xl mx-auto px-6 py-24 border-t border-gray-800">
+            <FadeIn>
+              <div className="mb-16">
+                <h2 className="text-2xl font-normal text-green-500 mb-2">
+                  Technical Specifications
+                </h2>
+                <p className="text-gray-400">
+                  Built for performance, privacy, and simplicity.
+                </p>
               </div>
-            )}
-          </div>
-        </Reveal>
-      </section>
+            </FadeIn>
+
+            <div className="grid md:grid-cols-3 gap-12">
+              {["Infrastructure", "Security", "Experience"].map(
+                (category, idx) => (
+                  <div key={category}>
+                    <FadeIn delay={idx * 0.1}>
+                      <h3 className="text-md font-semibold uppercase tracking-wider text-green-500 border-b border-gray-800 pb-3 mb-6">
+                        {category}
+                      </h3>
+                      <div className="space-y-8">
+                        {FEATURES.filter((f) => f.category === category).map(
+                          (f) => (
+                            <div key={f.id} className="group">
+                              <div className="flex items-center gap-3 mb-2">
+                                <f.icon className="w-4 h-4 text-white" />
+                                <h4 className="text-white font-medium">
+                                  {f.title}
+                                </h4>
+                              </div>
+                              <p className="text-md text-gray-300 leading-relaxed pl-7">
+                                {f.body}
+                              </p>
+                            </div>
+                          ),
+                        )}
+                      </div>
+                    </FadeIn>
+                  </div>
+                ),
+              )}
+            </div>
+          </section>
+
+          {/* Footer CTA */}
+          <section className="border-t border-gray-800 bg-[#1a1d27]">
+            <div className="max-w-6xl mx-auto px-6 py-20">
+              <FadeIn>
+                <div className="max-w-2xl">
+                  <h2 className="text-4xl font-bold text-green-500 mb-4">
+                    Start using Kosha today.
+                  </h2>
+                  <p className="text-gray-200 mb-8">
+                    Get permanent, encrypted cloud storage at zero cost. No
+                    credit card required. No hidden tracking.
+                  </p>
+                  <ul className="space-y-3 text-md text-white mb-8">
+                    {[
+                      "Unlimited file types",
+                      "Private by default",
+                      "Fast downloads anywhere",
+                      "No AI training policies",
+                    ].map((item, i) => (
+                      <li key={i} className="flex items-center gap-2">
+                        <Check className="w-4 h-4 text-green-500" /> {item}
+                      </li>
+                    ))}
+                  </ul>
+                  <Link
+                    href="/verify-regis"
+                    className="inline-flex items-center gap-2 px-6 py-3 bg-green-700 text-white text-lg font-medium rounded-2xl hover:bg-green-600 transition-colors"
+                  >
+                    Deploy your workspace
+                  </Link>
+                </div>
+              </FadeIn>
+            </div>
+          </section>
+        </main>
+      )}
     </div>
   );
 }

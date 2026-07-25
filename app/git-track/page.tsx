@@ -208,7 +208,7 @@ export default function ChangelogTracker() {
 
   // Azure input field styles
   const inputClass =
-    " text-gray-100 border border-[#444444] px-6 py-2.5 rounded-xl outline-none  transition-all w-full sm:w-auto";
+    " text-gray-100 border border-[#444444] px-6 py-2.5 rounded-2xl outline-none  transition-all w-full sm:w-auto";
 
   return (
     <div className="min-h-screen bg-[#161923] text-white  text-[13px] sm:text-[14px] p-4 md:p-8  selection:bg-[#cce3f5] selection:text-black">
@@ -238,7 +238,7 @@ export default function ChangelogTracker() {
         </div>
 
         {/* ── META INFO TABLE ── */}
-        <div className=" border border-[#444444] shadow-sm rounded-xl py-4 px-4 sm:px-6 mb-6">
+        <div className=" border border-[#444444] shadow-sm rounded-2xl py-4 px-4 sm:px-6 mb-6">
           <div className="grid grid-cols-1 sm:grid-cols-[140px_1fr] gap-y-3 sm:gap-x-4 text-[13px] sm:text-[14px]">
             <div className="text-gray-300 font-semibold">Description</div>
             <div className="text-gray-100">
@@ -277,7 +277,7 @@ export default function ChangelogTracker() {
 
         {/* ── FILTERS BLOCK ── */}
         {showFilters && (
-          <div className=" border border-[#444444] shadow-sm rounded-lg p-4 mb-6 text-[13px]">
+          <div className=" border border-[#444444] shadow-sm rounded-2xl p-4 mb-6 text-[13px]">
             <div className="flex flex-col sm:flex-row flex-wrap gap-4 items-start sm:items-end">
               <label className="flex flex-col gap-1.5 w-full sm:w-auto">
                 <span className="text-gray-100 font-semibold">Search:</span>
@@ -342,13 +342,13 @@ export default function ChangelogTracker() {
 
         {/* ── ERROR & LOADING STATES ── */}
         {loading && (
-          <div className="p-4 text-gray-100 font-medium rounded-lg mb-4">
+          <div className="p-4 text-gray-100 font-medium rounded-2xl mb-4">
             Fetching repository history (page {fetchingProgress})...
           </div>
         )}
 
         {error && (
-          <div className="p-4 text-[#a4262c] font-medium bg-gray-900 border border-[#f4c8ca] mb-4 rounded-lg flex items-center justify-between">
+          <div className="p-4 text-[#a4262c] font-medium bg-gray-900 border border-[#f4c8ca] mb-4 rounded-2xl flex items-center justify-between">
             <span>FATAL ERROR: {error}</span>
             <button
               onClick={fetchCommits}
@@ -360,14 +360,14 @@ export default function ChangelogTracker() {
         )}
 
         {!loading && !error && displayCommits.length === 0 && (
-          <div className="p-6 text-gray-100 italic srounded-lg text-center">
+          <div className="p-6 text-gray-100 italic srounded-2xl text-center">
             No commits found matching the current criteria.
           </div>
         )}
 
         {/* ── LIST ── */}
         {!loading && !error && displayCommits.length > 0 && (
-          <div className="w-full flex flex-col bg-[#161923]  rounded-xl overflow-hidden">
+          <div className="w-full flex flex-col bg-[#161923]  rounded-2xl overflow-hidden">
             {displayCommits.map((commit, index) => {
               const title = getCommitTitle(commit.commit.message);
               // Clean alternate row colors for readability (Azure style)
@@ -392,7 +392,7 @@ export default function ChangelogTracker() {
                   <div className="flex-1 min-w-0 text-gray-100  flex items-center flex-wrap gap-2 text-[13px] sm:text-[14px]">
                     <span className="break-words">{title}</span>
                     {index === 0 && (
-                      <span className="bg-yellow-500 text-gray-900 text-[11px] font-bold px-1.5 py-0.5 rounded-lg">
+                      <span className="bg-yellow-500 text-gray-900 text-[11px] font-bold px-1.5 py-0.5 rounded-2xl">
                         master
                       </span>
                     )}

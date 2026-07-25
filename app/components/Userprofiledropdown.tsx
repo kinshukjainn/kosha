@@ -19,12 +19,12 @@ export default function UserProfileDropdown({
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  /* ── Utilitarian menu items, no transitions ── */
+  /* ── Smooth, premium menu items ── */
   const menuItemClass =
-    "w-full flex items-center cursor-pointer gap-3 py-2 px-3 text-sm  text-white hover:font-bold";
+    "w-full flex items-center cursor-pointer gap-3 py-2.5 px-4 text-sm text-gray-300 transition-colors duration-200 hover:bg-white/5 hover:text-white";
 
   const dangerMenuItemClass =
-    "w-full flex items-center cursor-pointer gap-3 py-2 px-3 text-sm  text-white hover:font-bold";
+    "w-full flex items-center cursor-pointer gap-3 py-2.5 px-4 text-sm text-red-400 transition-colors duration-200 hover:bg-red-500/10 hover:text-red-300";
 
   /* ── Outside click (desktop) ── */
   useEffect(() => {
@@ -62,7 +62,7 @@ export default function UserProfileDropdown({
     .map((n) => n[0])
     .join("")
     .slice(0, 2)
-    .toLowerCase();
+    .toUpperCase();
 
   const handleManage = () => {
     setIsOpen(false);
@@ -76,7 +76,7 @@ export default function UserProfileDropdown({
     signOut();
   };
 
-  /* ── Square Avatar with static status block ── */
+  /* ── Fully rounded Avatar with clean status indicator ── */
   const renderAvatar = (size: number, showStatus = false) => {
     return (
       <div className="relative shrink-0">
@@ -87,13 +87,13 @@ export default function UserProfileDropdown({
             width={size}
             height={size}
             unoptimized
-            className="object-cover border border-gray-600 rounded-lg grayscale hover:grayscale-0"
+            className="object-cover border border-white/10 rounded-full transition-all duration-300 grayscale hover:grayscale-0"
             style={{ width: size, height: size }}
             referrerPolicy="no-referrer"
           />
         ) : (
           <span
-            className="bg-zinc-900 border border-gray-600 rounded-full text-gray-300  flex items-center justify-center"
+            className="bg-[#1e2230] border border-white/10 rounded-full text-gray-300 flex items-center justify-center font-medium"
             style={{
               width: size,
               height: size,
@@ -105,7 +105,7 @@ export default function UserProfileDropdown({
         )}
         {showStatus && (
           <span
-            className="absolute -bottom-1 -right-1 w-3 h-3 bg-green-500 rounded-full border border-black"
+            className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-green-500 rounded-full border-2 border-[#161923]"
             title="Online"
           />
         )}
@@ -114,34 +114,38 @@ export default function UserProfileDropdown({
   };
 
   /* ─────────────────────────────────────────────
-     MOBILE — Inline flat accordion
+     MOBILE — Inline rounded accordion
      ───────────────────────────────────────────── */
   if (variant === "mobile") {
     return (
       <div
-        className="relative w-full border border-gray-700 rounded-lg bg-[#161923] "
+        className="relative w-full border border-white/10 rounded-2xl bg-[#161923] overflow-hidden transition-all duration-200"
         ref={dropdownRef}
       >
         <button
           onClick={() => setIsOpen((prev) => !prev)}
-          className="w-full flex items-center gap-3 p-3 "
+          className="w-full flex items-center gap-3 p-3.5 hover:bg-white/5 transition-colors"
           aria-expanded={isOpen}
           aria-haspopup="true"
         >
           {renderAvatar(36, true)}
           <div className="min-w-0 flex-1 text-left">
-            <p className="text-sm text-green-500 truncate">~/{displayName}</p>
+            <p className="text-sm font-medium text-green-400 truncate">
+              ~/{displayName}
+            </p>
           </div>
           <FiChevronDown
-            className={`w-4 h-4 text-white ${isOpen ? "rotate-180" : ""}`}
+            className={`w-4 h-4 text-gray-400 transition-transform duration-300 ${
+              isOpen ? "rotate-180" : ""
+            }`}
           />
         </button>
 
         {isOpen && (
-          <div className="rounded-xl bg-[#161923] pb-1">
+          <div className="bg-[#161923] border-t border-white/5 pb-2 pt-1">
             <button onClick={handleManage} className={menuItemClass}>
-              <FiSettings className="w-5 h-5 shrink-0 text-white" />
-              <span>settings</span>
+              <FiSettings className="w-5 h-5 shrink-0" />
+              <span>Settings</span>
             </button>
             <button onClick={handleSignOut} className={dangerMenuItemClass}>
               <FiLogOut className="w-5 h-5 shrink-0" />
@@ -154,51 +158,54 @@ export default function UserProfileDropdown({
   }
 
   /* ─────────────────────────────────────────────
-     DESKTOP — Sharp dropdown box
+     DESKTOP — Pill trigger & rounded dropdown
      ───────────────────────────────────────────── */
   return (
-    <div className="relative " ref={dropdownRef}>
-      {/* Trigger */}
+    <div className="relative" ref={dropdownRef}>
+      {/* Pill-shaped Trigger */}
       <button
         onClick={() => setIsOpen((prev) => !prev)}
-        className={`flex items-center gap-2 pl-1 pr-2 py-2 px-4   border cursor-pointer outline-none ${
-          isOpen ? "border-gray-500 " : "border hover:border-gray-600 "
+        className={`flex items-center gap-2.5 p-1 pr-4 rounded-full border transition-all duration-200 outline-none ${
+          isOpen
+            ? "border-gray-500 bg-white/5 shadow-inner"
+            : "border-white/10 hover:border-gray-500 hover:bg-white/5"
         }`}
         aria-expanded={isOpen}
         aria-haspopup="true"
       >
-        {renderAvatar(24, true)}
-        <span className="text-sm text-gray-300">{displayName}</span>
+        {renderAvatar(32, true)}
+        <span className="text-sm font-medium text-gray-300">{displayName}</span>
       </button>
 
-      {/* Dropdown panel */}
+      {/* Floating Dropdown Panel */}
       {isOpen && (
-        <div className="absolute right-0   rounded-xl bg-[#161923] border border-gray-700  z-50">
+        <div className="absolute right-0 mt-2 w-64 rounded-2xl bg-[#161923] border border-white/10 shadow-2xl shadow-black/50 z-50 overflow-hidden">
           {/* User Info Header */}
-          <div className="p-4 flex items-start gap-3 ">
-            {renderAvatar(40, false)}
+          <div className="p-4 flex items-start gap-3 bg-white/[0.02]">
+            {renderAvatar(44, false)}
             <div className="min-w-0 flex-1">
-              <p className="text-sm font-bold text-gray-200 truncate">
+              <p className="text-sm font-semibold text-gray-100 truncate">
                 {displayName}
               </p>
               {email && (
-                <p className="text-xs text-gray-500 truncate mt-1">{email}</p>
+                <p className="text-xs text-gray-500 truncate mt-0.5">{email}</p>
               )}
-              <div className="mt-2 text-xs text-white  px-2 py-1 bg-green-700 w-max rounded-lg flex items-center gap-2">
-                <span className="w-2 h-2 bg-white rounded-full inline-block"></span>{" "}
+              {/* Modern Pulse Online Badge */}
+              <div className="mt-2 text-[11px] font-medium text-green-400 bg-green-400/10 border border-green-400/20 px-2 py-1 rounded-full w-max flex items-center gap-1.5">
+                <span className="w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse"></span>
                 Online
               </div>
             </div>
           </div>
 
           {/* Solid divider */}
-          <div className="h-px bg-gray-700" />
+          <div className="h-px bg-white/10" />
 
           {/* Action Buttons */}
-          <div className="py-1 flex flex-col">
+          <div className="py-2 flex flex-col">
             <button onClick={handleManage} className={menuItemClass}>
-              <FiSettings className="w-4 h-4 shrink-0 text-white" />
-              <span className="flex-1 text-left">Settings </span>
+              <FiSettings className="w-4 h-4 shrink-0 text-gray-400" />
+              <span className="flex-1 text-left">Settings</span>
             </button>
 
             <button onClick={handleSignOut} className={dangerMenuItemClass}>

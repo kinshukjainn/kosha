@@ -149,7 +149,7 @@ export default function PricingPage() {
             <motion.div
               key={tier.name}
               variants={cardVariants}
-              className={`relative flex flex-col p-8 rounded-lg transition-colors duration-200 shadow-xl ${tier.theme.cardBg} border ${tier.theme.border}`}
+              className={`relative flex flex-col p-8 rounded-2xl transition-colors duration-200 shadow-xl ${tier.theme.cardBg} border ${tier.theme.border}`}
             >
               {/* Popular Badge */}
               {tier.isPopular && (

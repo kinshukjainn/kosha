@@ -1,0 +1,81 @@
+/* header.css */
+
+.liquid-glass-wrapper {
+  position: fixed;
+  top: 16px;
+  left: 0;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  z-index: 100;
+  pointer-events: none; /* Let clicks pass through outside the pill */
+}
+
+.liquid-glass-pill {
+  position: relative;
+  background: rgba(22, 25, 35, 0.7);
+  backdrop-filter: blur(48px) saturate(200%);
+  -webkit-backdrop-filter: blur(48px) saturate(200%);
+  border-radius: 32px;
+  overflow: hidden;
+  pointer-events: auto;
+  will-change: width, height;
+  transform: translateZ(0); /* Force GPU layer */
+
+  /* Apple-tier volumetric shadows matching the image */
+  box-shadow:
+    0 24px 48px -12px rgba(0, 0, 0, 0.5),
+    inset 0 1px 1px rgba(255, 255, 255, 0.15),
+    inset 0 -1px 1px rgba(255, 255, 255, 0.05),
+    0 0 0 1px rgba(255, 255, 255, 0.08);
+}
+
+.desktop-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 64px;
+  padding: 0 8px;
+  white-space: nowrap;
+}
+
+/* Nav Item Hover State */
+.nav-link {
+  position: relative;
+  transition: color 0.2s ease;
+}
+
+.nav-link::before {
+  content: "";
+  position: absolute;
+  inset: -6px -12px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  opacity: 0;
+  transform: scale(0.95);
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  z-index: -1;
+}
+
+.nav-link:hover::before {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* Sub-pixel text rendering for crispness */
+.crisp-text {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Custom Scrollbar for mobile menu */
+.pill-scrollbar::-webkit-scrollbar {
+  width: 4px;
+}
+.pill-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.pill-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+}
