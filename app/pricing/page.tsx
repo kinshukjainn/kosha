@@ -10,7 +10,7 @@ const pricingTiers = [
     price: "₹0",
     description: "Perfect for personal use to get started.",
     features: [
-      "2 GB Encrypted Storage (S3 Encryption)",
+      "20 GB Encrypted Storage (S3 Encryption)",
       "Standard File Sharing",
       "File Versioning (Up to 30 Days)",
       "Community Support",
@@ -19,53 +19,52 @@ const pricingTiers = [
     buttonHref: "/dashboard",
     isPopular: false,
     theme: {
-      cardBg: "bg-transparent",
-      border: "border-zinc-800 hover:border-zinc-600",
-      title: "text-zinc-100",
-      icon: "text-zinc-500",
-      price: "text-zinc-100",
-      button:
-        "bg-zinc-800 hover:bg-zinc-700 text-zinc-100 border border-zinc-700",
+      cardBg: "bg-gray-200",
+      border: "border-none",
+      title: "text-zinc-900",
+      icon: "text-zinc-900",
+      price: "text-zinc-900",
+      button: "bg-blue-800  text-zinc-100",
       badgeBg: "",
       badgeText: "",
     },
   },
   {
-    name: "Gold",
-    price: "₹299",
-    billingPeriod: "/mo",
+    name: "Super",
+    price: "₹399",
+    billingPeriod: "/month",
     description: "For heavy users who need maximum security and space.",
     features: [
-      "2 TB Encrypted Storage",
-      "Advanced Sharing Links",
+      "500 GB Encrypted Storage",
+      "Sharing Links (In devlopment)",
       "Public links (Up to 1 week)",
-      "Supports 3 devices max",
-      "S3 Encryption + AWS KMS",
-      "File Recovery (Up to 30 days)",
-      "Average Speeds",
+      "Supports 3 devices max (comming soon)",
+      "S3 Encryption + AWS KMS (comming soon)",
+      "File Recovery (Up to 15 days)(comming soon)",
+      "Average Speeds(comming soon)",
     ],
-    buttonText: "Upgrade to Gold",
+    buttonText: "Upgrade to Plus",
     buttonHref: "/checkout",
     isPopular: true,
     theme: {
-      cardBg: "bg-transparent",
+      cardBg: "bg-blue-400/10",
       border: "border-zinc-800 hover:border-amber-500/50",
-      title: "text-amber-500",
-      icon: "text-amber-500",
-      price: "text-amber-500",
+      title: "text-blue-800",
+      icon: "text-blue-800",
+      price: "text-blue-800",
       button:
-        "bg-amber-500/10 hover:bg-amber-500/20 text-amber-500 border border-amber-500/50",
+        "bg-blue-500/10 hover:bg-blue-500/20 text-blue-800 border border-blue-800",
       badgeBg: "bg-amber-500",
       badgeText: "text-zinc-950",
     },
   },
   {
-    name: "Platinum",
-    price: "₹399",
-    billingPeriod: "/mo",
+    name: "Super Saiyan",
+    price: "₹699",
+    billingPeriod: "/month",
     description: "For ultimate power users needing bulky cloud backups.",
     features: [
-      "8 TB Encrypted Storage",
+      "2 TB Encrypted Storage",
       "Advanced Sharing Links",
       "Public links (Up to 2 weeks)",
       "Supports 5 devices max",
@@ -73,19 +72,18 @@ const pricingTiers = [
       "File Recovery (Up to 45 days)",
       "Fastest Speeds",
     ],
-    buttonText: "Upgrade to Platinum",
+    buttonText: "Upgrade to Super Saiyan",
     buttonHref: "/checkout",
-    isPopular: false,
+    isPopular: true,
     theme: {
-      cardBg: "bg-transparent",
-      border: "border-zinc-800 hover:border-cyan-500/50",
-      title: "text-green-500",
-      icon: "text-green-500",
-      price: "text-green-500",
-      button:
-        "bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-500 border border-cyan-500/50",
-      badgeBg: "bg-cyan-500",
-      badgeText: "text-zinc-950",
+      cardBg: "bg-yellow-200/50",
+      border: "border-none",
+      title: "text-yellow-800",
+      icon: "text-black",
+      price: "text-yellow-800",
+      button: "bg-yellow-800 text-white",
+      badgeBg: "bg-yellow-500",
+      badgeText: "text-black",
     },
   },
 ];
@@ -109,7 +107,7 @@ const cardVariants: Variants = {
 
 export default function PricingPage() {
   return (
-    <div className="relative min-h-screen bg-[#161923] text-zinc-100 flex items-center justify-center p-4 md:p-8  selection:bg-zinc-800 selection:text-white">
+    <div className="relative min-h-screen bg-white text-zinc-900 flex items-center justify-center p-4 md:p-8  selection:bg-zinc-800 selection:text-white">
       <div className="relative z-10 w-full max-w-6xl mx-auto py-10">
         {/* Header Section */}
         <div className="flex flex-col items-center text-center mb-16">
@@ -129,10 +127,10 @@ export default function PricingPage() {
               />
             </div>
           </motion.div>
-          <h1 className="text-3xl md:text-4xl font-bold text-zinc-100 mb-4 tracking-tight">
+          <h1 className="text-3xl md:text-4xl font-bold text-zinc-900 mb-4 tracking-tight">
             Premium Plans
           </h1>
-          <p className="text-sm md:text-base text-zinc-200 max-w-xl mx-auto leading-relaxed">
+          <p className="text-md md:text-base text-zinc-900 max-w-xl mx-auto leading-relaxed">
             Secure your digital life with Kosha. Choose the plan that best fits
             your storage and privacy needs. No hidden fees.
           </p>
@@ -154,7 +152,7 @@ export default function PricingPage() {
               {/* Popular Badge */}
               {tier.isPopular && (
                 <div
-                  className={`absolute -top-3 right-6 ${tier.theme.badgeBg} ${tier.theme.badgeText} text-xs font-bold px-3 py-1 rounded-sm uppercase tracking-wider shadow-sm`}
+                  className={`absolute -top-3 right-6 ${tier.theme.badgeBg} ${tier.theme.badgeText} text-xs font-bold px-3 py-1 rounded-full tracking-wider shadow-xl shadow-yellow-200`}
                 >
                   Most Popular
                 </div>
@@ -174,22 +172,22 @@ export default function PricingPage() {
                     {tier.price}
                   </span>
                   {tier.billingPeriod && (
-                    <span className="text-zinc-500 text-sm font-medium mb-1 ">
+                    <span className="text-zinc-900 text-sm font-medium mb-1 ">
                       {tier.billingPeriod}
                     </span>
                   )}
                 </div>
-                <p className="text-sm text-zinc-400 leading-relaxed min-h-[40px]">
+                <p className="text-md text-zinc-900 leading-relaxed min-h-[40px]">
                   {tier.description}
                 </p>
               </div>
 
               {/* Features List */}
-              <ul className="space-y-4 mb-8 flex-grow">
+              <ul className="space-y-2.5 mb-8 flex-grow">
                 {tier.features.map((feature, i) => (
                   <li
                     key={i}
-                    className="flex items-start gap-3 text-sm text-zinc-300"
+                    className="flex items-start gap-2 text-md text-black"
                   >
                     <Check
                       size={18}

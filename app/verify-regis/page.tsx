@@ -276,17 +276,17 @@ export default function AuthPage() {
 
   // Styles
   const inputClass =
-    "w-full px-4 py-3 bg-gray-900 border border-[#333333] text-[18px] text-white placeholder-gray-500 outline-none  rounded-2xl transition-all";
+    "w-full px-4 py-3 bg-[#141414] text-[18px] text-white placeholder-gray-500 outline-none  rounded-xl transition-all";
   const labelClass = "block text-[16px] font-medium text-gray-100 mb-1.5";
   const primaryButtonClass =
-    "w-full flex items-center justify-center gap-2 py-3 px-4 font-normal text-[17px] bg-blue-800 text-white rounded-2xl  cursor-pointer transition-all disabled:opacity-50 disabled:cursor-not-allowed";
+    "w-full flex items-center justify-center gap-2 py-3 px-4 font-normal text-[17px] bg-blue-800 text-white rounded-full  cursor-pointer transition-all disabled:opacity-50 disabled:cursor-not-allowed";
   const secondaryButtonClass =
     "w-full flex items-center justify-center gap-2 py-3 px-4 font-semibold text-[17px] cursor-pointer bg-transparent hover:text-green-500 border-2 border-[#444444] hover:border-2 hover:border-green-500 text-gray-200 rounded-2xl transition-all disabled:opacity-50";
 
   return (
-    <div className="flex min-h-screen bg-[#161923] text-gray-100 selection:bg-[#0078D4] selection:text-white ">
+    <div className="flex min-h-screen bg-black text-gray-100 selection:bg-[#0078D4] selection:text-white ">
       {/* LEFT PANEL: Branding & Benefits (Hidden on small screens) */}
-      <div className="relative hidden lg:flex flex-col justify-between w-1/2 max-w-2xl p-12 xl:p-16 border-r border-[#1f1f1f] bg-[#161923] overflow-hidden">
+      <div className="relative hidden lg:flex flex-col justify-between w-1/2 max-w-2xl p-12 xl:p-16 border-r border-[#1f1f1f] bg-black overflow-hidden">
         {/* Background Graphic */}
 
         {/* Gradient Overlay for readibility */}
@@ -301,9 +301,9 @@ export default function AuthPage() {
               height={44}
               className="object-contain"
             />
-            <span className="text-2xl font-normal tracking-tight ">
-              KOSHA <span className="font-bold text-gray-500">{"/"}</span>{" "}
-              <span className="text-sm  px-3 py-2  text-[#ff9100] border border-[#444444] font-medium font-mono rounded-2xl">
+            <span className="text-2xl font-bold tracking-tight ">
+              Kosha <span className="font-bold text-gray-500">{"/"}</span>{" "}
+              <span className="text-sm  px-3 py-2  text-white bg-[#252525] font-semibold tracking-tight rounded-2xl">
                 Authentication
               </span>
             </span>
@@ -364,7 +364,7 @@ export default function AuthPage() {
       </div>
 
       {/* RIGHT PANEL: Authentication Form */}
-      <div className="flex-1 flex flex-col justify-center px-6 py-12 sm:px-12 lg:px-16 xl:px-24 bg-[#161923]">
+      <div className="flex-1 flex flex-col justify-center px-6 py-12 sm:px-12 lg:px-16 xl:px-24 bg-black">
         {/* Mobile Logo (Visible only on small screens) */}
         <div className="lg:hidden flex items-center justify-center gap-3 mb-10">
           <Image
@@ -385,7 +385,7 @@ export default function AuthPage() {
         <div className="w-full max-w-[420px] mx-auto">
           {/* Header */}
           <div className="mb-8">
-            <h2 className="text-4xl font-normal text-white mb-2">{heading}</h2>
+            <h2 className="text-4xl font-bold text-white mb-2">{heading}</h2>
             <p className="text-[15px] text-gray-400">{subtext}</p>
           </div>
 
@@ -418,7 +418,7 @@ export default function AuthPage() {
                   <input
                     type="text"
                     inputMode="numeric"
-                    placeholder="000000"
+                    placeholder="******"
                     value={pendingMfa ? mfaCode : verificationCode}
                     onChange={(e) => {
                       const val = e.target.value.replace(/\D/g, "").slice(0, 6);
@@ -428,7 +428,7 @@ export default function AuthPage() {
                     onKeyDown={(e) =>
                       e.key === "Enter" && canSubmit && handleSubmit()
                     }
-                    className={`${inputClass} text-center text-3xl tracking-[0.3em] py-4 font-mono`}
+                    className={`${inputClass} text-center text-5xl tracking-[0.3em] py-4 `}
                   />
                 </div>
 
@@ -441,7 +441,7 @@ export default function AuthPage() {
                     {loading ? (
                       <FaSpinner className="animate-spin w-5 h-5" />
                     ) : (
-                      "Verify & Continue"
+                      "Verify code"
                     )}
                   </button>
 

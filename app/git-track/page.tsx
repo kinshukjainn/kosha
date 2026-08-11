@@ -211,7 +211,7 @@ export default function ChangelogTracker() {
     " text-gray-100 border border-[#444444] px-6 py-2.5 rounded-2xl outline-none  transition-all w-full sm:w-auto";
 
   return (
-    <div className="min-h-screen bg-[#161923] text-white  text-[13px] sm:text-[14px] p-4 md:p-8  selection:bg-[#cce3f5] selection:text-black">
+    <div className="min-h-screen bg-black text-white  text-[13px] sm:text-[14px] p-4 md:p-8  selection:bg-[#cce3f5] selection:text-black">
       <div className="max-w-7xl mx-auto">
         {/* ── TOP HEADER (Breadcrumbs & Links) ── */}
         <div className="mb-2 border-b border-gray-200 pb-4">
@@ -238,7 +238,7 @@ export default function ChangelogTracker() {
         </div>
 
         {/* ── META INFO TABLE ── */}
-        <div className=" border border-[#444444] shadow-sm rounded-2xl py-4 px-4 sm:px-6 mb-6">
+        <div className="  bg-[#141414] shadow-sm rounded-2xl py-4 px-4 sm:px-6 mb-6">
           <div className="grid grid-cols-1 sm:grid-cols-[140px_1fr] gap-y-3 sm:gap-x-4 text-[13px] sm:text-[14px]">
             <div className="text-gray-300 font-semibold">Description</div>
             <div className="text-gray-100">
@@ -277,7 +277,7 @@ export default function ChangelogTracker() {
 
         {/* ── FILTERS BLOCK ── */}
         {showFilters && (
-          <div className=" border border-[#444444] shadow-sm rounded-2xl p-4 mb-6 text-[13px]">
+          <div className=" bg-[#141414]  rounded-3xl p-4 mb-6 text-[13px]">
             <div className="flex flex-col sm:flex-row flex-wrap gap-4 items-start sm:items-end">
               <label className="flex flex-col gap-1.5 w-full sm:w-auto">
                 <span className="text-gray-100 font-semibold">Search:</span>
@@ -348,7 +348,7 @@ export default function ChangelogTracker() {
         )}
 
         {error && (
-          <div className="p-4 text-[#a4262c] font-medium bg-gray-900 border border-[#f4c8ca] mb-4 rounded-2xl flex items-center justify-between">
+          <div className="p-4 text-[#a4262c] font-medium bg-[#141414]  mb-4 rounded-2xl flex items-center justify-between">
             <span>FATAL ERROR: {error}</span>
             <button
               onClick={fetchCommits}
@@ -367,23 +367,23 @@ export default function ChangelogTracker() {
 
         {/* ── LIST ── */}
         {!loading && !error && displayCommits.length > 0 && (
-          <div className="w-full flex flex-col bg-[#161923]  rounded-2xl overflow-hidden">
+          <div className="w-full flex flex-col bg-black  rounded-2xl overflow-hidden">
             {displayCommits.map((commit, index) => {
               const title = getCommitTitle(commit.commit.message);
               // Clean alternate row colors for readability (Azure style)
-              const rowClass = index % 2 === 0 ? "bg-gray-900" : "bg-[#161923]";
+              const rowClass = index % 2 === 0 ? "bg-black" : "bg-black";
 
               return (
                 <div
                   key={commit.sha}
-                  className={`${rowClass} flex flex-col lg:flex-row lg:items-center py-1 px-4 sm:px-6 hover:bg-gray-900  gap-2 lg:gap-6 transition-colors`}
+                  className={`${rowClass} flex flex-col lg:flex-row lg:items-center py-1 px-4 sm:px-6 hover:bg-[#141414]  gap-2 lg:gap-6 transition-colors`}
                 >
                   {/* Time & Author */}
                   <div className="flex flex-row items-center gap-4 shrink-0 text-[13px] lg:w-[260px]">
-                    <span className="text-green-500 w-[85px] shrink-0">
+                    <span className="text-blue-200 w-[85px] shrink-0">
                       {timeAgo(commit.commit.author.date)}
                     </span>
-                    <span className="truncate w-[140px] text-green-500 font-medium">
+                    <span className="truncate w-[140px] text-yellow-500 font-bold">
                       &lt;{commit.commit.author.name}&gt;
                     </span>
                   </div>

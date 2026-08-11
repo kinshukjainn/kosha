@@ -9,8 +9,6 @@ import { FaGithub } from "react-icons/fa";
 import { FaMessage } from "react-icons/fa6";
 import UserProfileDropdown from "./Userprofiledropdown";
 import {
-  PanelBottomClose,
-  PanelBottomOpen,
   LayoutDashboard,
   FileStack,
   Users,
@@ -20,6 +18,7 @@ import {
   LogIn,
   MessageSquareText,
 } from "lucide-react";
+import { CgMenuRound } from "react-icons/cg";
 
 const NAV_LINKS = [
   { href: "/supported-formats", label: "Supported Formats", icon: FileStack },
@@ -45,7 +44,7 @@ export default function Header() {
   }, [open]);
 
   return (
-    <header className="sticky top-0 z-50 w-full bg-[#161923]/95 backdrop-blur-xl border-b border-white/10 transition-colors duration-300">
+    <header className="sticky top-0 z-50 w-full bg-black  transition-colors duration-300">
       <div className="flex items-center justify-between h-16 px-4 md:px-6 max-w-screen-2xl mx-auto">
         {/* ── Logo ── */}
         <Link
@@ -60,7 +59,7 @@ export default function Header() {
             height={36}
             className="object-contain group-hover:scale-105 transition-transform duration-300"
           />
-          <span className="font-normal text-[24px] md:text-[28px] tracking-wider text-gray-100">
+          <span className="font-bold text-[24px] md:text-[28px] tracking-wider text-gray-100">
             Kosha
           </span>
         </Link>
@@ -138,22 +137,22 @@ export default function Header() {
 
         {/* ── Mobile Toggle ── */}
         <button
-          className="md:hidden p-2 -mr-2 rounded-lg text-gray-300 hover:text-white hover:bg-white/10 transition-all active:scale-95"
+          className="md:hidden p-2 -mr-2 rounded-full text-gray-300 hover:text-white cursor-pointer hover:bg-white/10 transition-all active:scale-95"
           onClick={toggle}
           aria-label="Toggle menu"
           aria-expanded={open}
         >
           {open ? (
-            <PanelBottomOpen className="w-6 h-6" />
+            <CgMenuRound className="w-6 h-6" />
           ) : (
-            <PanelBottomClose className="w-6 h-6" />
+            <CgMenuRound className="w-6 h-6" />
           )}
         </button>
       </div>
 
       {/* ── Mobile Menu ── */}
       <div
-        className={`md:hidden absolute top-full left-0 right-0 bg-[#161923]/98 backdrop-blur-2xl border-b border-white/10 shadow-2xl transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] ${
+        className={`md:hidden absolute top-full left-0 right-0 bg-black backdrop-blur-md rounded-b-2xl border-b border-white/10 shadow-2xl transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] ${
           open
             ? "opacity-100 visible"
             : "opacity-0 invisible pointer-events-none"
@@ -231,7 +230,7 @@ export default function Header() {
                 <Link
                   href="/verify-regis"
                   onClick={close}
-                  className="flex items-center justify-center gap-2 w-full mt-2 bg-white text-black text-sm font-bold py-3.5 rounded-xl transition-all active:scale-[0.98]"
+                  className="flex items-center justify-center gap-2 w-full mt-2 bg-white text-black text-sm font-bold py-3.5 rounded-full transition-all active:scale-[0.98]"
                 >
                   <LogIn className="w-4 h-4" />
                   Sign In / Up
@@ -288,13 +287,13 @@ function MobileNavLink({
     <Link
       href={href}
       onClick={onClick}
-      className="group flex items-center gap-3 px-4 py-3 rounded-xl text-gray-300 text-sm font-medium border-l-[3px] border-transparent hover:border-blue-400 hover:bg-white/5 transition-all"
+      className="group flex items-center gap-3 px-4 py-3 rounded-full text-gray-300 text-sm font-medium  transition-all"
     >
       <Icon className="w-5 h-5 text-gray-400 group-hover:text-white transition-colors" />
       <span className="flex-1 group-hover:text-white transition-colors">
         {children}
       </span>
-      <span className="text-gray-500 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all">
+      <span className="text-white opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all">
         →
       </span>
     </Link>

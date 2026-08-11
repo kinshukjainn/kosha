@@ -30,7 +30,6 @@ import {
   getDownloadUrl,
   getStorageInfo,
 } from "@/actions/drive";
-import { Database, HardDrive } from "lucide-react";
 import Image from "next/image";
 
 type DriveFile = {
@@ -72,13 +71,13 @@ const formatBytes = (bytes: number, decimals = 2) => {
 /* Reusable Modern Button Classes                                     */
 /* ------------------------------------------------------------------ */
 const primaryButtonClass =
-  "inline-flex items-center justify-center gap-2 py-2.5 px-5 font-semibold text-sm cursor-pointer bg-green-800 text-white hover:bg-green-700 rounded-2xl transition-all duration-200 active:scale-95";
+  "inline-flex items-center justify-center gap-2 py-3.5 px-5 font-semibold text-md cursor-pointer bg-[#252525] text-white  rounded-xl transition-all duration-200 active:scale-95";
 
 const secondaryButtonClass =
-  "inline-flex items-center justify-center gap-2 py-2 px-6 font-semibold text-md bg-blue-700 text-white cursor-pointer cursor-pointer rounded-2xl transition-all duration-200 ";
+  "inline-flex items-center justify-center gap-2 py-4 px-6 font-semibold text-md bg-[#252525] text-white cursor-pointer cursor-pointer rounded-full transition-all duration-200 ";
 
 const dangerButtonClass =
-  "inline-flex items-center justify-center gap-2 py-1 px-4 font-semibold text-md bg-red-500 text-white cursor-pointer hover:bg-red-500 hover:text-white rounded-2xl transition-all duration-200 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed";
+  "inline-flex items-center justify-center gap-2 py-1 px-4 font-semibold text-md bg-red-500 text-white cursor-pointer hover:bg-red-500 hover:text-white rounded-full transition-all duration-200 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed";
 
 const iconButtonClass =
   "p-2 text-gray-400 hover:text-white hover:bg-white/10 rounded-2xl transition-colors cursor-pointer outline-none active:scale-95";
@@ -97,28 +96,21 @@ function ToastContainer({
 
   const config = {
     error: {
-      bg: "bg-red-950/90",
-      border: "border-red-500/50",
+      bg: "bg-[#141414]",
+      border: "border-none",
       icon: (
-        <FaExclamationCircle
-          className="text-red-400 shrink-0 mt-0.5"
-          size={16}
-        />
+        <FaExclamationCircle className="text-white shrink-0 mt-0.5" size={16} />
       ),
     },
     success: {
-      bg: "bg-emerald-950/90",
-      border: "border-emerald-500/50",
-      icon: (
-        <FaCheckCircle className="text-emerald-400 shrink-0 mt-0.5" size={16} />
-      ),
+      bg: "bg-[#141414]",
+      border: "border-none",
+      icon: <FaCheckCircle className="text-white shrink-0 mt-0.5" size={16} />,
     },
     info: {
-      bg: "bg-blue-950/90",
-      border: "border-blue-500/50",
-      icon: (
-        <FaInfoCircle className="text-blue-400 shrink-0 mt-0.5" size={16} />
-      ),
+      bg: "bg-[#141414]",
+      border: "border-none",
+      icon: <FaInfoCircle className="text-white shrink-0 mt-0.5" size={16} />,
     },
   };
 
@@ -538,39 +530,25 @@ export default function DriveManager() {
   );
 
   return (
-    <div className="w-full min-h-screen bg-[#191623] text-gray-100 flex flex-col  selection:bg-blue-500/30">
+    <div className="w-full min-h-screen bg-black text-gray-100 flex flex-col  selection:bg-blue-500/30">
       <ToastContainer toasts={toasts} onDismiss={dismissToast} />
 
       {/* --- Sticky Header & Command Bar --- */}
-      <div className="  z-40 bg-[#191623] border-b border-white/10">
+      <div className="  z-40 bg-black ">
         <div className="max-w-[1600px] mx-auto">
           <div className="px-4 sm:px-6 lg:px-8 py-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-            <div className="flex items-center gap-3.5">
-              <div className="w-11 h-11 bg-slate-800  rounded-2xl flex items-center justify-center shrink-0 shadow-inner">
-                <HardDrive size={32} className="text-white" />
-              </div>
-              <div>
-                <h1 className="text-xl font-bold text-white tracking-tight leading-tight">
-                  My Drive
-                </h1>
-                <p className="text-sm text-gray-400 mt-0.5">
-                  Manage and review your secure files
-                </p>
-              </div>
-            </div>
-
             <div className="flex items-center gap-3 sm:w-auto w-full">
               <div className="relative flex-1 sm:w-64">
                 <FaSearch
                   size={14}
-                  className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-500"
+                  className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-200"
                 />
                 <input
                   type="text"
                   placeholder="Search files and more.."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2 bg-[#12121b] border border-white/10 rounded-2xl text-md text-white focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all placeholder-gray-500"
+                  className="w-full pl-10 pr-4 py-2 bg-[#121212] rounded-full text-md text-white focus:outline-none  transition-all placeholder-gray-500"
                 />
               </div>
             </div>
@@ -581,34 +559,22 @@ export default function DriveManager() {
       {/* --- Main Content Area --- */}
       <div className="flex-1 w-full max-w-[1600px] mx-auto p-4 sm:p-6 lg:p-8 z-10 flex flex-col gap-8">
         {/* Essentials Dashboard Row */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-          <div className="bg-[#12121b] border border-[#444444] rounded-2xl p-4 flex flex-col gap-1 shadow-sm">
-            <span className="text-md text-gray-200 font-medium">
-              Total Resources
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-1">
+          <div className="flex flex-col gap-1 shadow-sm">
+            <span className="text-md text-gray-400 font-medium">
+              Total Files
             </span>
-            <span className="text-2xl font-bold text-white">{totalFiles}</span>
+            <span className="text-md font-bold text-white">{totalFiles}</span>
           </div>
-          <div className="bg-[#12121b] border border-[#444444] rounded-2xl p-4 flex flex-col gap-1 shadow-sm">
-            <span className="text-md text-gray-200 font-medium">
-              Storage Used
+          <div className=" flex flex-col gap-1 shadow-sm">
+            <span className="text-md text-gray-400 font-medium">Storage</span>
+            <span className="text-md font-bold text-white">
+              {formatBytes(storageUsed)}{" "}
+              <span className="text-gray-400">
+                {"/"}
+                {formatBytes(storageLimit)}
+              </span>
             </span>
-            <span className="text-2xl font-bold text-blue-500">
-              {formatBytes(storageUsed)}
-            </span>
-          </div>
-          <div className="bg-[#12121b] border border-[#444444] rounded-2xl p-4 flex flex-col gap-1 shadow-sm">
-            <span className="text-md text-gray-200 font-medium">Capacity</span>
-            <span className="text-2xl font-bold text-white">
-              {formatBytes(storageLimit)}
-            </span>
-          </div>
-          <div className="bg-[#12121b] border border-[#444444] rounded-2xl p-4 flex flex-col gap-1 shadow-sm">
-            <span className="text-md text-gray-200 font-medium">
-              System Status
-            </span>
-            <div className="flex items-center gap-2 text-white bg-green-700 w-fit px-2.5 py-1 rounded-2xl text-sm font-semibold">
-              <Database size={14} /> Online
-            </div>
           </div>
         </div>
 
@@ -619,9 +585,9 @@ export default function DriveManager() {
               <button
                 type="button"
                 onClick={() => setViewMode("grid")}
-                className={`p-1.5 rounded-2xl transition-all ${
+                className={`p-3 cursor-pointer rounded-2xl transition-all ${
                   viewMode === "grid"
-                    ? "bg-green-700 text-white shadow-sm"
+                    ? "bg-[#141414] text-white shadow-sm"
                     : "text-gray-500 hover:text-gray-300 hover:bg-white/5"
                 }`}
                 title="Grid View"
@@ -631,9 +597,9 @@ export default function DriveManager() {
               <button
                 type="button"
                 onClick={() => setViewMode("list")}
-                className={`p-1.5 rounded-2xl transition-all ${
+                className={`p-3.5 cursor-pointer rounded-2xl transition-all ${
                   viewMode === "list"
-                    ? "bg-green-700 text-white shadow-sm"
+                    ? "bg-[#141414]  text-white shadow-sm"
                     : "text-gray-500 hover:text-gray-300 hover:bg-white/5"
                 }`}
                 title="List View"
@@ -705,16 +671,16 @@ export default function DriveManager() {
         ) : (
           <div className=" overflow-hidden flex flex-col">
             {viewMode === "list" ? (
-              <div className="overflow-x-auto w-full">
-                <table className="w-full text-left border-collapse  whitespace-nowrap">
-                  <thead className="bg-gray-900 border border-[#444444]  text-md rounded-2xl font-semibold text-green-500  tracking-wider">
+              <div className="overflow-x-auto rounded-2xl w-full">
+                <table className="w-full text-left border-collapse   whitespace-nowrap">
+                  <thead className="bg-[#141414]  text-md font-normal text-white  tracking-wider">
                     <tr>
-                      <th className="px-6 py-4 w-16 text-center">Type</th>
-                      <th className="px-6 py-4">Name</th>
-                      <th className="px-6 py-4 w-32 hidden sm:table-cell">
+                      <th className="px-6 py-2 w-16 text-center">Type</th>
+                      <th className="px-6 py-2">Name</th>
+                      <th className="px-6 py-2 w-32 hidden sm:table-cell">
                         Extension
                       </th>
-                      <th className="px-6 py-4 w-24 text-right">Actions</th>
+                      <th className="px-6 py-2 w-24 text-right">Actions</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-white/5">
@@ -726,7 +692,7 @@ export default function DriveManager() {
                         <tr
                           key={file.key}
                           onClick={() => setSelectedFile(file)}
-                          className="hover:bg-white/5 cursor-pointer transition-colors group"
+                          className="hover:bg-white/5 cursor-pointer  transition-colors group"
                         >
                           <td className="px-6 py-4 text-center">
                             {getFileIcon(
@@ -741,7 +707,7 @@ export default function DriveManager() {
                             </span>
                           </td>
                           <td className="px-6 py-4 hidden sm:table-cell">
-                            <span className="bg-green-700 text-white px-2.5 py-1 text-xs font-medium rounded-2xl">
+                            <span className="bg-[#252525] text-white px-2.5 py-1 text-sm font-medium rounded-2xl">
                               {ext.toUpperCase()}
                             </span>
                           </td>
@@ -773,7 +739,7 @@ export default function DriveManager() {
                     <div
                       key={file.key}
                       onClick={() => setSelectedFile(file)}
-                      className="group relative bg-[#09090b] transition-all border-2 border-[#444444] duration-300 cursor-pointer flex flex-col rounded-2xl overflow-hidden"
+                      className="group relative bg-[#141414] transition-all  duration-300 cursor-pointer flex flex-col rounded-3xl overflow-hidden"
                     >
                       <div
                         className="absolute top-2 right-2 z-10 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity"
@@ -785,7 +751,7 @@ export default function DriveManager() {
                           onDelete={handleDeleteClick}
                         />
                       </div>
-                      <div className="aspect-square bg-[#121214] border-b border-white/5 flex items-center justify-center relative overflow-hidden">
+                      <div className="aspect-square bg-[#252525]  flex items-center justify-center relative overflow-hidden">
                         {fileType === "image" ? (
                           <Image
                             src={file.url}
@@ -860,17 +826,17 @@ export default function DriveManager() {
       {/* --- File Viewer Overlay (Modal) --- */}
       {selectedFile && (
         <div
-          className="fixed inset-0 z-[150] bg-[#191623]/90 flex flex-col backdrop-blur-xl animate-[fadeIn_0.2s_ease-out]"
+          className="fixed inset-0 z-[150] bg-black/20 flex flex-col backdrop-blur-xl animate-[fadeIn_0.2s_ease-out]"
           onClick={() => setSelectedFile(null)}
         >
           <div
-            className="bg-[#191623]/50 border-b border-white/10 px-4 py-4 flex justify-between items-center"
+            className="bg-black/10  px-4 py-4 flex justify-between items-center"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center gap-3 min-w-0">
               {getFileIcon(
                 getFileType(getFileName(selectedFile.key)),
-                "text-blue-400 text-xl shrink-0",
+                "text-white text-xl shrink-0",
               )}
               <span className="text-base font-semibold text-gray-100 truncate">
                 {getFileName(selectedFile.key)}
@@ -880,14 +846,14 @@ export default function DriveManager() {
               <button
                 type="button"
                 onClick={(e) => handleDownload(e, selectedFile.key)}
-                className="hidden sm:flex items-center gap-2 px-4 py-2 cursor-pointer bg-white text-black text-sm font-medium rounded-2xl transition-all active:scale-95"
+                className="hidden sm:flex items-center gap-2 px-4 py-2 cursor-pointer bg-[#252525] text-white text-sm font-medium rounded-full transition-all active:scale-95"
               >
                 <FaDownload size={14} /> Download
               </button>
               <button
                 type="button"
                 onClick={(e) => handleDeleteClick(e, selectedFile.key)}
-                className="hidden sm:flex items-center gap-2 px-4 py-2 cursor-pointer bg-red-500 text-white text-red-500 text-sm font-medium rounded-2xl transition-all active:scale-95"
+                className="hidden sm:flex items-center gap-2 px-4 py-2 cursor-pointer bg-red-500 text-white text-red-500 text-sm font-medium rounded-full transition-all active:scale-95"
               >
                 <FaTrash size={14} /> Delete
               </button>
@@ -895,7 +861,7 @@ export default function DriveManager() {
               <button
                 type="button"
                 onClick={() => setSelectedFile(null)}
-                className="p-2 text-gray-200 bg-blue-800  rounded-2xl cursor-pointer transition-all active:scale-95"
+                className="p-2 text-gray-200 bg-[#141414] border-2 border-[#444444]  rounded-full cursor-pointer transition-all active:scale-95"
                 title="Close Viewer"
               >
                 <FaTimes size={20} />
@@ -932,7 +898,7 @@ export default function DriveManager() {
             {!["image", "video", "pdf"].includes(
               getFileType(getFileName(selectedFile.key)),
             ) && (
-              <div className="bg-[#18181b] p-8 md:p-12 border border-white/10 shadow-2xl rounded-2xl text-center flex flex-col items-center max-w-md w-full">
+              <div className="bg-[#141414] p-8 md:p-12  shadow-2xl rounded-2xl text-center flex flex-col items-center max-w-md w-full">
                 <div className="mb-6 w-20 h-20 bg-white/5 rounded-2xl flex items-center justify-center">
                   {getFileIcon(
                     getFileType(getFileName(selectedFile.key)),
@@ -962,17 +928,17 @@ export default function DriveManager() {
       {/* --- Delete Confirmation Dialog --- */}
       {fileToDelete && (
         <div
-          className="fixed inset-0 z-[200] bg-[#191623]/60 flex items-center justify-center p-4 backdrop-blur-sm animate-[fadeIn_0.2s_ease-out]"
+          className="fixed inset-0 z-[200] bg-black/20 flex items-center justify-center p-4 backdrop-blur-sm animate-[fadeIn_0.2s_ease-out]"
           onClick={() => setFileToDelete(null)}
         >
           <div
-            className="bg-[#18181b] border border-white/10 shadow-2xl w-full max-w-md rounded-2xl overflow-hidden animate-[slideUp_0.2s_ease-out]"
+            className="bg-black/20 backdrop-blur-xs border border-white/10 shadow-2xl w-full max-w-md rounded-3xl overflow-hidden animate-[slideUp_0.2s_ease-out]"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="p-6">
               <div className="flex items-start gap-4">
-                <div className="w-10 h-10 rounded-2xl bg-red-500/10 flex items-center justify-center shrink-0">
-                  <FaExclamationCircle size={20} className="text-red-500" />
+                <div className="w-10 h-10 rounded-2xl bg-red-500 flex items-center justify-center shrink-0">
+                  <FaExclamationCircle size={20} className="text-white" />
                 </div>
                 <div className="pt-1">
                   <h3 className="text-lg font-bold text-white mb-2">

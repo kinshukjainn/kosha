@@ -1,12 +1,12 @@
 @import "tailwindcss";
 
 body {
-  background-color: #161923;
-  font-family: var(--font-varela-round), sans-serif;
+  background-color: black;
+  font-family: var(--font-inter), sans-serif;
 }
 
-.special-font {
-  font-family: var(--font-supermercado), sans-serif;
+.h-font {
+  font-family: var(--font-varela-round), sans-serif;
 }
 
 .gold-text {

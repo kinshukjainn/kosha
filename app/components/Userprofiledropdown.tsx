@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import { useUser, useClerk } from "@clerk/nextjs";
 import { FiLogOut, FiSettings, FiChevronDown } from "react-icons/fi";
+import Link from "next/link";
 import Image from "next/image";
 
 interface UserProfileDropdownProps {
@@ -21,10 +22,10 @@ export default function UserProfileDropdown({
 
   /* ── Smooth, premium menu items ── */
   const menuItemClass =
-    "w-full flex items-center cursor-pointer gap-3 py-2.5 px-4 text-sm text-gray-300 transition-colors duration-200 hover:bg-white/5 hover:text-white";
+    "w-full flex items-center cursor-pointer gap-3 py-2.5 px-4 text-[14px] text-gray-300 transition-colors duration-200 hover:bg-[#202020] hover:text-gray-100";
 
   const dangerMenuItemClass =
-    "w-full flex items-center cursor-pointer gap-3 py-2.5 px-4 text-sm text-red-400 transition-colors duration-200 hover:bg-red-500/10 hover:text-red-300";
+    "w-full flex items-center cursor-pointer gap-3 py-2.5 px-4 text-[14px] text-red-400 transition-colors duration-200 hover:bg-red-500/10 hover:text-red-300";
 
   /* ── Outside click (desktop) ── */
   useEffect(() => {
@@ -78,6 +79,9 @@ export default function UserProfileDropdown({
 
   /* ── Fully rounded Avatar with clean status indicator ── */
   const renderAvatar = (size: number, showStatus = false) => {
+    // Dynamic border color depending on whether it's on the trigger or inside the card
+    const statusBorderColor = size === 32 ? "border-black" : "border-[#171717]";
+
     return (
       <div className="relative shrink-0">
         {avatarUrl ? (
@@ -87,13 +91,13 @@ export default function UserProfileDropdown({
             width={size}
             height={size}
             unoptimized
-            className="object-cover border border-white/10 rounded-full transition-all duration-300 grayscale hover:grayscale-0"
+            className="object-cover border border-[#2d2d2d] rounded-full transition-all duration-300 grayscale hover:grayscale-0"
             style={{ width: size, height: size }}
             referrerPolicy="no-referrer"
           />
         ) : (
           <span
-            className="bg-[#1e2230] border border-white/10 rounded-full text-gray-300 flex items-center justify-center font-medium"
+            className="bg-[#202020] border border-[#3d3d3d] rounded-full text-gray-300 flex items-center justify-center font-medium"
             style={{
               width: size,
               height: size,
@@ -105,7 +109,7 @@ export default function UserProfileDropdown({
         )}
         {showStatus && (
           <span
-            className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-green-500 rounded-full border-2 border-[#161923]"
+            className={`absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-green-500 rounded-full border-2 ${statusBorderColor}`}
             title="Online"
           />
         )}
@@ -119,36 +123,36 @@ export default function UserProfileDropdown({
   if (variant === "mobile") {
     return (
       <div
-        className="relative w-full border border-white/10 rounded-2xl bg-[#161923] overflow-hidden transition-all duration-200"
+        className="relative w-full border border-[#2d2d2d] rounded-xl bg-[#121212] overflow-hidden transition-all duration-200"
         ref={dropdownRef}
       >
         <button
           onClick={() => setIsOpen((prev) => !prev)}
-          className="w-full flex items-center gap-3 p-3.5 hover:bg-white/5 transition-colors"
+          className="w-full flex items-center gap-3 p-3.5 hover:bg-[#1a1a1a] transition-colors focus:outline-none"
           aria-expanded={isOpen}
           aria-haspopup="true"
         >
           {renderAvatar(36, true)}
           <div className="min-w-0 flex-1 text-left">
-            <p className="text-sm font-medium text-green-400 truncate">
-              ~/{displayName}
+            <p className="text-[14px] font-semibold text-gray-200 truncate">
+              {displayName}
             </p>
           </div>
           <FiChevronDown
-            className={`w-4 h-4 text-gray-400 transition-transform duration-300 ${
+            className={`w-4 h-4 text-gray-500 transition-transform duration-300 ${
               isOpen ? "rotate-180" : ""
             }`}
           />
         </button>
 
         {isOpen && (
-          <div className="bg-[#161923] border-t border-white/5 pb-2 pt-1">
+          <div className="bg-[#121212] border-t border-[#2d2d2d] pb-2 pt-1">
             <button onClick={handleManage} className={menuItemClass}>
-              <FiSettings className="w-5 h-5 shrink-0" />
+              <FiSettings className="w-4 h-4 shrink-0 text-gray-400" />
               <span>Settings</span>
             </button>
             <button onClick={handleSignOut} className={dangerMenuItemClass}>
-              <FiLogOut className="w-5 h-5 shrink-0" />
+              <FiLogOut className="w-4 h-4 shrink-0" />
               <span>Logout</span>
             </button>
           </div>
@@ -165,48 +169,49 @@ export default function UserProfileDropdown({
       {/* Pill-shaped Trigger */}
       <button
         onClick={() => setIsOpen((prev) => !prev)}
-        className={`flex items-center gap-2.5 p-1 pr-4 rounded-full border transition-all duration-200 outline-none ${
+        className={`flex items-center gap-2.5 p-1 pr-4 rounded-full border transition-all duration-200 outline-none focus:ring-2 focus:ring-[#0078D4] focus:ring-offset-2 focus:ring-offset-black ${
           isOpen
-            ? "border-gray-500 bg-white/5 shadow-inner"
-            : "border-white/10 hover:border-gray-500 hover:bg-white/5"
+            ? "border-[#3d3d3d] bg-[#1a1a1a]"
+            : "border-[#2d2d2d] hover:border-[#3d3d3d] hover:bg-[#1a1a1a]"
         }`}
         aria-expanded={isOpen}
         aria-haspopup="true"
       >
         {renderAvatar(32, true)}
-        <span className="text-sm font-medium text-gray-300">{displayName}</span>
+        <span className="text-[13px] font-medium text-gray-200">
+          {displayName}
+        </span>
       </button>
 
       {/* Floating Dropdown Panel */}
       {isOpen && (
-        <div className="absolute right-0 mt-2 w-64 rounded-2xl bg-[#161923] border border-white/10 shadow-2xl shadow-black/50 z-50 overflow-hidden">
+        <div className="absolute right-0 mt-2 w-64 rounded-xl bg-[#121212] border border-[#2d2d2d] shadow-xl shadow-black z-50 overflow-hidden transform origin-top-right transition-all animate-in fade-in zoom-in-95 duration-200">
           {/* User Info Header */}
-          <div className="p-4 flex items-start gap-3 bg-white/[0.02]">
+          <div className="p-4 flex items-start gap-3 bg-[#171717] border-b border-[#2d2d2d]">
             {renderAvatar(44, false)}
             <div className="min-w-0 flex-1">
-              <p className="text-sm font-semibold text-gray-100 truncate">
+              <p className="text-[14px] font-semibold text-gray-100 truncate">
                 {displayName}
               </p>
               {email && (
-                <p className="text-xs text-gray-500 truncate mt-0.5">{email}</p>
+                <p className="text-[12px] text-gray-400 truncate mt-0.5">
+                  {email}
+                </p>
               )}
               {/* Modern Pulse Online Badge */}
-              <div className="mt-2 text-[11px] font-medium text-green-400 bg-green-400/10 border border-green-400/20 px-2 py-1 rounded-full w-max flex items-center gap-1.5">
+              <div className="mt-2.5 text-[11px] font-semibold text-green-400 bg-green-400/10 border border-green-400/20 px-2 py-0.5 rounded-full w-max flex items-center gap-1.5 uppercase tracking-wider">
                 <span className="w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse"></span>
                 Online
               </div>
             </div>
           </div>
 
-          {/* Solid divider */}
-          <div className="h-px bg-white/10" />
-
           {/* Action Buttons */}
           <div className="py-2 flex flex-col">
-            <button onClick={handleManage} className={menuItemClass}>
+            <Link href="/user-settings" className={menuItemClass}>
               <FiSettings className="w-4 h-4 shrink-0 text-gray-400" />
               <span className="flex-1 text-left">Settings</span>
-            </button>
+            </Link>
 
             <button onClick={handleSignOut} className={dangerMenuItemClass}>
               <FiLogOut className="w-4 h-4 shrink-0" />
