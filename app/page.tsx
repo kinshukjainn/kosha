@@ -36,7 +36,7 @@ function formatBytes(bytes: number, decimals = 2) {
 // Simplified, benefit-driven features for the Light Theme Marketing Page
 const MARKETING_FEATURES = [
   {
-    title: "20 GB of free space",
+    title: "3 GB of free space",
     description:
       "Plenty of room for thousands of documents, photos, and projects. Start storing for free, forever.",
     icon: HardDrive,
@@ -429,7 +429,7 @@ function MainContent() {
                     required
                   </span>
                   <span className="flex items-center gap-1.5">
-                    <Check className="w-4 h-4 text-green-500" /> 20 GB free
+                    <Check className="w-4 h-4 text-green-500" /> 3 GB free
                     forever
                   </span>
                 </p>

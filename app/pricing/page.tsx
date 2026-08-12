@@ -4,18 +4,19 @@ import { Check } from "lucide-react";
 import Link from "next/link";
 import { motion, Variants } from "framer-motion";
 import Image from "next/image";
-const pricingTiers = [
+export const pricingTiers = [
   {
     name: "Free",
     price: "₹0",
     description: "Perfect for personal use to get started.",
     features: [
-      "20 GB Encrypted Storage (S3 Encryption)",
+      "3 GB Encrypted Storage",
+      "250 MB max file size",
       "Standard File Sharing",
-      "File Versioning (Up to 30 Days)",
       "Community Support",
+      "Basic file recovery (7 days)",
     ],
-    buttonText: "Free Plan",
+    buttonText: "Current Plan",
     buttonHref: "/dashboard",
     isPopular: false,
     theme: {
@@ -24,27 +25,26 @@ const pricingTiers = [
       title: "text-zinc-900",
       icon: "text-zinc-900",
       price: "text-zinc-900",
-      button: "bg-blue-800  text-zinc-100",
+      button: "bg-blue-800 text-zinc-100",
       badgeBg: "",
       badgeText: "",
     },
   },
   {
     name: "Super",
-    price: "₹399",
+    price: "₹289",
     billingPeriod: "/month",
     description: "For heavy users who need maximum security and space.",
     features: [
-      "500 GB Encrypted Storage",
-      "Sharing Links (In devlopment)",
+      "100 GB Encrypted Storage",
+      "5 GB max file size",
+      "Password-Protected Links",
       "Public links (Up to 1 week)",
-      "Supports 3 devices max (comming soon)",
-      "S3 Encryption + AWS KMS (comming soon)",
-      "File Recovery (Up to 15 days)(comming soon)",
-      "Average Speeds(comming soon)",
+      "File Recovery (Up to 30 days)",
+      "Standard Upload Speeds",
     ],
-    buttonText: "Upgrade to Plus",
-    buttonHref: "/checkout",
+    buttonText: "Upgrade to Super",
+    buttonHref: "/checkout?plan=super",
     isPopular: true,
     theme: {
       cardBg: "bg-blue-400/10",
@@ -60,21 +60,20 @@ const pricingTiers = [
   },
   {
     name: "Super Saiyan",
-    price: "₹699",
+    price: "₹849",
     billingPeriod: "/month",
     description: "For ultimate power users needing bulky cloud backups.",
     features: [
-      "2 TB Encrypted Storage",
-      "Advanced Sharing Links",
-      "Public links (Up to 2 weeks)",
-      "Supports 5 devices max",
-      "S3 Encryption + Client Side",
-      "File Recovery (Up to 45 days)",
-      "Fastest Speeds",
+      "500 GB Encrypted Storage",
+      "25 GB max file size (Multipart)",
+      "Advanced Sharing & Analytics",
+      "Custom Link Expiry (No limits)",
+      "File Recovery (Up to 90 days)",
+      "Highest Priority Speeds",
     ],
     buttonText: "Upgrade to Super Saiyan",
-    buttonHref: "/checkout",
-    isPopular: true,
+    buttonHref: "/checkout?plan=supersaiyan",
+    isPopular: false,
     theme: {
       cardBg: "bg-yellow-200/50",
       border: "border-none",
@@ -87,7 +86,6 @@ const pricingTiers = [
     },
   },
 ];
-
 const containerVariants: Variants = {
   hidden: { opacity: 0 },
   visible: {

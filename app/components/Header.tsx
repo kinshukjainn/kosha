@@ -44,7 +44,7 @@ export default function Header() {
   }, [open]);
 
   return (
-    <header className="sticky top-0 z-50 w-full bg-black  transition-colors duration-300">
+    <header className="sticky top-0 z-50 w-full bg-black transition-colors duration-300">
       <div className="flex items-center justify-between h-16 px-4 md:px-6 max-w-screen-2xl mx-auto">
         {/* ── Logo ── */}
         <Link
@@ -150,7 +150,7 @@ export default function Header() {
         </button>
       </div>
 
-      {/* ── Mobile Menu ── */}
+      {/* ── Mobile Menu (Tile Grid) ── */}
       <div
         className={`md:hidden absolute top-full left-0 right-0 bg-black backdrop-blur-md rounded-b-2xl border-b border-white/10 shadow-2xl transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] ${
           open
@@ -158,36 +158,37 @@ export default function Header() {
             : "opacity-0 invisible pointer-events-none"
         }`}
       >
-        {/* Using grid transition for buttery smooth height animation */}
         <div
           className={`grid transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] ${
             open ? "grid-rows-[1fr]" : "grid-rows-[0fr]"
           }`}
         >
           <div className="overflow-hidden">
-            <div className="flex flex-col gap-2 p-4 max-h-[calc(100vh-4rem)] overflow-y-auto no-scrollbar">
-              {isLoaded && userId && (
-                <MobileNavLink
-                  href="/dashboard"
-                  icon={LayoutDashboard}
-                  onClick={close}
-                >
-                  Dashboard
-                </MobileNavLink>
-              )}
-              {NAV_LINKS.map(({ href, label, icon }) => (
-                <MobileNavLink
-                  key={href}
-                  href={href}
-                  icon={icon}
-                  onClick={close}
-                >
-                  {label}
-                </MobileNavLink>
-              ))}
+            <div className="flex flex-col gap-4 p-4 max-h-[calc(100vh-4rem)] overflow-y-auto no-scrollbar">
+              {/* ── Navigation Tile Grid ── */}
+              <div className="grid grid-cols-2 gap-3">
+                {isLoaded && userId && (
+                  <MobileTile
+                    href="/dashboard"
+                    icon={LayoutDashboard}
+                    onClick={close}
+                  >
+                    Dashboard
+                  </MobileTile>
+                )}
+                {NAV_LINKS.map(({ href, label, icon }) => (
+                  <MobileTile
+                    key={href}
+                    href={href}
+                    icon={icon}
+                    onClick={close}
+                  >
+                    {label}
+                  </MobileTile>
+                ))}
+              </div>
 
-              <hr className="my-2 border-white/10" />
-
+              {/* ── Open Opaque (full‑width tile) ── */}
               <a
                 href="https://opaque.cloudkinshuk.in/"
                 target="_blank"
@@ -196,7 +197,7 @@ export default function Header() {
               >
                 <Image
                   src="/logog.png"
-                  alt="Kosha"
+                  alt="Opaque"
                   width={20}
                   height={20}
                   className="rounded-sm"
@@ -204,41 +205,43 @@ export default function Header() {
                 Open Opaque
               </a>
 
-              <a
-                href="https://github.com/kinshukjainn/pvtcldstrg"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-300 hover:bg-white/5 transition-colors"
-              >
-                <FaGithub className="w-5 h-5 text-gray-400" />
-                <span className="flex-1 font-medium">Open Source</span>
-                <span className="text-gray-500 text-xs">↗</span>
-              </a>
+              {/* ── GitHub & Feedback (side‑by‑side small tiles) ── */}
+              <div className="grid grid-cols-2 gap-3">
+                <a
+                  href="https://github.com/kinshukjainn/pvtcldstrg"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-2 px-3 py-3 rounded-xl text-gray-300 hover:bg-white/5 transition-colors"
+                >
+                  <FaGithub className="w-5 h-5 text-gray-400" />
+                  <span className="font-medium text-sm">Open Source</span>
+                  <span className="text-gray-500 text-xs ml-auto">↗</span>
+                </a>
+                <a
+                  href="https://clkfeedbacks.cloudkinshuk.in/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-2 px-3 py-3 rounded-xl text-gray-300 hover:bg-white/5 transition-colors"
+                >
+                  <FaMessage className="w-5 h-5 text-gray-400" />
+                  <span className="font-medium text-sm">Feedbacks</span>
+                  <span className="text-gray-500 text-xs ml-auto">↗</span>
+                </a>
+              </div>
 
-              <a
-                href="https://clkfeedbacks.cloudkinshuk.in/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-300 hover:bg-white/5 transition-colors"
-              >
-                <FaMessage className="w-5 h-5 text-gray-400" />
-                <span className="flex-1 font-medium">Feedbacks</span>
-                <span className="text-gray-500 text-xs">↗</span>
-              </a>
-
+              {/* ── Sign‑in / User Profile ── */}
               {isLoaded && !userId && (
                 <Link
                   href="/verify-regis"
                   onClick={close}
-                  className="flex items-center justify-center gap-2 w-full mt-2 bg-white text-black text-sm font-bold py-3.5 rounded-full transition-all active:scale-[0.98]"
+                  className="flex items-center justify-center gap-2 w-full bg-white text-black text-sm font-bold py-3.5 rounded-full transition-all active:scale-[0.98]"
                 >
                   <LogIn className="w-4 h-4" />
                   Sign In / Up
                 </Link>
               )}
-
               {isLoaded && userId && (
-                <div className="mt-4 pt-4 border-t border-white/10 flex justify-center">
+                <div className="flex justify-center">
                   <UserProfileDropdown variant="mobile" onAction={close} />
                 </div>
               )}
@@ -271,8 +274,8 @@ function NavLink({
   );
 }
 
-/* ── Mobile NavLink ── */
-function MobileNavLink({
+/* ── Mobile Tile (used in the grid) ── */
+function MobileTile({
   href,
   icon: Icon,
   children,
@@ -287,14 +290,11 @@ function MobileNavLink({
     <Link
       href={href}
       onClick={onClick}
-      className="group flex items-center gap-3 px-4 py-3 rounded-full text-gray-300 text-sm font-medium  transition-all"
+      className="group flex flex-col items-center justify-center gap-1.5 p-4 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/5 transition-all active:scale-95 text-gray-300"
     >
-      <Icon className="w-5 h-5 text-gray-400 group-hover:text-white transition-colors" />
-      <span className="flex-1 group-hover:text-white transition-colors">
+      <Icon className="w-6 h-6 text-gray-400 group-hover:text-white transition-colors" />
+      <span className="text-xs font-medium text-center group-hover:text-white transition-colors">
         {children}
-      </span>
-      <span className="text-white opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all">
-        →
       </span>
     </Link>
   );
