@@ -4,6 +4,7 @@ import { Check } from "lucide-react";
 import Link from "next/link";
 import { motion, Variants } from "framer-motion";
 import Image from "next/image";
+
 export const pricingTiers = [
   {
     name: "Free",
@@ -20,12 +21,13 @@ export const pricingTiers = [
     buttonHref: "/dashboard",
     isPopular: false,
     theme: {
-      cardBg: "bg-gray-200",
-      border: "border-none",
-      title: "text-zinc-900",
-      icon: "text-zinc-900",
-      price: "text-zinc-900",
-      button: "bg-blue-800 text-zinc-100",
+      cardBg: "bg-gray-200 dark:bg-zinc-900/50",
+      border: "border-transparent dark:border-zinc-800",
+      title: "text-zinc-900 dark:text-zinc-300",
+      icon: "text-zinc-900 dark:text-zinc-300",
+      price: "text-zinc-900 dark:text-white",
+      button:
+        "bg-blue-800 text-zinc-100 dark:bg-zinc-200 dark:text-zinc-900 hover:bg-blue-900 dark:hover:bg-white",
       badgeBg: "",
       badgeText: "",
     },
@@ -47,13 +49,14 @@ export const pricingTiers = [
     buttonHref: "/checkout?plan=super",
     isPopular: true,
     theme: {
-      cardBg: "bg-blue-400/10",
-      border: "border-zinc-800 hover:border-amber-500/50",
-      title: "text-blue-800",
-      icon: "text-blue-800",
-      price: "text-blue-800",
+      cardBg: "bg-blue-400/10 dark:bg-blue-900/10",
+      border:
+        "border-zinc-800 dark:border-blue-500/30 hover:border-amber-500/50 dark:hover:border-amber-500/50",
+      title: "text-blue-800 dark:text-blue-400",
+      icon: "text-blue-800 dark:text-blue-400",
+      price: "text-blue-800 dark:text-blue-400",
       button:
-        "bg-blue-500/10 hover:bg-blue-500/20 text-blue-800 border border-blue-800",
+        "bg-blue-500/10 hover:bg-blue-500/20 text-blue-800 dark:text-blue-400 border border-blue-800 dark:border-blue-400",
       badgeBg: "bg-amber-500",
       badgeText: "text-zinc-950",
     },
@@ -75,17 +78,19 @@ export const pricingTiers = [
     buttonHref: "/checkout?plan=supersaiyan",
     isPopular: false,
     theme: {
-      cardBg: "bg-yellow-200/50",
-      border: "border-none",
-      title: "text-yellow-800",
-      icon: "text-black",
-      price: "text-yellow-800",
-      button: "bg-yellow-800 text-white",
+      cardBg: "bg-yellow-200/50 dark:bg-yellow-500/10",
+      border: "border-transparent dark:border-yellow-500/30",
+      title: "text-yellow-800 dark:text-yellow-500",
+      icon: "text-black dark:text-yellow-500",
+      price: "text-yellow-800 dark:text-yellow-500",
+      button:
+        "bg-yellow-800 text-white dark:bg-yellow-500 dark:text-black hover:bg-yellow-900 dark:hover:bg-yellow-400",
       badgeBg: "bg-yellow-500",
       badgeText: "text-black",
     },
   },
 ];
+
 const containerVariants: Variants = {
   hidden: { opacity: 0 },
   visible: {
@@ -105,7 +110,7 @@ const cardVariants: Variants = {
 
 export default function PricingPage() {
   return (
-    <div className="relative min-h-screen bg-white text-zinc-900 flex items-center justify-center p-4 md:p-8  selection:bg-zinc-800 selection:text-white">
+    <div className="relative min-h-screen bg-white dark:bg-black text-zinc-900 dark:text-zinc-100 flex items-center justify-center p-4 md:p-8 selection:bg-zinc-800 selection:text-white dark:selection:bg-zinc-200 dark:selection:text-black transition-colors duration-300">
       <div className="relative z-10 w-full max-w-6xl mx-auto py-10">
         {/* Header Section */}
         <div className="flex flex-col items-center text-center mb-16">
@@ -115,20 +120,20 @@ export default function PricingPage() {
             transition={{ duration: 0.4 }}
             className="mb-6"
           >
-            <div className="  shadow-sm">
+            <div className="shadow-sm">
               <Image
                 src="/premiumlogo.png"
                 alt="Kosha"
                 width={130}
                 height={130}
-                className="object-contain group-hover:scale-105 transition-transform duration-300"
+                className="object-contain hover:scale-105 transition-transform duration-300 dark:drop-shadow-[0_0_15px_rgba(255,255,255,0.15)]"
               />
             </div>
           </motion.div>
-          <h1 className="text-3xl md:text-4xl font-bold text-zinc-900 mb-4 tracking-tight">
+          <h1 className="text-3xl md:text-4xl font-bold text-zinc-900 dark:text-white mb-4 tracking-tight">
             Premium Plans
           </h1>
-          <p className="text-md md:text-base text-zinc-900 max-w-xl mx-auto leading-relaxed">
+          <p className="text-md md:text-base text-zinc-900 dark:text-zinc-400 max-w-xl mx-auto leading-relaxed">
             Secure your digital life with Kosha. Choose the plan that best fits
             your storage and privacy needs. No hidden fees.
           </p>
@@ -150,32 +155,32 @@ export default function PricingPage() {
               {/* Popular Badge */}
               {tier.isPopular && (
                 <div
-                  className={`absolute -top-3 right-6 ${tier.theme.badgeBg} ${tier.theme.badgeText} text-xs font-bold px-3 py-1 rounded-full tracking-wider shadow-xl shadow-yellow-200`}
+                  className={`absolute -top-3 right-6 ${tier.theme.badgeBg} ${tier.theme.badgeText} text-xs font-bold px-3 py-1 rounded-full tracking-wider shadow-xl shadow-yellow-200 dark:shadow-none`}
                 >
                   Most Popular
                 </div>
               )}
 
               {/* Card Header */}
-              <div className="mb-6 border-b border-zinc-800 pb-6">
+              <div className="mb-6 border-b border-zinc-800 dark:border-zinc-700/50 pb-6">
                 <h2
-                  className={`text-sm  uppercase tracking-wider font-bold mb-4 ${tier.theme.title}`}
+                  className={`text-sm uppercase tracking-wider font-bold mb-4 ${tier.theme.title}`}
                 >
                   [{tier.name}]
                 </h2>
                 <div className="flex items-end gap-1 mb-3">
                   <span
-                    className={`text-4xl font-bold leading-none tracking-tight  ${tier.theme.price}`}
+                    className={`text-4xl font-bold leading-none tracking-tight ${tier.theme.price}`}
                   >
                     {tier.price}
                   </span>
                   {tier.billingPeriod && (
-                    <span className="text-zinc-900 text-sm font-medium mb-1 ">
+                    <span className="text-zinc-900 dark:text-zinc-400 text-sm font-medium mb-1 ">
                       {tier.billingPeriod}
                     </span>
                   )}
                 </div>
-                <p className="text-md text-zinc-900 leading-relaxed min-h-[40px]">
+                <p className="text-md text-zinc-900 dark:text-zinc-400 leading-relaxed min-h-[40px]">
                   {tier.description}
                 </p>
               </div>
@@ -185,7 +190,7 @@ export default function PricingPage() {
                 {tier.features.map((feature, i) => (
                   <li
                     key={i}
-                    className="flex items-start gap-2 text-md text-black"
+                    className="flex items-start gap-2 text-md text-black dark:text-zinc-300"
                   >
                     <Check
                       size={18}
@@ -205,7 +210,7 @@ export default function PricingPage() {
                   tabIndex={-1}
                 >
                   <button
-                    className={`w-full flex items-center justify-center gap-2 py-3 px-4 font-bold text-sm rounded-md transition-colors duration-200 focus:ring-2 focus:ring-offset-2 focus:ring-offset-[#09090b] focus:ring-zinc-700 disabled:opacity-50 disabled:cursor-not-allowed ${tier.theme.button}`}
+                    className={`w-full flex items-center justify-center gap-2 py-3 px-4 font-bold text-sm rounded-md transition-colors duration-200 focus:ring-2 focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-black focus:ring-zinc-700 dark:focus:ring-zinc-300 disabled:opacity-50 disabled:cursor-not-allowed ${tier.theme.button}`}
                   >
                     {tier.buttonText}
                   </button>

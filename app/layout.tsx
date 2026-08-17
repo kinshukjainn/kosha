@@ -21,6 +21,8 @@ import { ClerkProvider } from "@clerk/nextjs";
 import "./globals.css";
 import Header from "@/app/components/Header";
 import Footer from "./components/Footer";
+import { ThemeProvider } from "./components/providers/theme-provider";
+import ConditionalFooter from "./components/ConditionalFooter";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -203,13 +205,15 @@ export default function RootLayout({
 }>) {
   return (
     <ClerkProvider>
-      <html lang="en" data-google-analytics-opt-out="">
+      <html lang="en" data-google-analytics-opt-out="" suppressHydrationWarning>
         <body
           className={`${geistSans.variable} ${plusJakarta.variable} ${publicSans.variable} ${dmSans.variable} ${ubuntu.variable} ${notoSerif.variable} ${openSans.variable} ${poppins.variable} ${roboto.variable} ${verdana.variable} ${segoeui.variable} ${geistMono.variable} ${inter.variable} ${lucideSans.variable} ${googleSans.variable} ${supermercado.variable} ${varelaRound.variable} antialiased`}
         >
-          <Header />
-          <main>{children}</main>
-          <Footer />
+          <ThemeProvider>
+            <Header />
+            <main>{children}</main>
+            <ConditionalFooter />
+          </ThemeProvider>
         </body>
       </html>
     </ClerkProvider>
