@@ -85,7 +85,7 @@ export default function AboutUs() {
               />
             </div>
             <div>
-              <h1 className="text-2xl font-bold dark:text-white text-black tracking-tight">
+              <h1 className="text-2xl font-bold dark:text-white h-font text-black tracking-tight">
                 Kosha
               </h1>
               <p className="text-sm text-gray-900 dark:text-gray-500  mt-1">
@@ -108,7 +108,7 @@ export default function AboutUs() {
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full dark:bg-green-500 bg-green-900 opacity-75"></span>
                   <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
                 </span>
-                <h3 className="text-sm font-semibold text-black dark:text-white">
+                <h3 className="text-sm font-semibold h-font text-black dark:text-white">
                   Proudly Open Source
                 </h3>
               </div>
@@ -144,7 +144,7 @@ export default function AboutUs() {
 
           <div className="flex flex-col space-y-4">
             <div>
-              <h2 className="text-xl font-bold text-black dark:text-white tracking-tight">
+              <h2 className="text-xl font-semibold text-black h-font dark:text-white tracking-tight">
                 Kinshuk Jain
               </h2>
               <p className="text-sm text-gray-900 dark:text-gray-500  mt-1">
@@ -179,7 +179,7 @@ export default function AboutUs() {
 
         {/* ================= RESOURCES & LINKS GRID ================= */}
         <section className="pt-8">
-          <h3 className="text-lg font-bold text-black dark:text-white tracking-tight mb-6">
+          <h3 className="text-xl h-font font-semibold text-black dark:text-white tracking-tight mb-6">
             More Resources
           </h3>
 

@@ -71,7 +71,7 @@ const formatBytes = (bytes: number, decimals = 2) => {
 /* Reusable Modern Button Classes                                     */
 /* ------------------------------------------------------------------ */
 const primaryButtonClass =
-  "inline-flex items-center justify-center gap-2 py-3 px-5 font-semibold text-sm md:text-md cursor-pointer bg-blue-600 hover:bg-blue-700 text-white dark:bg-blue-500 dark:hover:bg-blue-600 rounded-xl transition-all duration-200 active:scale-95 shadow-sm";
+  "inline-flex items-center justify-center gap-2 py-2.5 sm:py-3 px-4 sm:px-5 font-semibold text-sm md:text-md cursor-pointer dark:text-white bg-neutral-400 hover:bg-neutral-500 text-black dark:bg-[#252525] dark:hover:bg-[#232323] rounded-xl transition-all duration-200 active:scale-95 shadow-sm";
 
 const secondaryButtonClass =
   "inline-flex items-center justify-center gap-2 py-2.5 px-5 font-semibold text-sm bg-gray-100 text-gray-900 hover:bg-gray-200 dark:bg-[#252525] dark:text-white dark:hover:bg-[#333333] cursor-pointer rounded-full transition-all duration-200";
@@ -166,10 +166,14 @@ function ActionMenu({
   fileKey,
   onDownload,
   onDelete,
+  direction = "down",
+  variant = "ghost",
 }: {
   fileKey: string;
   onDownload: (e: React.MouseEvent, key: string) => void;
   onDelete: (e: React.MouseEvent, key: string) => void;
+  direction?: "up" | "down";
+  variant?: "ghost" | "glass";
 }) {
   const [open, setOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
@@ -185,6 +189,13 @@ function ActionMenu({
     return () => document.removeEventListener("mousedown", handler);
   }, [open]);
 
+  const positionClass =
+    direction === "up" ? "bottom-full mb-2" : "top-full mt-2";
+  const buttonStyleClass =
+    variant === "glass"
+      ? "bg-white/80 dark:bg-[#191623]/40 backdrop-blur-sm border border-gray-200 dark:border-white/10 shadow-sm"
+      : "bg-transparent";
+
   return (
     <div ref={menuRef} className="relative">
       <button
@@ -193,7 +204,7 @@ function ActionMenu({
           e.stopPropagation();
           setOpen((prev) => !prev);
         }}
-        className={`${iconButtonClass} bg-white/80 dark:bg-[#191623]/40 backdrop-blur-sm border border-gray-200 dark:border-white/10 shadow-sm`}
+        className={`${iconButtonClass} ${buttonStyleClass}`}
         aria-label="File actions"
       >
         <FaEllipsisV size={14} />
@@ -201,7 +212,7 @@ function ActionMenu({
 
       {open && (
         <div
-          className="absolute right-0 top-full mt-2 z-[100] min-w-[160px] bg-white dark:bg-[#18181b] backdrop-blur-xl border border-gray-200 dark:border-white/10 shadow-xl py-1.5 flex flex-col rounded-2xl overflow-hidden animate-[fadeIn_0.15s_ease-out]"
+          className={`absolute right-0 ${positionClass} z-[100] min-w-[160px] bg-white dark:bg-[#18181b] backdrop-blur-xl border border-gray-200 dark:border-white/10 shadow-xl py-1.5 flex flex-col rounded-2xl overflow-hidden animate-[fadeIn_0.15s_ease-out]`}
           onClick={(e) => e.stopPropagation()}
         >
           <button
@@ -234,7 +245,7 @@ function ActionMenu({
       )}
       <style>{`
         @keyframes fadeIn {
-          from { opacity: 0; transform: scale(0.95) translateY(-5px); }
+          from { opacity: 0; transform: scale(0.95) translateY(direction === 'up' ? 5px : -5px); }
           to   { opacity: 1; transform: scale(1) translateY(0); }
         }
       `}</style>
@@ -534,7 +545,7 @@ export default function DriveManager() {
       {/* --- Sticky Header & Command Bar --- */}
       <div className="z-40 bg-gray-50 dark:bg-[#0a0a0a] border-b border-gray-200 dark:border-white/5 transition-colors duration-300">
         <div className="max-w-[1600px] mx-auto">
-          <div className="px-4 sm:px-6 lg:px-8 py-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="px-4 sm:px-6 lg:px-8 py-4 sm:py-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div className="flex items-center gap-3 sm:w-auto w-full">
               <div className="relative flex-1 sm:w-80">
                 <FaSearch
@@ -555,24 +566,24 @@ export default function DriveManager() {
       </div>
 
       {/* --- Main Content Area --- */}
-      <div className="flex-1 w-full max-w-[1600px] mx-auto p-4 sm:p-6 lg:p-8 z-10 flex flex-col gap-8">
-        {/* Essentials Dashboard Row */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <div className="flex flex-col gap-1 p-4 bg-white dark:bg-[#141414]  rounded-2xl border border-gray-200 dark:border-white/5 shadow-sm">
-            <span className="text-sm text-gray-500 dark:text-gray-400 font-medium">
+      <div className="flex-1 w-full max-w-[1600px] mx-auto p-4 sm:p-6 lg:p-8 z-10 flex flex-col gap-6 sm:gap-8">
+        {/* Essentials Dashboard Row - Refined and Compressed */}
+        <div className="flex flex-wrap items-center gap-3">
+          <div className="flex flex-col sm:flex-row sm:items-baseline gap-1 sm:gap-2 px-4 py-2 sm:py-2.5 bg-white dark:bg-[#141414] rounded-xl border border-gray-200 dark:border-white/5 shadow-sm min-w-0 w-fit">
+            <span className="text-xs text-gray-500 dark:text-gray-400 font-semibold uppercase tracking-wider">
               Total Files
             </span>
-            <span className="text-2xl font-bold text-gray-900 dark:text-white">
+            <span className="text-base sm:text-lg font-bold text-gray-900 dark:text-white leading-none">
               {totalFiles}
             </span>
           </div>
-          <div className="flex flex-col gap-1 p-4 w-max bg-white dark:bg-[#141414]  rounded-2xl border border-gray-200 dark:border-white/5 shadow-sm col-span-1 md:col-span-2">
-            <span className="text-sm text-gray-500 dark:text-gray-400 font-medium">
+          <div className="flex flex-col sm:flex-row sm:items-baseline gap-1 sm:gap-2 px-4 py-2 sm:py-2.5 bg-white dark:bg-[#141414] rounded-xl border border-gray-200 dark:border-white/5 shadow-sm min-w-0 w-fit max-w-full">
+            <span className="text-xs text-gray-500 dark:text-gray-400 font-semibold uppercase tracking-wider shrink-0">
               Storage Used
             </span>
-            <span className="text-2xl font-bold text-gray-900 dark:text-white">
-              {formatBytes(storageUsed)}{" "}
-              <span className="text-gray-400 dark:text-gray-600 text-lg font-medium">
+            <span className="text-base sm:text-lg font-bold text-gray-900 dark:text-white leading-none truncate">
+              {formatBytes(storageUsed)}
+              <span className="text-gray-400 dark:text-gray-500 text-xs sm:text-sm font-medium ml-1">
                 / {formatBytes(storageLimit)}
               </span>
             </span>
@@ -581,11 +592,11 @@ export default function DriveManager() {
 
         {/* --- Toolbar --- */}
         <div className="flex flex-wrap items-center justify-between gap-4">
-          <div className="flex items-center gap-2 bg-gray-200/50 dark:bg-[#1a1a1c] p-1 rounded-2xl border border-gray-200 dark:border-white/5">
+          <div className="flex items-center gap-1 bg-gray-200/50 dark:bg-[#1a1a1c] p-1 rounded-full border border-gray-200 dark:border-white/5">
             <button
               type="button"
               onClick={() => setViewMode("grid")}
-              className={`p-2.5 cursor-pointer rounded-xl transition-all ${
+              className={`p-2.5 cursor-pointer rounded-l-full transition-all ${
                 viewMode === "grid"
                   ? "bg-white text-blue-600 dark:bg-[#252525] dark:text-white shadow-sm"
                   : "text-gray-500 hover:text-gray-900 hover:bg-gray-200/50 dark:text-gray-500 dark:hover:text-gray-300 dark:hover:bg-white/5"
@@ -597,7 +608,7 @@ export default function DriveManager() {
             <button
               type="button"
               onClick={() => setViewMode("list")}
-              className={`p-2.5 cursor-pointer rounded-xl transition-all ${
+              className={`p-2.5 cursor-pointer rounded-r-full transition-all ${
                 viewMode === "list"
                   ? "bg-white text-blue-600 dark:bg-[#252525] dark:text-white shadow-sm"
                   : "text-gray-500 hover:text-gray-900 hover:bg-gray-200/50 dark:text-gray-500 dark:hover:text-gray-300 dark:hover:bg-white/5"
@@ -608,7 +619,7 @@ export default function DriveManager() {
             </button>
           </div>
 
-          <div className="flex items-center">
+          <div className="flex items-center w-full sm:w-auto">
             <input
               type="file"
               accept="image/*,video/*,application/pdf,.pptx,.ppt,.xlsx,.xls,.csv,.txt,.md"
@@ -622,19 +633,14 @@ export default function DriveManager() {
               type="button"
               onClick={() => fileInputRef.current?.click()}
               disabled={isUploading}
-              className={primaryButtonClass}
+              className={`${primaryButtonClass} w-full sm:w-auto`}
             >
               {isUploading ? (
                 <FaSpinner className="animate-spin" size={18} />
               ) : (
                 <FaCloudUploadAlt size={20} />
               )}
-              <span className="hidden sm:inline">
-                {isUploading ? "Uploading..." : "Upload Files"}
-              </span>
-              <span className="sm:hidden">
-                {isUploading ? "Uploading..." : "Upload"}
-              </span>
+              <span>{isUploading ? "Uploading..." : "Upload Files"}</span>
             </button>
           </div>
         </div>
@@ -719,6 +725,8 @@ export default function DriveManager() {
                                 fileKey={file.key}
                                 onDownload={handleDownload}
                                 onDelete={handleDeleteClick}
+                                direction="down"
+                                variant="glass"
                               />
                             </div>
                           </td>
@@ -738,19 +746,10 @@ export default function DriveManager() {
                     <div
                       key={file.key}
                       onClick={() => setSelectedFile(file)}
-                      className="group relative bg-white dark:bg-[#141414] border border-gray-200 dark:border-white/5 hover:border-gray-300 dark:hover:border-white/10 hover:shadow-lg dark:hover:shadow-none transition-all duration-300 cursor-pointer flex flex-col rounded-3xl overflow-hidden shadow-sm"
+                      // Removed overflow-hidden here so the dropdown menu can overflow the card boundaries if necessary
+                      className="group relative z-10 hover:z-20 bg-white dark:bg-[#141414] border border-gray-200 dark:border-white/5 hover:border-gray-300 dark:hover:border-white/10 hover:shadow-lg dark:hover:shadow-none transition-all duration-300 cursor-pointer flex flex-col rounded-3xl shadow-sm"
                     >
-                      <div
-                        className="absolute top-2 right-2 z-10 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity"
-                        onClick={(e) => e.stopPropagation()}
-                      >
-                        <ActionMenu
-                          fileKey={file.key}
-                          onDownload={handleDownload}
-                          onDelete={handleDeleteClick}
-                        />
-                      </div>
-                      <div className="aspect-square bg-gray-50 dark:bg-[#202020] flex items-center justify-center relative overflow-hidden border-b border-gray-100 dark:border-transparent">
+                      <div className="aspect-square bg-gray-50 dark:bg-[#202020] flex items-center justify-center relative overflow-hidden rounded-t-[1.4rem] border-b border-gray-100 dark:border-transparent">
                         {fileType === "image" ? (
                           <Image
                             src={file.url}
@@ -782,16 +781,32 @@ export default function DriveManager() {
                           )
                         )}
                       </div>
-                      <div className="p-3.5 flex flex-col gap-0.5">
-                        <span
-                          className="text-sm font-semibold text-gray-800 dark:text-gray-200 group-hover:text-blue-600 dark:group-hover:text-white truncate transition-colors"
-                          title={fileName}
+
+                      {/* Label and Action Menu Row */}
+                      <div className="p-3.5 flex items-start justify-between gap-2">
+                        <div className="flex flex-col gap-0.5 min-w-0">
+                          <span
+                            className="text-sm font-semibold text-gray-800 dark:text-gray-200 group-hover:text-blue-600 dark:group-hover:text-white truncate transition-colors"
+                            title={fileName}
+                          >
+                            {fileName}
+                          </span>
+                          <span className="text-xs text-gray-500 dark:text-gray-500 font-medium uppercase tracking-wider">
+                            {ext}
+                          </span>
+                        </div>
+                        <div
+                          className="shrink-0 -mt-1 -mr-1"
+                          onClick={(e) => e.stopPropagation()}
                         >
-                          {fileName}
-                        </span>
-                        <span className="text-xs text-gray-500 dark:text-gray-500 font-medium uppercase tracking-wider">
-                          {ext}
-                        </span>
+                          <ActionMenu
+                            fileKey={file.key}
+                            onDownload={handleDownload}
+                            onDelete={handleDeleteClick}
+                            direction="up" // Opens upwards to prevent clipping at screen bottoms
+                            variant="ghost" // Blends cleanly with the white/dark background
+                          />
+                        </div>
                       </div>
                     </div>
                   );
@@ -832,7 +847,7 @@ export default function DriveManager() {
             className="bg-gray-100/50 dark:bg-black/50 border-b border-gray-200 dark:border-white/10 px-4 py-3 md:py-4 flex justify-between items-center"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="flex items-center gap-3 min-w-0">
+            <div className="flex items-center gap-3 min-w-0 pr-4">
               {getFileIcon(
                 getFileType(getFileName(selectedFile.key)),
                 "text-gray-600 dark:text-gray-400 text-xl shrink-0",
@@ -841,7 +856,7 @@ export default function DriveManager() {
                 {getFileName(selectedFile.key)}
               </span>
             </div>
-            <div className="flex items-center gap-2 shrink-0 ml-4">
+            <div className="flex items-center gap-2 shrink-0">
               <button
                 type="button"
                 onClick={(e) => handleDownload(e, selectedFile.key)}
@@ -956,18 +971,18 @@ export default function DriveManager() {
                 </div>
               </div>
             </div>
-            <div className="bg-gray-50 dark:bg-[#191623]/20 px-6 py-4 border-t border-gray-100 dark:border-white/5 flex justify-end gap-3">
+            <div className="bg-gray-50 dark:bg-[#191623]/20 px-6 py-4 border-t border-gray-100 dark:border-white/5 flex flex-col-reverse sm:flex-row justify-end gap-3">
               <button
                 type="button"
                 onClick={() => setFileToDelete(null)}
-                className={secondaryButtonClass}
+                className={`${secondaryButtonClass} w-full sm:w-auto`}
               >
                 Cancel
               </button>
               <button
                 type="button"
                 onClick={confirmDelete}
-                className={dangerButtonClass}
+                className={`${dangerButtonClass} w-full sm:w-auto`}
               >
                 Yes, delete
               </button>

@@ -278,7 +278,7 @@ export default function FeedbacksList() {
                 />
               </div>
               <div>
-                <h1 className="text-xl font-bold text-gray-900 dark:text-gray-100 tracking-tight">
+                <h1 className="text-2xl font-semibold text-gray-900 h-font dark:text-gray-100 tracking-tight">
                   System Feedback
                 </h1>
                 <p className="text-[14px] font-medium text-gray-500 dark:text-gray-400 mt-0.5">

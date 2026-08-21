@@ -213,7 +213,7 @@ export default function ChangelogTracker() {
     <div className="min-h-screen bg-gray-50 dark:bg-black text-gray-900 dark:text-white text-[13px] sm:text-[14px] p-4 md:p-8 selection:bg-blue-200 dark:selection:bg-[#cce3f5] selection:text-blue-900 dark:selection:text-black transition-colors duration-300">
       <div className="max-w-7xl mx-auto">
         {/* ── TOP HEADER (Breadcrumbs & Links) ── */}
-        <div className="mb-2 border-b border-gray-200 dark:border-gray-800 pb-4 transition-colors">
+        <div className="mb-2 border-b border-gray-200 h-font dark:border-gray-800 pb-4 transition-colors">
           <h1 className="text-[20px] sm:text-[24px] font-semibold m-0 p-0 text-gray-800 dark:text-gray-200">
             <Link
               href="#"
@@ -357,7 +357,7 @@ export default function ChangelogTracker() {
         )}
 
         {/* ── SECTION HEADER ── */}
-        <h2 className="text-[22px] sm:text-[25px] text-gray-900 dark:text-gray-100 font-extrabold mb-4 tracking-tight">
+        <h2 className="text-[22px] sm:text-[25px] text-gray-900 h-font dark:text-gray-100 font-semibold mb-4 tracking-tight">
           Commits List
         </h2>
 

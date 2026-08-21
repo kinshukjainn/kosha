@@ -16,7 +16,9 @@ export default function ConditionalFooter() {
     pathname?.startsWith("/dashboard") ||
     pathname?.startsWith("/projects") ||
     pathname?.startsWith("/verify-regis") ||
-    pathname?.startsWith("/tickets")
+    pathname?.startsWith("/tickets") ||
+    pathname?.startsWith("/trials") ||
+    pathname?.startsWith("/console-v2")
   ) {
     return null;
   }

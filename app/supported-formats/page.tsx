@@ -81,7 +81,7 @@ export default function SupportedFormatsPage() {
       <main className="max-w-[1000px] mx-auto px-6 pt-12">
         {/* Hero Section */}
         <header className="pb-10 mb-10">
-          <h1 className="text-3xl  md:text-4xl font-semibold text-gray-900 dark:text-gray-100 mb-4 tracking-tight">
+          <h1 className="text-3xl  md:text-4xl font-semibold h-font text-gray-900 dark:text-gray-100 mb-4 tracking-tight">
             Supported Data Formats
           </h1>
           <p className="text-[15px] text-gray-900 dark:dark:text-gray-200 text-gray-900 leading-relaxed max-w-3xl">
@@ -98,7 +98,7 @@ export default function SupportedFormatsPage() {
           aria-label="Table of Contents"
           className="mb-14 p-5 bg-gray-200 dark:bg-[#141414] rounded-2xl shadow-sm"
         >
-          <p className="text-[16px] font-semibold text-gray-900 dark:text-gray-100 mb-3 flex items-center gap-2">
+          <p className="text-[16px] font-semibold text-gray-900 h-font dark:text-gray-100 mb-3 flex items-center gap-2">
             <Info size={16} className="text-gray-900 dark:text-gray-100" /> In
             this article
           </p>
@@ -118,7 +118,7 @@ export default function SupportedFormatsPage() {
 
         {/* Images */}
         <section id="images" className="mb-16 scroll-mt-20">
-          <h2 className="text-xl font-semibold dark:text-gray-100 text-black mb-3">
+          <h2 className="text-xl font-semibold dark:text-gray-100 h-font text-black mb-3">
             <SectionAnchor id="images">Image Processing</SectionAnchor>
           </h2>
           <p className="text-[14px] text-gray-900 dark:dark:text-gray-200 text-gray-900 mb-5 max-w-3xl leading-relaxed">
@@ -138,7 +138,7 @@ export default function SupportedFormatsPage() {
 
         {/* Videos */}
         <section id="videos" className="mb-16 scroll-mt-20">
-          <h2 className="text-xl font-semibold dark:text-gray-100 text-gray-900 mb-3">
+          <h2 className="text-xl font-semibold dark:text-gray-100 h-font text-gray-900 mb-3">
             <SectionAnchor id="videos">Video Streaming</SectionAnchor>
           </h2>
           <p className="text-[14px] text-gray-900 dark:dark:text-gray-200 text-gray-900 mb-5 max-w-3xl leading-relaxed">
@@ -157,7 +157,7 @@ export default function SupportedFormatsPage() {
 
         {/* Audio */}
         <section id="audio" className="mb-16 scroll-mt-20">
-          <h2 className="text-xl font-semibold text-gray-900 mb-3">
+          <h2 className="text-xl h-font font-semibold text-gray-900 mb-3">
             <SectionAnchor id="audio">Audio Playback</SectionAnchor>
           </h2>
           <p className="text-[14px] dark:text-gray-200 text-gray-900 mb-5 max-w-3xl leading-relaxed">
@@ -176,7 +176,7 @@ export default function SupportedFormatsPage() {
 
         {/* Documents */}
         <section id="documents" className="mb-16 scroll-mt-20">
-          <h2 className="text-xl font-semibold text-gray-900 mb-3">
+          <h2 className="text-xl h-font font-semibold text-gray-900 mb-3">
             <SectionAnchor id="documents">Documents & Datasets</SectionAnchor>
           </h2>
           <p className="text-[14px] dark:text-gray-200 text-gray-900 mb-6 max-w-3xl leading-relaxed">
@@ -192,7 +192,7 @@ export default function SupportedFormatsPage() {
                 key={cat.label}
                 className="p-5 bg-gray-200 dark:bg-[#141414]  rounded-3xl shadow-sm hover:shadow-md transition-shadow"
               >
-                <h3 className="text-[18px] font-semibold text-gray-900 dark:text-gray-100 mb-3">
+                <h3 className="text-[18px] font-semibold h-font text-gray-900 dark:text-gray-100 mb-3">
                   {cat.label}
                 </h3>
                 <div className="flex flex-wrap mb-3">
@@ -201,7 +201,7 @@ export default function SupportedFormatsPage() {
                   ))}
                 </div>
                 {cat.note && (
-                  <p className="text-[13px] dark:text-gray-200 text-gray-900 leading-relaxed border-t border-gray-100 pt-3">
+                  <p className="text-[13px] dark:text-gray-200 text-gray-900 leading-relaxed  pt-3">
                     {cat.note}
                   </p>
                 )}
@@ -212,7 +212,7 @@ export default function SupportedFormatsPage() {
 
         {/* Archives */}
         <section id="archives" className="mb-16 scroll-mt-20">
-          <h2 className="text-xl font-semibold text-gray-900 mb-3">
+          <h2 className="text-xl font-semibold text-gray-900 h-font mb-3">
             <SectionAnchor id="archives">Encrypted Archives</SectionAnchor>
           </h2>
           <p className="text-[14px] dark:text-gray-200 text-gray-900 mb-5 max-w-3xl leading-relaxed">

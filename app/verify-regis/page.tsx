@@ -42,7 +42,7 @@ function BenefitItem({
         {icon}
       </div>
       <div>
-        <h3 className="text-gray-900 dark:text-gray-100 font-semibold text-[15px] mb-1">
+        <h3 className="text-gray-900 dark:text-gray-100 h-font font-semibold text-[15px] mb-1">
           {title}
         </h3>
         <p className="text-gray-600 dark:text-gray-400 text-[13px] leading-relaxed">
@@ -285,7 +285,7 @@ export default function AuthPage() {
 
   // Themed Styles
   const inputClass =
-    "w-full px-4 py-3 bg-gray-50 border border-gray-200 text-[18px] text-gray-900 placeholder-gray-400 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none rounded-xl transition-all dark:bg-[#141414] dark:border-transparent dark:text-white dark:placeholder-gray-500 dark:focus:border-blue-500 dark:focus:ring-0";
+    "w-full px-4 py-2 bg-gray-100 border dark:border-[#444444] border-zinc-400 text-[18px] text-gray-900 placeholder-gray-400  outline-none rounded-xl transition-all dark:bg-[#141414] ";
   const labelClass =
     "block text-[16px] font-medium text-gray-700 dark:text-gray-100 mb-1.5";
   const primaryButtonClass =
@@ -307,8 +307,8 @@ export default function AuthPage() {
               height={44}
               className="object-contain"
             />
-            <span className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
-              Kosha{" "}
+            <span className="text-2xl font-bold tracking-tight  text-gray-900 dark:text-white">
+              <span className="h-font font-semibold">Kosha</span>{" "}
               <span className="font-bold text-gray-400 dark:text-gray-500">
                 {"/"}
               </span>{" "}
@@ -320,7 +320,7 @@ export default function AuthPage() {
 
           {/* Value Proposition */}
           <div className="mt-8">
-            <h1 className="text-4xl xl:text-5xl font-bold text-gray-900 mb-6 leading-tight dark:text-white">
+            <h1 className="text-4xl xl:text-5xl font-semibold h-font text-gray-900 mb-6 leading-tight dark:text-white">
               Push and secure your files with kosha
             </h1>
             <p className="text-lg text-gray-600 max-w-md leading-relaxed dark:text-gray-400">
@@ -354,7 +354,7 @@ export default function AuthPage() {
           <div className="flex items-center gap-2 text-[13px] text-gray-600 bg-white border border-gray-200 px-4 py-2 rounded-full dark:text-gray-400 dark:bg-[#111111] dark:border-[#222222]">
             <LockKeyhole className="w-4 h-4 text-[#0078D4]" />
             <span>Secured infrastructure by</span>
-            <div className="relative flex items-center justify-start w-[45px] h-[18px] overflow-hidden font-semibold text-gray-900 dark:text-gray-200">
+            <div className="relative flex items-center justify-start w-[45px] h-[18px] h-font overflow-hidden font-semibold text-gray-900 dark:text-gray-200">
               <AnimatePresence mode="popLayout">
                 <motion.span
                   key={providers[index]}
@@ -383,7 +383,7 @@ export default function AuthPage() {
             height={40}
             className="object-contain"
           />
-          <span className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
+          <span className="text-2xl font-bold tracking-tight h-font text-gray-900 dark:text-white">
             Kosha /
             <span className="ml-2 text-xs px-2 py-1 text-blue-700 bg-blue-50 border border-blue-200 rounded-2xl dark:bg-blue-800/20 dark:border-blue-400 dark:text-blue-400">
               Authentication
@@ -394,7 +394,7 @@ export default function AuthPage() {
         <div className="w-full max-w-[420px] mx-auto">
           {/* Header */}
           <div className="mb-8">
-            <h2 className="text-4xl font-bold text-gray-900 mb-2 dark:text-white">
+            <h2 className="text-4xl font-bold text-gray-900 mb-2 h-font dark:text-white">
               {heading}
             </h2>
             <p className="text-[15px] text-gray-600 dark:text-gray-400">

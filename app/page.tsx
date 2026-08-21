@@ -147,7 +147,7 @@ function MainContent() {
         <main className="max-w-6xl mx-auto px-6 pt-24 lg:pt-32">
           <FadeIn>
             <div className="border-b border-slate-200 dark:border-white/10 pb-8 mb-12">
-              <h1 className="text-4xl font-semibold text-slate-900 dark:text-white tracking-tight mb-2 flex items-center gap-3">
+              <h1 className="text-4xl font-semibold text-slate-900 dark:text-white h-font tracking-tight mb-2 flex items-center gap-3">
                 Console{" "}
                 <span className="text-slate-300 dark:text-gray-700 font-light">
                   |
@@ -169,13 +169,13 @@ function MainContent() {
             {/* Left Column: Actions */}
             <div className="md:col-span-2 space-y-6">
               <FadeIn delay={0.1}>
-                <h2 className="text-lg font-semibold tracking-wide text-slate-900 dark:text-white mb-4 uppercase text-[13px]">
+                <h2 className="text-2xl font-semibold h-font tracking-wide text-slate-900 dark:text-white mb-4 uppercase text-[17px]">
                   Workspace Actions
                 </h2>
                 <div className="grid sm:grid-cols-2 gap-5">
                   <Link
                     href="/dashboard"
-                    className="group block p-6 bg-white dark:bg-[#111111] border border-slate-200 dark:border-white/5 rounded-3xl hover:-translate-y-1 hover:shadow-xl hover:shadow-blue-500/5 hover:border-blue-200 dark:hover:border-blue-500/30 transition-all duration-300 ease-out"
+                    className="group block p-6 bg-white dark:bg-[#202020] border border-slate-200 dark:border-white/5 rounded-3xl hover:-translate-y-1 hover:shadow-xl hover:shadow-blue-500/5 hover:border-blue-200 dark:hover:border-blue-500/30 transition-all duration-300 ease-out"
                   >
                     {/* SVG Gradient Definition */}
                     <svg width="0" height="0">
@@ -211,7 +211,7 @@ function MainContent() {
 
                   <Link
                     href="/dashboard"
-                    className="group block p-6 bg-white dark:bg-[#111111] border border-slate-200 dark:border-white/5 rounded-3xl hover:-translate-y-1 hover:shadow-xl hover:shadow-indigo-500/5 hover:border-indigo-200 dark:hover:border-indigo-500/30 transition-all duration-300 ease-out"
+                    className="group block p-6 bg-white dark:bg-[#202020] border border-slate-200 dark:border-white/5 rounded-3xl hover:-translate-y-1 hover:shadow-xl hover:shadow-indigo-500/5 hover:border-indigo-200 dark:hover:border-indigo-500/30 transition-all duration-300 ease-out"
                   >
                     <div className="w-12 h-12 rounded-full bg-slate-50 dark:bg-white/5 flex items-center justify-center mb-5 group-hover:scale-110 transition-transform duration-300">
                       <Upload
@@ -270,11 +270,11 @@ function MainContent() {
             {/* Right Column: Status Panel */}
             <div className="space-y-6">
               <FadeIn delay={0.15}>
-                <h2 className="text-lg font-semibold tracking-wide text-slate-900 dark:text-white mb-4 uppercase text-[13px]">
+                <h2 className="text-lg font-semibold h-font tracking-wide text-slate-900 dark:text-white mb-4 uppercase text-[13px]">
                   Account Status
                 </h2>
 
-                <div className="p-6 bg-white dark:bg-[#111111] border border-slate-200 dark:border-white/5 shadow-sm rounded-3xl">
+                <div className="p-6 bg-white dark:bg-[#202020] border border-slate-200 dark:border-white/5 shadow-sm rounded-3xl">
                   <div className="mb-8">
                     <p className="text-[13px] uppercase tracking-wide text-slate-500 dark:text-gray-500 mb-1.5 font-medium">
                       User Profile
@@ -350,7 +350,7 @@ function MainContent() {
               {/* Left Column: Text & Actions */}
               <FadeIn>
                 <div className="max-w-xl relative z-10">
-                  <h1 className="text-5xl sm:text-6xl lg:text-[4.5rem] font-extrabold tracking-tight text-slate-900 dark:text-white mb-6 leading-[1.05]">
+                  <h1 className="text-5xl sm:text-6xl lg:text-[4.5rem] font-semibold h-font tracking-tight text-slate-900 dark:text-white mb-6 leading-[1.05]">
                     Store and share <br />
                     <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400">
                       files securely
@@ -364,10 +364,10 @@ function MainContent() {
 
                   <div className="flex flex-col sm:flex-row items-center gap-4">
                     <Link
-                      href="/verify-regis"
+                      href="/trials"
                       className="w-full sm:w-auto px-8 py-3.5 bg-slate-900 hover:bg-slate-800 dark:bg-white dark:hover:bg-gray-200 text-white dark:text-slate-900 text-[1rem] font-semibold rounded-full transition-all duration-200 flex items-center justify-center shadow-lg shadow-slate-900/10 dark:shadow-white/10 hover:scale-[1.02]"
                     >
-                      Sign up for free
+                      Try in sandbox for free
                     </Link>
                     <Link
                       href="/supported-formats"
@@ -401,7 +401,7 @@ function MainContent() {
           <div className="max-w-7xl mx-auto px-6 sm:px-8">
             <FadeIn>
               <div className="text-center max-w-2xl mx-auto mb-16">
-                <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 dark:text-white mb-5 tracking-tight">
+                <h2 className="text-3xl sm:text-4xl h-font font-semibold text-slate-900 dark:text-white mb-5 tracking-tight">
                   Everything you need. <br className="hidden sm:block" />
                   Nothing you don&apos;t.
                 </h2>
@@ -417,10 +417,10 @@ function MainContent() {
               {MARKETING_FEATURES.map((feature, idx) => (
                 <FadeIn key={idx} delay={idx * 0.1}>
                   <div className="bg-white dark:bg-[#111111] p-8 rounded-3xl border border-slate-200/60 dark:border-white/5 shadow-sm hover:shadow-md dark:shadow-none transition-shadow h-full flex flex-col">
-                    <div className="w-12 h-12 rounded-2xl bg-blue-50 dark:bg-blue-500/10 flex items-center justify-center mb-6 border border-blue-100 dark:border-blue-500/20">
-                      <feature.icon className="w-6 h-6 text-blue-600 dark:text-blue-400" />
+                    <div className="w-12 h-12 rounded-full bg-blue-50 dark:bg-blue-800 flex items-center justify-center mb-6 ">
+                      <feature.icon className="w-6 h-6 text-blue-600 dark:text-white" />
                     </div>
-                    <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-3">
+                    <h3 className="text-lg font-semibold h-font text-slate-900 dark:text-white mb-3">
                       {feature.title}
                     </h3>
                     <p className="text-slate-600 dark:text-neutral-400 leading-relaxed text-[15px]">
@@ -440,7 +440,7 @@ function MainContent() {
 
           <div className="max-w-4xl mx-auto px-6 text-center relative z-10">
             <FadeIn>
-              <h2 className="text-4xl sm:text-5xl font-extrabold tracking-tight text-slate-900 dark:text-white mb-6">
+              <h2 className="text-4xl sm:text-5xl font-semibold h-font tracking-tight text-slate-900 dark:text-white mb-6">
                 Ready to take back control?
               </h2>
               <p className="text-xl text-slate-600 dark:text-neutral-400 mb-10 max-w-2xl mx-auto font-medium">

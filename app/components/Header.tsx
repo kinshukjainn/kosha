@@ -62,7 +62,7 @@ export default function Header() {
               className="object-contain group-hover:scale-105 transition-transform duration-300"
             />
           </div>
-          <span className="font-bold text-[24px] md:text-[28px] tracking-wider text-black dark:text-gray-100">
+          <span className="font-bold text-[24px] md:text-[28px] h-font uppercase tracking-wider text-black dark:text-gray-100">
             Kosha
           </span>
         </Link>

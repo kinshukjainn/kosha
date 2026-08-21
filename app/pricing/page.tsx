@@ -130,7 +130,7 @@ export default function PricingPage() {
               />
             </div>
           </motion.div>
-          <h1 className="text-3xl md:text-4xl font-bold text-zinc-900 dark:text-white mb-4 tracking-tight">
+          <h1 className="text-4xl md:text-5xl font-semibold h-font text-zinc-900 dark:text-white mb-4 tracking-tight">
             Premium Plans
           </h1>
           <p className="text-md md:text-base text-zinc-900 dark:text-zinc-400 max-w-xl mx-auto leading-relaxed">
@@ -164,18 +164,18 @@ export default function PricingPage() {
               {/* Card Header */}
               <div className="mb-6 border-b border-zinc-800 dark:border-zinc-700/50 pb-6">
                 <h2
-                  className={`text-sm uppercase tracking-wider font-bold mb-4 ${tier.theme.title}`}
+                  className={`text-md h-font uppercase tracking-wider font-bold mb-4 ${tier.theme.title}`}
                 >
-                  [{tier.name}]
+                  {tier.name}
                 </h2>
                 <div className="flex items-end gap-1 mb-3">
                   <span
-                    className={`text-4xl font-bold leading-none tracking-tight ${tier.theme.price}`}
+                    className={`text-4xl font-semibold h-font leading-none tracking-tight ${tier.theme.price}`}
                   >
                     {tier.price}
                   </span>
                   {tier.billingPeriod && (
-                    <span className="text-zinc-900 dark:text-zinc-400 text-sm font-medium mb-1 ">
+                    <span className="text-zinc-900 dark:text-zinc-400 h-font text-sm font-medium mb-1 ">
                       {tier.billingPeriod}
                     </span>
                   )}
@@ -210,7 +210,7 @@ export default function PricingPage() {
                   tabIndex={-1}
                 >
                   <button
-                    className={`w-full flex items-center justify-center gap-2 py-3 px-4 font-bold text-sm rounded-md transition-colors duration-200 focus:ring-2 focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-black focus:ring-zinc-700 dark:focus:ring-zinc-300 disabled:opacity-50 disabled:cursor-not-allowed ${tier.theme.button}`}
+                    className={`w-full flex items-center justify-center gap-2 py-3 px-4 font-bold text-sm rounded-full cursor-pointer transition-colors duration-200 focus:ring-2 focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-black focus:ring-zinc-700 dark:focus:ring-zinc-300 disabled:opacity-50 disabled:cursor-not-allowed ${tier.theme.button}`}
                   >
                     {tier.buttonText}
                   </button>

@@ -4,6 +4,7 @@ import {
   Noto_Serif,
   Open_Sans,
   Plus_Jakarta_Sans,
+  Source_Serif_4,
   Supermercado_One,
 } from "next/font/google";
 import {
@@ -20,7 +21,6 @@ import localFont from "next/font/local";
 import { ClerkProvider } from "@clerk/nextjs";
 import "./globals.css";
 import Header from "@/app/components/Header";
-import Footer from "./components/Footer";
 import { ThemeProvider } from "./components/providers/theme-provider";
 import ConditionalFooter from "./components/ConditionalFooter";
 
@@ -35,7 +35,11 @@ const dmSans = DM_Sans({
   variable: "--font-dm-sans",
   display: "swap",
 });
-
+const sourceSerif = Source_Serif_4({
+  subsets: ["latin"],
+  variable: "--font-source-serif",
+  display: "swap",
+});
 const poppins = Poppins({
   subsets: ["latin"],
   weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
@@ -207,7 +211,7 @@ export default function RootLayout({
     <ClerkProvider>
       <html lang="en" data-google-analytics-opt-out="" suppressHydrationWarning>
         <body
-          className={`${geistSans.variable} ${plusJakarta.variable} ${publicSans.variable} ${dmSans.variable} ${ubuntu.variable} ${notoSerif.variable} ${openSans.variable} ${poppins.variable} ${roboto.variable} ${verdana.variable} ${segoeui.variable} ${geistMono.variable} ${inter.variable} ${lucideSans.variable} ${googleSans.variable} ${supermercado.variable} ${varelaRound.variable} antialiased`}
+          className={`${geistSans.variable} ${plusJakarta.variable} ${publicSans.variable} ${sourceSerif.variable} ${dmSans.variable} ${ubuntu.variable} ${notoSerif.variable} ${openSans.variable} ${poppins.variable} ${roboto.variable} ${verdana.variable} ${segoeui.variable} ${geistMono.variable} ${inter.variable} ${lucideSans.variable} ${googleSans.variable} ${supermercado.variable} ${varelaRound.variable} antialiased`}
         >
           <ThemeProvider>
             <Header />

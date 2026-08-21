@@ -14,6 +14,7 @@ const config: Config = {
         lucida: "var(--font-lucida) , sans-serif",
         segoeui: "var(--font-segoeui) , sans-serif",
         supermercado: "var(--font-supermercado) , sans-serif",
+        sourceSerif: "var(--font-source-serif) , serif",
         geist: "var(--font-geist-mono) , monospaced",
         roboto: "var(--font-roboto) , sans-serif",
         publicSans: "var(--font-public-sans) , sans-serif",
